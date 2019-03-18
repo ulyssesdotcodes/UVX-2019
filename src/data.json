@@ -1,0 +1,13 @@
+{
+    "showVotes": [
+        {
+            "id": "show-1",
+            "type": "show",
+            "text": "First vote!",
+            "operatorName": "Cue first vote",
+            "optionA": "Test A",
+            "optionB": "Test B"
+        }
+    ],
+    "filmVotes": []
+}
