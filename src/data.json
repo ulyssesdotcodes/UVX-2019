@@ -7,7 +7,58 @@
             "operatorName": "Cue first vote",
             "optionA": "Test A",
             "optionB": "Test B"
+        },
+        {
+            "id": "show-2",
+            "type": "show",
+            "text": "Second vote!",
+            "operatorName": "Cue second vote",
+            "optionA": "Test A2",
+            "optionB": "Test B2"
         }
     ],
-    "filmVotes": []
+    "filmVotes": [
+        {
+            "id": "film-1",
+            "type": "film",
+            "text": "First film vote!",
+            "operatorName": "Cue first film vote",
+            "optionA": "Test Af",
+            "optionAMovie": {
+                "batchFile": "video/optionA.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionAloop.mp4"
+            },
+            "optionB": "Test Bf",
+            "optionBMovie": {
+                "batchFile": "video/optionB.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionBloop.mp4"
+            },
+            "optionC": "Test Cf",
+            "optionCMovie": {
+                "batchFile": "video/optionC.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionCloop.mp4"
+            }
+        },
+        {
+            "id": "film-2",
+            "type": "film",
+            "text": "Second vote!",
+            "operatorName": "Cue second film vote!",
+            "optionA": "Test A2",
+            "optionAMovie": {
+
+            },
+            "optionB": "Test Bf",
+            "optionBMovie": {
+
+            },
+            "optionC": "Test Cf",
+            "optionCMovie": {
+
+            }
+        }
+    ]
 }

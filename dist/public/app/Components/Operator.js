@@ -40,8 +40,8 @@ var Operator = /** @class */ (function (_super) {
     Operator.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", { className: "operator" },
-            this.props.operator.filmVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); }),
-            this.props.operator.showVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); })));
+            React.createElement("div", { className: "film-votes" }, this.props.operator.filmVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); })),
+            React.createElement("div", { className: "show-votes" }, this.props.operator.showVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); }))));
     };
     return Operator;
 }(React.Component));

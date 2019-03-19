@@ -23,8 +23,12 @@ class Operator extends React.Component<OperatorProps> {
     render() {
         return (
             <div className="operator">
-                {this.props.operator.filmVotes.map(v => (<CueVote key={v.id} vote={v} cueVote={this.props.thunkCueVote} />))}
-                {this.props.operator.showVotes.map(v => (<CueVote key={v.id} vote={v} cueVote={this.props.thunkCueVote} />))}
+                <div className="film-votes">
+                    {this.props.operator.filmVotes.map(v => (<CueVote key={v.id} vote={v} cueVote={this.props.thunkCueVote} />))}
+                </div>
+                <div className="show-votes">
+                    {this.props.operator.showVotes.map(v => (<CueVote key={v.id} vote={v} cueVote={this.props.thunkCueVote} />))}
+                </div>
             </div>
         );
     }

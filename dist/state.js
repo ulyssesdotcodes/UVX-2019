@@ -10,11 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = require("./types");
 var Option_1 = require("fp-ts/lib/Option");
-function startVote(state, vote) {
-    return types_1.activeVote.set({ vote: vote, finishTime: new Date().getTime(), voteMap: new Map() })(state);
+var fparr = __importStar(require("fp-ts/lib/Array"));
+function startVote(state, voteId) {
+    return fparr
+        .findFirst(state.filmVotes.concat(state.showVotes), function (x) { return x.id === voteId; })
+        .map(function (vote) {
+        console.log(vote);
+        return types_1.activeVoteLens.set(Option_1.some({
+            vote: vote,
+            finishTime: new Date().getTime(),
+            voteMap: new Map()
+        }))(state);
+    })
+        .getOrElse(state);
 }
 exports.startVote = startVote;
 function endVote(state) {

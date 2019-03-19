@@ -56,7 +56,7 @@ export interface IVoteResult {
 
 export type VoteMap = ReadonlyMap<string, voteChoice>;
 export interface ActiveVote {
-    vote: IFilmVote | IShowVote;
+    vote: IVote;
     finishTime: FinishTime;
     voteMap: VoteMap;
 }

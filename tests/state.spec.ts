@@ -9,7 +9,7 @@ import * as TV from "./testvars";
 import { fromNullable, some, none, Option } from "fp-ts/lib/Option";
 
 describe("start vote", () => {
-    const state = S.startVote(T.defaultShowState, TV.showVote);
+    const state = S.startVote(TV.defaultShowState, TV.showVote.id);
 
     it("should make a vote active", () => {
         expect(state.activeVote.map(av => av.vote)).to.deep.equal(some(TV.showVote));
@@ -25,9 +25,9 @@ describe("end vote", () => {
 });
 
 describe("vote", () => {
-    const novoteState = T.defaultShowState;
+    const novoteState = TV.defaultShowState;
     const novoteVotedState = S.vote(novoteState, TV.showVoteAction);
-    const unvotedState = S.startVote(novoteState, TV.showVote);
+    const unvotedState = S.startVote(novoteState, TV.showVote.id);
     const state = S.vote(unvotedState, TV.showVoteAction);
 
     it("shouldn't do anything if there's no active vote", () => {

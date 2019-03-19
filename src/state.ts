@@ -1,8 +1,19 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, voteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, voteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
+import * as fparr from "fp-ts/lib/Array";
 
-export function startVote(state: IShowState, vote: IFilmVote | IShowVote): IShowState {
-    return activeVote.set({vote: vote, finishTime: new Date().getTime(), voteMap: new Map() as ReadonlyMap<string, voteChoice>})(state);
+export function startVote(state: IShowState, voteId: string): IShowState {
+    return fparr
+        .findFirst((<IVote[]>state.filmVotes).concat(state.showVotes), x => x.id === voteId)
+        .map(vote => {
+            console.log(vote);
+            return activeVoteLens.set(some({
+                vote: vote,
+                finishTime: new Date().getTime(),
+                voteMap: new Map() as ReadonlyMap<string, voteChoice>
+            }))(state);
+        })
+        .getOrElse(state);
 }
 
 export function endVote(state: IShowState): IShowState {
