@@ -17,10 +17,29 @@ describe("start vote", () => {
 });
 
 describe("end vote", () => {
-    const state = S.endVote(T.defaultShowState);
+    const votestate = S.startVote(TV.defaultShowState, TV.showVote.id);
+    const votedstate = S.vote(votestate, TV.showVoteAction);
+    const state = S.endVote(votedstate);
 
     it("should make a vote inactive", () => {
         expect(state.activeVote).to.equal(none);
+    });
+
+    it("should make the chosen option the result", () => {
+        expect(state.voteResult).to.not.equal(none);
+        expect(state.voteResult.map(vr => vr.name === TV.showVote.optionA).getOrElse(false)).to.be.true;
+    });
+
+    const filmvotestate = S.startVote(TV.defaultShowState, TV.filmVote.id);
+    const filmvotedstate = S.vote(filmvotestate, TV.filmVoteActionOptB);
+    const filmstate = S.endVote(filmvotedstate);
+
+
+    it("should make the chosen film active", () => {
+        expect(filmstate.activeMovie).to.not.equal(none);
+        expect(filmstate.activeMovie.map(am =>
+            am.batchFile === TV.filmVote.optionBMovie.batchFile
+            ).getOrElse(false)).to.be.true;
     });
 });
 
@@ -41,7 +60,7 @@ describe("vote", () => {
 
     it("should add to vote count", () => {
         expect(state.activeVote).to.not.be.null;
-        expect(state.activeVote.map(av => av.voteMap.size).getOrElse(-1)).to.equal(1);
+        expect(state.activeVote.map(av => av.voteMap.has(TV.showVoteAction.userId)).getOrElse(false)).to.be.true;
     });
 
     it("shouldn't allow the user to vote twice", () => {

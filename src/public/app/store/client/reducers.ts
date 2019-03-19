@@ -2,10 +2,11 @@ import { ClientState, ClientActionTypes, VOTE } from "./types";
 import { some, none } from "fp-ts/lib/Option";
 import { nodeToJSON } from "lambda-designer-js";
 import { WEBSOCKET_MESSAGE } from "../common/websocket_types";
+import { UPDATE_SHOW_STATE } from "../common/state_types";
+import { activeVote } from "../../../../types";
 
 const initialState: ClientState = {
-    vote: none,
-    voteChoice: none
+    activeVote: none
 };
 
 
@@ -14,12 +15,15 @@ export function clientReducer(
     action: ClientActionTypes
 ): ClientState {
     switch (action.type) {
-        case WEBSOCKET_MESSAGE:
+        case UPDATE_SHOW_STATE: {
             return {
                 ...state,
-                vote: some(JSON.parse(action.payload.event.data))
+                // Have to hack this because full class isn't serialized
+                ...{ activeVote: action.payload.activeVote._tag === "None" ?
+                        none :
+                        some(action.payload.activeVote.value) }
             };
-        case VOTE:
+        }
         default:
             return state;
     }

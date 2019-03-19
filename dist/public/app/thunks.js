@@ -39,10 +39,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = require("./store/operator/types");
 var actions_1 = require("./store/operator/actions");
 var websocket_actions_1 = require("./store/common/websocket_actions");
+var actions_2 = require("./store/client/actions");
+var types_2 = require("./store/client/types");
 exports.thunkCueVote = function (voteId) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         dispatch(actions_1.cueVote(voteId));
         dispatch(websocket_actions_1.websocketSend({ type: types_1.CUE_VOTE, payload: voteId }));
+        return [2 /*return*/];
+    });
+}); }; };
+exports.thunkVote = function (voteId, voteChoice) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    var voteAction;
+    return __generator(this, function (_a) {
+        voteAction = { voteId: voteId, vote: voteChoice, userId: "hi" };
+        dispatch(actions_2.vote(voteAction));
+        dispatch(websocket_actions_1.websocketSend({ type: types_2.VOTE, payload: voteAction }));
         return [2 /*return*/];
     });
 }); }; };

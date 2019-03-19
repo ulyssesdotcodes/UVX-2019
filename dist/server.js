@@ -17,6 +17,7 @@ var data = __importStar(require("./data.json"));
 var td = __importStar(require("./td.ldjs"));
 var Socket_1 = require("./Socket");
 var ldjs = __importStar(require("lambda-designer-js"));
+var types_3 = require("./public/app/store/client/types");
 var http = require("http");
 var express = require("express");
 var app = express();
@@ -50,10 +51,13 @@ wss.on("connection", function connection(socket) {
         switch (message.type) {
             case types_2.CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
-                state.startVote(showState, message.payload);
                 setTimeout(function () {
                     updateVoteWrapper(state.endVote);
                 }, VOTE_DURATION);
+                break;
+            case types_3.VOTE:
+                updateVoteWrapper(_.partialRight(state.vote, message.payload));
+                console.log(showState.activeVote.map(function (a) { return a.voteMap.get(message.payload.userId); }));
                 break;
         }
     });

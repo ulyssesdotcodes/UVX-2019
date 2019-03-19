@@ -9,6 +9,7 @@ import * as data from "./data.json";
 import * as td from "./td.ldjs";
 import { Socket } from "./Socket";
 import * as ldjs from "lambda-designer-js";
+import { VOTE } from "./public/app/store/client/types";
 
 const http = require("http");
 const express = require("express");
@@ -17,7 +18,6 @@ const path = require("path");
 const socketio = require("socket.io");
 
 const VOTE_DURATION = 45000;
-
 
 // Web server and socket
 
@@ -53,10 +53,13 @@ wss.on("connection", function connection(socket: any) {
         switch (message.type) {
             case CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
-                state.startVote(showState, message.payload);
                 setTimeout(() => {
                     updateVoteWrapper(state.endVote);
                 }, VOTE_DURATION);
+                break;
+            case VOTE:
+                updateVoteWrapper(_.partialRight(state.vote, message.payload));
+                console.log(showState.activeVote.map(a => a.voteMap.get(message.payload.userId)));
                 break;
         }
     });

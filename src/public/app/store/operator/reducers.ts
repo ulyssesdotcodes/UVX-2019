@@ -16,7 +16,6 @@ export function operatorReducer(
 ): OperatorState {
     switch (action.type) {
         case UPDATE_SHOW_STATE: {
-            console.log(action.payload);
             return {
                 ...state,
                 ...action.payload

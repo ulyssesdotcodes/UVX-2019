@@ -40,7 +40,6 @@ const socketMiddleware: Middleware = (store: MiddlewareAPI) => {
 
   const socket = io({transports: ["websocket"], upgrade: false});
   socket.on(REDUX_MESSAGE, (message: any) => {
-    console.log(message);
     store.dispatch(message);
   });
   socket.emit(REDUX_MESSAGE, "Hi there");

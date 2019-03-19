@@ -4,6 +4,7 @@ import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
 import { thunkCueVote, connectws } from "../thunks";
 import CueVote from "./CueVote";
+import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 
 interface OperatorProps {
     operator: OperatorState;
@@ -13,7 +14,7 @@ interface OperatorProps {
 
 export type CueVoteParam = React.SyntheticEvent<{ value: string }>;
 
-class Operator extends React.Component<OperatorProps> {
+class Operator extends React.Component<OperatorProps & RouteChildrenProps> {
     state = {};
 
     componentDidMount() {

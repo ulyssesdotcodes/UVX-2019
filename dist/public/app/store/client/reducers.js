@@ -11,19 +11,19 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = require("./types");
 var Option_1 = require("fp-ts/lib/Option");
-var websocket_types_1 = require("../common/websocket_types");
+var state_types_1 = require("../common/state_types");
 var initialState = {
-    vote: Option_1.none,
-    voteChoice: Option_1.none
+    activeVote: Option_1.none
 };
 function clientReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
-        case websocket_types_1.WEBSOCKET_MESSAGE:
-            return __assign({}, state, { vote: Option_1.some(JSON.parse(action.payload.event.data)) });
-        case types_1.VOTE:
+        case state_types_1.UPDATE_SHOW_STATE: {
+            return __assign({}, state, { activeVote: action.payload.activeVote._tag === "None" ?
+                    Option_1.none :
+                    Option_1.some(action.payload.activeVote.value) });
+        }
         default:
             return state;
     }

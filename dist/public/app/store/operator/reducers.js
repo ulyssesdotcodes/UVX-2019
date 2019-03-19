@@ -22,7 +22,6 @@ function operatorReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case state_types_1.UPDATE_SHOW_STATE: {
-            console.log(action.payload);
             return __assign({}, state, action.payload);
         }
         case types_1.CUE_VOTE:

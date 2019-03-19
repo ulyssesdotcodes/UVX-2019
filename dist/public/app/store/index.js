@@ -27,7 +27,6 @@ var socketMiddleware = function (store) {
     };
     var socket = io({ transports: ["websocket"], upgrade: false });
     socket.on(exports.REDUX_MESSAGE, function (message) {
-        console.log(message);
         store.dispatch(message);
     });
     socket.emit(exports.REDUX_MESSAGE, "Hi there");
