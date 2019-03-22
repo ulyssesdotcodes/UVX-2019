@@ -3,11 +3,13 @@ import { string } from "prop-types";
 import { none } from "fp-ts/lib/Option";
 import { WEBSOCKET_CONNECT } from "../common/websocket_types";
 import { UPDATE_SHOW_STATE } from "../common/state_types";
+import { activeVote, deserializeOption } from "../../../../types";
 
 const initialState: OperatorState = {
     filmVotes: [],
     showVotes: [],
-    voteMap: {},
+    voteResults: new Map(),
+    activeVote: none
 };
 
 export function operatorReducer(
@@ -18,7 +20,12 @@ export function operatorReducer(
         case UPDATE_SHOW_STATE: {
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
+                ...{voteResults: deserializeOption(action.payload.voteResult)
+                        .map(vr => state.voteResults.set(vr.voteId, vr.name))
+                        .getOrElse(state.voteResults)
+                    },
+                ...{activeVote: deserializeOption(action.payload.activeVote)}
             };
         }
         case CUE_VOTE:

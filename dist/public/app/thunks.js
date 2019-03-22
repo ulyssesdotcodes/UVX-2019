@@ -48,10 +48,10 @@ exports.thunkCueVote = function (voteId) { return function (dispatch) { return _
         return [2 /*return*/];
     });
 }); }; };
-exports.thunkVote = function (voteId, voteChoice) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+exports.thunkVote = function (userId, voteId, voteChoice) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     var voteAction;
     return __generator(this, function (_a) {
-        voteAction = { voteId: voteId, vote: voteChoice, userId: "hi" };
+        voteAction = { voteId: voteId, vote: voteChoice, userId: userId };
         dispatch(actions_2.vote(voteAction));
         dispatch(websocket_actions_1.websocketSend({ type: types_2.VOTE, payload: voteAction }));
         return [2 /*return*/];

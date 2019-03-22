@@ -12,17 +12,23 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = require("./types");
+var Option_1 = require("fp-ts/lib/Option");
 var state_types_1 = require("../common/state_types");
+var types_2 = require("../../../../types");
 var initialState = {
     filmVotes: [],
     showVotes: [],
-    voteMap: {},
+    voteResults: new Map(),
+    activeVote: Option_1.none
 };
 function operatorReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case state_types_1.UPDATE_SHOW_STATE: {
-            return __assign({}, state, action.payload);
+            return __assign({}, state, action.payload, { voteResults: types_2.deserializeOption(action.payload.voteResult)
+                    .map(function (vr) { return state.voteResults.set(vr.voteId, vr.name); })
+                    .getOrElse(state.voteResults)
+            }, { activeVote: types_2.deserializeOption(action.payload.activeVote) });
         }
         case types_1.CUE_VOTE:
         case types_1.CUE_BATCH:

@@ -28,14 +28,25 @@ var react_redux_1 = require("react-redux");
 var thunks_1 = require("../thunks");
 var VoteOption_1 = __importDefault(require("./VoteOption"));
 var types_1 = require("../../../types");
+var uuid = __importStar(require("uuid"));
+var _ = __importStar(require("lodash"));
+var cookie_storage_1 = require("cookie-storage");
+var Option_1 = require("fp-ts/lib/Option");
 var Client = /** @class */ (function (_super) {
     __extends(Client, _super);
     function Client() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.state = {};
+        _this.state = {
+            cookie: Option_1.none
+        };
         return _this;
     }
     Client.prototype.componentDidMount = function () {
+        var cookieStore = new cookie_storage_1.CookieStorage();
+        if (cookieStore.length === 0) {
+            cookieStore.setItem("id", uuid.v4());
+        }
+        this.state.cookie = Option_1.fromNullable(cookieStore.getItem("id"));
     };
     Client.prototype.render = function () {
         var _this = this;
@@ -44,7 +55,8 @@ var Client = /** @class */ (function (_super) {
             .map(function (v) {
             return types_1.options(v)
                 .map(function (opt) {
-                return React.createElement(VoteOption_1.default, { key: opt[1], voteId: v.id, optionText: opt[0], voteChoice: opt[1], vote: _this.props.thunkVote });
+                return React.createElement(VoteOption_1.default, { key: opt[1], voteId: v.id, optionText: opt[0], voteChoice: opt[1], vote: _this.state.cookie.map(function (c) { return _.partial(_this.props.thunkVote, c); })
+                        .getOrElse(function () { return console.log("Couldn't vote no id"); }) });
             });
         })
             .getOrElse([React.createElement("div", { key: "empty" })])));

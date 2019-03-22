@@ -9,16 +9,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var lambda_designer_js_1 = require("lambda-designer-js");
 var c = __importStar(require("lambda-designer-js"));
+var _ = __importStar(require("lodash"));
 function stateToTD(state) {
-    return state.activeMovie.map(movie).map(function (n) { return n.connect(c.tope("out")).out(); }).map(function (n) { return [n]; }).getOrElse([]);
+    return state.activeMovie
+        .map(_.partial(movie, state))
+        .map(function (n) { return n.connect(c.tope("out")).out(); }).map(function (n) { return [n]; }).getOrElse([]);
 }
 exports.stateToTD = stateToTD;
-function movie(movie) {
+function movie(state, movie) {
     // timer, movie, loop
     var timer = c.chop("timer", {
-        length: movie.batchLength,
+        length: movie.batchLength + Math.random() * 0.01,
         outtimercount: c.mp(2),
         outdone: c.tp(true),
+        play: c.tp(!state.paused)
     });
     var movieNode = c.top("moviefilein", {
         resolutionh: 1080,
@@ -37,6 +41,9 @@ function movie(movie) {
     var movSwitch = c.top("switch", {
         index: lambda_designer_js_1.chan(c.sp("done"), timer.runT())
     }).run([movieNode, loopNode]);
-    return movSwitch;
+    return movSwitch.c(c.top("resolution", {
+        resolutionh: 1080,
+        resolutionw: 1920,
+    }));
 }
 //# sourceMappingURL=td.ldjs.js.map

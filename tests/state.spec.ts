@@ -55,17 +55,25 @@ describe("vote", () => {
 
     it("should start with 0 votes", () => {
         expect(unvotedState.activeVote).to.not.equal(none);
-        expect(unvotedState.activeVote.map(av => av.voteMap.size).getOrElse(-1)).to.equal(0);
+        expect(unvotedState.activeVote.map(av => Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(0);
     });
 
     it("should add to vote count", () => {
         expect(state.activeVote).to.not.be.null;
-        expect(state.activeVote.map(av => av.voteMap.has(TV.showVoteAction.userId)).getOrElse(false)).to.be.true;
+        expect(state.activeVote.map(av =>
+            av.voteMap.hasOwnProperty(TV.showVoteAction.userId))
+                .getOrElse(false)).to.be.true;
     });
 
     it("shouldn't allow the user to vote twice", () => {
         const votedTwiceState = S.vote(state, TV.showVoteActionB);
-        expect(votedTwiceState.activeVote.map(av => av.voteMap.size).getOrElse(-1)).to.equal(1);
+        expect(votedTwiceState.activeVote.map(av => Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(1);
+    });
+
+    it("should add second vote to vote count", () => {
+        const votedTwiceState = S.vote(state, TV.showVoteActionUserB);
+        expect(state.activeVote.map(av =>
+            Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(2);
     });
 });
 

@@ -48,11 +48,17 @@
             "text": "Second vote!",
             "operatorName": "Cue second film vote!",
             "optionA": "Test A2",
-            "optionAMovie": {},
+            "optionAMovie": {
+
+            },
             "optionB": "Test Bf",
-            "optionBMovie": {},
+            "optionBMovie": {
+
+            },
             "optionC": "Test Cf",
-            "optionCMovie": {}
+            "optionCMovie": {
+
+            }
         }
     ]
 }

@@ -1,4 +1,4 @@
-import { Lens, Prism, Optional } from "monocle-ts";
+import { Lens, Prism, Optional, fromTraversable } from "monocle-ts";
 import { some, none, Option } from "fp-ts/lib/Option";
 import { Refinement } from "fp-ts/lib/function";
 import { isNull } from "util";
@@ -20,6 +20,7 @@ export interface IVote {
 }
 
 export interface IFilmVote extends IVote {
+    readonly type: "film";
     readonly optionA: string;
     readonly optionAMovie: IMovie;
     readonly optionB: string;
@@ -29,9 +30,15 @@ export interface IFilmVote extends IVote {
 }
 
 export interface IShowVote extends IVote {
+    readonly type: "show";
     readonly optionA: string;
     readonly optionB: string;
 }
+
+const isFilmVote: Refinement<IVote, IFilmVote> = (v): v is IFilmVote => v.type === "film";
+const isShowVote: Refinement<IVote, IShowVote> = (v): v is IShowVote => v.type === "show";
+export const filmVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
+export const showVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
 
 export function options(vote: IVote): [string, VoteChoice][] {
     const optionA: Option<[string, VoteChoice]> =
@@ -98,10 +105,11 @@ export interface IMovie {
 }
 
 export interface IVoteResult {
+    readonly voteId: string;
     readonly name: string;
 }
 
-export type VoteMap = ReadonlyMap<string, VoteChoice>;
+export type VoteMap = {[key: string]: VoteChoice};
 export interface ActiveVote {
     vote: IVote;
     finishTime: FinishTime;
@@ -127,11 +135,13 @@ export const paused = Lens.fromProp<IShowState>()("paused");
 export const activeCues = Lens.fromProp<IShowState>()("activeCues");
 export const activeVote: Optional<IShowState, ActiveVote> = Optional.fromOptionProp<IShowState>()("activeVote");
 export const activeVoteLens: Lens<IShowState, Option<ActiveVote>> = Lens.fromProp<IShowState>()("activeVote");
-const isFilmVote: Refinement<IVote, IFilmVote> = (v): v is IFilmVote => !isNull((<IFilmVote>v).optionC);
-export const filmVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
 export const activeMovie: Optional<IShowState, IMovie> = Optional.fromOptionProp<IShowState>()("activeMovie");
 export const activeMovieLens: Lens<IShowState, Option<IMovie>> = Lens.fromProp<IShowState>()("activeMovie");
 export const voteResult = Optional.fromOptionProp<IShowState>()("voteResult");
 export const voteResultLens = Lens.fromProp<IShowState>()("voteResult");
 
 export const defaultShowState: IShowState = { blackout: false, paused: true, activeVote: none, activeCues: [], activeMovie: none, voteResult: none, filmVotes: [], showVotes: [] };
+
+export function deserializeOption<T>(a: {_tag: string, value?: T}): Option<T> {
+    return <Option<T>>(a._tag === "None" ? none : some(a.value));
+}

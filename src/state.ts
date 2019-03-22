@@ -11,7 +11,7 @@ export function startVote(state: IShowState, voteId: string): IShowState {
             return activeVoteLens.set(some({
                 vote: vote,
                 finishTime: new Date().getTime(),
-                voteMap: new Map() as ReadonlyMap<string, VoteChoice>
+                voteMap: {}
             }))(state);
         })
         .getOrElse(state);
@@ -20,7 +20,7 @@ export function startVote(state: IShowState, voteId: string): IShowState {
 export function endVote(state: IShowState): IShowState {
     const maybeWinner =
         state.activeVote.map(v =>
-            _.reduce(Array.from(v.voteMap.values()),
+            _.reduce(Object.values(v.voteMap),
                 (voteCount, voteAction: VoteChoice) => {
                     let count = voteCount[voteAction] | 0;
                     count += 1;
@@ -36,7 +36,7 @@ export function endVote(state: IShowState): IShowState {
         state.activeVote.chain(av =>
             maybeWinner.map(winner => winner[1])
             .chain(winnername => voteChoice(av.vote, winnername)
-            .map((w: string) => ({ name: w })))))(state);
+            .map((w: string) => ({ voteId: av.vote.id, name: w })))))(state);
 
     state = activeMovieLens.set(
             activeVote
@@ -52,9 +52,9 @@ export function endVote(state: IShowState): IShowState {
 
 export function vote(state: IShowState, voteAction: IVoteAction): IShowState {
     return activeVote.composeLens(voteMap).modify(vm => {
-        const m = new Map(vm.entries());
-        m.set(voteAction.userId, voteAction.vote);
-        return m as ReadonlyMap<string, VoteChoice>;
+        const m = {...vm};
+        m[voteAction.userId] = voteAction.vote;
+        return m;
     })(state);
 }
 

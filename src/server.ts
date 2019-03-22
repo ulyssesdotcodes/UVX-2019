@@ -3,13 +3,16 @@ import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
 import { CUE_BATCH, CUE_VOTE } from "./public/app/store/operator/types";
 import * as _ from "lodash";
+import * as fs from "fs";
+import * as cp from "child_process";
+const find = require("find-process");
 
 import * as state from "./state";
-import * as data from "./data.json";
 import * as td from "./td.ldjs";
 import { Socket } from "./Socket";
 import * as ldjs from "lambda-designer-js";
 import { VOTE } from "./public/app/store/client/types";
+import { start } from "repl";
 
 const http = require("http");
 const express = require("express");
@@ -18,6 +21,29 @@ const path = require("path");
 const socketio = require("socket.io");
 
 const VOTE_DURATION = 45000;
+
+// TD tcp socket
+const tdsock = new Socket("127.0.0.1", 5959);
+
+// Start TD
+
+const startTD = async (callback: () => void) => {
+    const arr: Array<any> = await find("name", "TouchPlayer099");
+
+    if (arr.length == 0 && !process.execPath.includes("node")) {
+        const tdpath = path.join(process.cwd(), "TD\\FunctionalDesigner.toe");
+        const wd = process.cwd();
+        process.chdir("C:\\Program Files\\Derivative\\TouchDesigner099\\bin");
+        cp.spawn("TouchPlayer099.exe", [tdpath]);
+        process.chdir(wd);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+    }
+
+    tdsock.makeConnection();
+    callback();
+};
+
+startTD(() => console.log("started TD"));
 
 // Web server and socket
 
@@ -29,11 +55,10 @@ const wss = socketio.listen(server);
 
 server.listen(3000);
 
-// TD tcp socket
-const tdsock = new Socket("127.0.0.1", 5959);
 
-tdsock.makeConnection();
-
+const data = JSON.parse(
+    fs.readFileSync(path.join(process.cwd(), "data.json"),
+        {encoding: "utf8"}));
 let showState: IShowState = Object.assign({}, defaultShowState, data);
 function updateVoteWrapper(f: (state: IShowState) => IShowState) {
     showState = f(showState);
@@ -59,7 +84,7 @@ wss.on("connection", function connection(socket: any) {
                 break;
             case VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));
-                console.log(showState.activeVote.map(a => a.voteMap.get(message.payload.userId)));
+                console.log(showState.activeVote.map(a => a.voteMap[message.payload.userId]));
                 break;
         }
     });

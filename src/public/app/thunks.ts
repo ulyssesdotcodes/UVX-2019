@@ -13,8 +13,8 @@ export const thunkCueVote = (voteId: string): ThunkAction<void, OperatorState, n
     dispatch(websocketSend({type: CUE_VOTE, payload: voteId}));
 };
 
-export const thunkVote = (voteId: string, voteChoice: VoteChoice): ThunkAction<void, OperatorState, null, Action<string>> => async (dispatch: any) => {
-    const voteAction = { voteId, vote: voteChoice, userId: "hi" };
+export const thunkVote = (userId: string, voteId: string, voteChoice: VoteChoice): ThunkAction<void, OperatorState, null, Action<string>> => async (dispatch: any) => {
+    const voteAction = { voteId, vote: voteChoice, userId };
     dispatch(vote(voteAction));
     dispatch(websocketSend({type: VOTE, payload: voteAction}));
 };

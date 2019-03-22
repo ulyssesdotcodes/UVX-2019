@@ -1,12 +1,14 @@
-import { VoteID, IVoteResult, IVote } from "../../../../types";
+import { VoteID, IVoteResult, IVote, ActiveVote } from "../../../../types";
 import { string } from "prop-types";
 import { WebsocketTypes } from "../common/websocket_types";
 import { StateActionTypes } from "../common/state_types";
+import { Option } from "fp-ts/lib/Option";
 
 export interface OperatorState {
     filmVotes: Array<IVote>;
     showVotes: Array<IVote>;
-    voteMap: { [key: string]: IVoteResult };
+    activeVote: Option<ActiveVote>;
+    voteResults: Map<string, string>;
 }
 
 export const CUE_VOTE = "CUE_VOTE";

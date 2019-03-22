@@ -2,7 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var monocle_ts_1 = require("monocle-ts");
 var Option_1 = require("fp-ts/lib/Option");
-var util_1 = require("util");
+var isFilmVote = function (v) { return v.type === "film"; };
+var isShowVote = function (v) { return v.type === "show"; };
+exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
+exports.showVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
 function options(vote) {
     var optionA = vote.optionA ?
         Option_1.some([vote.optionA, "optionA"]) :
@@ -52,11 +55,13 @@ exports.paused = monocle_ts_1.Lens.fromProp()("paused");
 exports.activeCues = monocle_ts_1.Lens.fromProp()("activeCues");
 exports.activeVote = monocle_ts_1.Optional.fromOptionProp()("activeVote");
 exports.activeVoteLens = monocle_ts_1.Lens.fromProp()("activeVote");
-var isFilmVote = function (v) { return !util_1.isNull(v.optionC); };
-exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
 exports.activeMovie = monocle_ts_1.Optional.fromOptionProp()("activeMovie");
 exports.activeMovieLens = monocle_ts_1.Lens.fromProp()("activeMovie");
 exports.voteResult = monocle_ts_1.Optional.fromOptionProp()("voteResult");
 exports.voteResultLens = monocle_ts_1.Lens.fromProp()("voteResult");
 exports.defaultShowState = { blackout: false, paused: true, activeVote: Option_1.none, activeCues: [], activeMovie: Option_1.none, voteResult: Option_1.none, filmVotes: [], showVotes: [] };
+function deserializeOption(a) {
+    return (a._tag === "None" ? Option_1.none : Option_1.some(a.value));
+}
+exports.deserializeOption = deserializeOption;
 //# sourceMappingURL=types.js.map

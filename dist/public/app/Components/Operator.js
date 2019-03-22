@@ -27,21 +27,47 @@ var React = __importStar(require("react"));
 var react_redux_1 = require("react-redux");
 var thunks_1 = require("../thunks");
 var CueVote_1 = __importDefault(require("./CueVote"));
+var ShowVoteOp_1 = __importDefault(require("./ShowVoteOp"));
+var types_1 = require("../../../types");
+var Option_1 = require("fp-ts/lib/Option");
 var Operator = /** @class */ (function (_super) {
     __extends(Operator, _super);
     function Operator() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.state = {};
+        _this.state = { activeVoteMap: {} };
         return _this;
     }
     Operator.prototype.componentDidMount = function () {
         this.props.connectws("ws://localhost:8080");
     };
+    Operator.prototype.componentDidUpdate = function (prevProps) {
+        var _this = this;
+        this.props.operator.activeVote.map(function (av) {
+            return Object.entries(av.voteMap).map(function (_a) {
+                var k = _a[0], v = _a[1];
+                return _this.props.operator.activeVote.chain(function (av) {
+                    return types_1.voteChoice(av.vote, v)
+                        .map(function (s) { return _this.state.activeVoteMap[k] = s; });
+                });
+            });
+        });
+    };
     Operator.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", { className: "operator" },
-            React.createElement("div", { className: "film-votes" }, this.props.operator.filmVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); })),
-            React.createElement("div", { className: "show-votes" }, this.props.operator.showVotes.map(function (v) { return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote })); }))));
+            this.props.operator.activeVote.map(function (av) {
+                return React.createElement(ShowVoteOp_1.default, { key: "test", activeVote: av, voteMap: _this.state.activeVoteMap });
+            }).getOrElse((React.createElement("div", null))),
+            React.createElement("div", { className: "cue-votes film-votes" },
+                React.createElement("div", { className: "header" }, "Film Votes"),
+                this.props.operator.filmVotes.map(function (v) {
+                    return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                })),
+            React.createElement("div", { className: "cue-votes show-votes" },
+                React.createElement("div", { className: "header" }, "Show Votes"),
+                this.props.operator.showVotes.map(function (v) {
+                    return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                }))));
     };
     return Operator;
 }(React.Component));
