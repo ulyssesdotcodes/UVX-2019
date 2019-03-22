@@ -42,26 +42,27 @@ class Operator extends React.Component<OperatorProps & RouteChildrenProps, {acti
                     voteMap={this.state.activeVoteMap}
                     />
                 ).getOrElse((<div></div>))}
-
-                <div className="cue-votes film-votes">
-                    <div className="header">Film Votes</div>
-                    {this.props.operator.filmVotes.map(v =>
-                        (<CueVote
-                            key={v.id}
-                            vote={v}
-                            cueVote={this.props.thunkCueVote}
-                            voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
-                            />))}
-                </div>
-                <div className="cue-votes show-votes">
-                    <div className="header">Show Votes</div>
-                    {this.props.operator.showVotes.map(v =>
-                        (<CueVote
-                            key={v.id}
-                            vote={v}
-                            cueVote={this.props.thunkCueVote}
-                            voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
-                            />))}
+                <div className="all-votes">
+                    <div className="cue-votes film-votes">
+                        <div className="header">Film Votes</div>
+                        {this.props.operator.filmVotes.map(v =>
+                            (<CueVote
+                                key={v.id}
+                                vote={v}
+                                cueVote={this.props.thunkCueVote}
+                                voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
+                                />))}
+                    </div>
+                    <div className="cue-votes show-votes">
+                        <div className="header">Show Votes</div>
+                        {this.props.operator.showVotes.map(v =>
+                            (<CueVote
+                                key={v.id}
+                                vote={v}
+                                cueVote={this.props.thunkCueVote}
+                                voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
+                                />))}
+                    </div>
                 </div>
             </div>
         );

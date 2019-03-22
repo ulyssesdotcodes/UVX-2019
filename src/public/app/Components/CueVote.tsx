@@ -15,9 +15,9 @@ const CueVote: React.FunctionComponent<CueVoteProps> = ({ vote, voteResult, cueV
 
     return(
         <div className="cue-vote header">
-            <button onClick={ cue }>{ vote.operatorName }</button>
-            {voteResult.map(vr => (<p>vr</p>))
-                .getOrElse(<p>Not triggered yet</p>)}
+            <a onClick={ cue } className="button">{ vote.operatorName }</a>
+            {voteResult.map(vr => (<p className="vote-result">{vr}</p>))
+                .getOrElse(<p className="vote-result">Not triggered yet</p>)}
         </div>
     );
 };

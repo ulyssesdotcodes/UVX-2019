@@ -1,7 +1,9 @@
 import { Lens, Prism, Optional, fromTraversable } from "monocle-ts";
 import { some, none, Option } from "fp-ts/lib/Option";
-import { Refinement } from "fp-ts/lib/function";
+import { Refinement, Predicate } from "fp-ts/lib/function";
 import { isNull } from "util";
+
+export const VOTE_DURATION = 45;
 
 export type FinishTime = number;
 export type Duration = number;
@@ -38,7 +40,9 @@ export interface IShowVote extends IVote {
 const isFilmVote: Refinement<IVote, IFilmVote> = (v): v is IFilmVote => v.type === "film";
 const isShowVote: Refinement<IVote, IShowVote> = (v): v is IShowVote => v.type === "show";
 export const filmVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
-export const showVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
+export const showVote: Prism<IVote, IShowVote> = Prism.fromRefinement(isShowVote);
+
+//     hasOptionAPrism.composeLens(Lens.fromPath("optionA"));
 
 export function options(vote: IVote): [string, VoteChoice][] {
     const optionA: Option<[string, VoteChoice]> =

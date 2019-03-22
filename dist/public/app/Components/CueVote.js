@@ -14,9 +14,9 @@ var CueVote = function (_a) {
         cueVote(vote.id);
     }
     return (React.createElement("div", { className: "cue-vote header" },
-        React.createElement("button", { onClick: cue }, vote.operatorName),
-        voteResult.map(function (vr) { return (React.createElement("p", null, "vr")); })
-            .getOrElse(React.createElement("p", null, "Not triggered yet"))));
+        React.createElement("a", { onClick: cue, className: "button" }, vote.operatorName),
+        voteResult.map(function (vr) { return (React.createElement("p", { className: "vote-result" }, vr)); })
+            .getOrElse(React.createElement("p", { className: "vote-result" }, "Not triggered yet"))));
 };
 exports.default = CueVote;
 //# sourceMappingURL=CueVote.js.map

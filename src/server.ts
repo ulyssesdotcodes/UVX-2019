@@ -1,4 +1,4 @@
-import { defaultShowState, IShowState } from "./types";
+import { defaultShowState, IShowState, VOTE_DURATION } from "./types";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
 import { CUE_BATCH, CUE_VOTE } from "./public/app/store/operator/types";
@@ -20,7 +20,6 @@ const app = express();
 const path = require("path");
 const socketio = require("socket.io");
 
-const VOTE_DURATION = 45000;
 
 // TD tcp socket
 const tdsock = new Socket("127.0.0.1", 5959);
@@ -65,8 +64,14 @@ function updateVoteWrapper(f: (state: IShowState) => IShowState) {
     wss.emit(REDUX_MESSAGE, {type: UPDATE_SHOW_STATE, payload: showState});
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState))
-        .map(vs => ldjs.nodesToJSON(vs))
-        .map(nodesjson => tdsock.send(nodesjson));
+        .map(vs => {
+            return ldjs.nodesToJSON(vs);
+        })
+        .map(nodesjson => {
+            console.log(nodesjson);
+            tdsock.send(nodesjson);
+        })
+        .mapLeft(errs => console.log(errs));
     } else {
         tdsock.makeConnection();
     }
@@ -80,7 +85,7 @@ wss.on("connection", function connection(socket: any) {
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
                 setTimeout(() => {
                     updateVoteWrapper(state.endVote);
-                }, VOTE_DURATION);
+                }, VOTE_DURATION * 1000);
                 break;
             case VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));

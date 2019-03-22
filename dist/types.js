@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var monocle_ts_1 = require("monocle-ts");
 var Option_1 = require("fp-ts/lib/Option");
+exports.VOTE_DURATION = 45;
 var isFilmVote = function (v) { return v.type === "film"; };
 var isShowVote = function (v) { return v.type === "show"; };
 exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
-exports.showVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
+exports.showVote = monocle_ts_1.Prism.fromRefinement(isShowVote);
+//     hasOptionAPrism.composeLens(Lens.fromPath("optionA"));
 function options(vote) {
     var optionA = vote.optionA ?
         Option_1.some([vote.optionA, "optionA"]) :

@@ -58,16 +58,17 @@ var Operator = /** @class */ (function (_super) {
             this.props.operator.activeVote.map(function (av) {
                 return React.createElement(ShowVoteOp_1.default, { key: "test", activeVote: av, voteMap: _this.state.activeVoteMap });
             }).getOrElse((React.createElement("div", null))),
-            React.createElement("div", { className: "cue-votes film-votes" },
-                React.createElement("div", { className: "header" }, "Film Votes"),
-                this.props.operator.filmVotes.map(function (v) {
-                    return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
-                })),
-            React.createElement("div", { className: "cue-votes show-votes" },
-                React.createElement("div", { className: "header" }, "Show Votes"),
-                this.props.operator.showVotes.map(function (v) {
-                    return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
-                }))));
+            React.createElement("div", { className: "all-votes" },
+                React.createElement("div", { className: "cue-votes film-votes" },
+                    React.createElement("div", { className: "header" }, "Film Votes"),
+                    this.props.operator.filmVotes.map(function (v) {
+                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                    })),
+                React.createElement("div", { className: "cue-votes show-votes" },
+                    React.createElement("div", { className: "header" }, "Show Votes"),
+                    this.props.operator.showVotes.map(function (v) {
+                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                    })))));
     };
     return Operator;
 }(React.Component));

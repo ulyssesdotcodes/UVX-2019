@@ -61,7 +61,6 @@ var express = require("express");
 var app = express();
 var path = require("path");
 var socketio = require("socket.io");
-var VOTE_DURATION = 45000;
 // TD tcp socket
 var tdsock = new Socket_1.Socket("127.0.0.1", 5959);
 // Start TD
@@ -102,8 +101,14 @@ function updateVoteWrapper(f) {
     wss.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState))
-            .map(function (vs) { return ldjs.nodesToJSON(vs); })
-            .map(function (nodesjson) { return tdsock.send(nodesjson); });
+            .map(function (vs) {
+            return ldjs.nodesToJSON(vs);
+        })
+            .map(function (nodesjson) {
+            console.log(nodesjson);
+            tdsock.send(nodesjson);
+        })
+            .mapLeft(function (errs) { return console.log(errs); });
     }
     else {
         tdsock.makeConnection();
@@ -117,7 +122,7 @@ wss.on("connection", function connection(socket) {
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
                 setTimeout(function () {
                     updateVoteWrapper(state.endVote);
-                }, VOTE_DURATION);
+                }, types_1.VOTE_DURATION * 1000);
                 break;
             case types_3.VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));

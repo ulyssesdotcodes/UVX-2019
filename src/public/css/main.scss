@@ -1,8 +1,29 @@
+.button {
+    text-transform: uppercase;
+    text-align: center;
+    background-color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.all-votes {
+    display: flex;
+    flex-direction: row;
+}
+
 .cue-votes {
     .header {
         text-transform: uppercase;
         text-align: center;
         width: 100%;
+    }
+
+    .cue-vote {
+        display: block;
+        border: 1px black solid;
+
+        .vote-result {
+        }
     }
 
     width: 200px;
