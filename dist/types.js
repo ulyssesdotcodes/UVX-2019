@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var monocle_ts_1 = require("monocle-ts");
 var Option_1 = require("fp-ts/lib/Option");
-exports.VOTE_DURATION = 45;
+exports.VOTE_DURATION = process.execPath.includes("node") ? 10 : 45;
 var isFilmVote = function (v) { return v.type === "film"; };
 var isShowVote = function (v) { return v.type === "show"; };
 exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
@@ -61,7 +61,16 @@ exports.activeMovie = monocle_ts_1.Optional.fromOptionProp()("activeMovie");
 exports.activeMovieLens = monocle_ts_1.Lens.fromProp()("activeMovie");
 exports.voteResult = monocle_ts_1.Optional.fromOptionProp()("voteResult");
 exports.voteResultLens = monocle_ts_1.Lens.fromProp()("voteResult");
-exports.defaultShowState = { blackout: false, paused: true, activeVote: Option_1.none, activeCues: [], activeMovie: Option_1.none, voteResult: Option_1.none, filmVotes: [], showVotes: [] };
+exports.defaultShowState = {
+    blackout: false,
+    paused: !process.execPath.includes("node"),
+    activeVote: Option_1.none,
+    activeCues: [],
+    activeMovie: Option_1.none,
+    voteResult: Option_1.none,
+    filmVotes: [],
+    showVotes: []
+};
 function deserializeOption(a) {
     return (a._tag === "None" ? Option_1.none : Option_1.some(a.value));
 }

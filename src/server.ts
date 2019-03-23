@@ -1,7 +1,7 @@
 import { defaultShowState, IShowState, VOTE_DURATION } from "./types";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
-import { CUE_BATCH, CUE_VOTE } from "./public/app/store/operator/types";
+import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED } from "./public/app/store/operator/types";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as cp from "child_process";
@@ -13,6 +13,7 @@ import { Socket } from "./Socket";
 import * as ldjs from "lambda-designer-js";
 import { VOTE } from "./public/app/store/client/types";
 import { start } from "repl";
+import { identity } from "fp-ts/lib/function";
 
 const http = require("http");
 const express = require("express");
@@ -60,26 +61,23 @@ const data = JSON.parse(
         {encoding: "utf8"}));
 let showState: IShowState = Object.assign({}, defaultShowState, data);
 function updateVoteWrapper(f: (state: IShowState) => IShowState) {
+    const prevState = showState;
     showState = f(showState);
     wss.emit(REDUX_MESSAGE, {type: UPDATE_SHOW_STATE, payload: showState});
     if (tdsock.connected) {
-        ldjs.validateNodes(td.stateToTD(showState))
-        .map(vs => {
-            return ldjs.nodesToJSON(vs);
-        })
-        .map(nodesjson => {
-            console.log(nodesjson);
-            tdsock.send(nodesjson);
-        })
+        ldjs.validateNodes(td.stateToTD(showState, prevState))
+        .map(vs => ldjs.nodesToJSON(vs))
+        .map(nodesjson => tdsock.send(nodesjson))
         .mapLeft(errs => console.log(errs));
     } else {
         tdsock.makeConnection();
     }
 }
 
+updateVoteWrapper(identity);
+
 wss.on("connection", function connection(socket: any) {
     socket.on(REDUX_MESSAGE, function incoming(message: SendableAction) {
-        console.log("received: %s", JSON.stringify(message));
         switch (message.type) {
             case CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
@@ -89,7 +87,9 @@ wss.on("connection", function connection(socket: any) {
                 break;
             case VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));
-                console.log(showState.activeVote.map(a => a.voteMap[message.payload.userId]));
+                break;
+            case CHANGE_PAUSED:
+                updateVoteWrapper(_.partialRight(state.changePaused, message.payload));
                 break;
         }
     });

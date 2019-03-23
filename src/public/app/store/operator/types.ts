@@ -13,7 +13,7 @@ export interface OperatorState {
 
 export const CUE_VOTE = "CUE_VOTE";
 export const CUE_BATCH = "CUE_BATCH";
-export const GO = "GO";
+export const CHANGE_PAUSED = "CHANGE_PAUSED";
 
 interface CueVoteAction {
     type: typeof CUE_VOTE;
@@ -24,8 +24,9 @@ interface CueBatchAction {
     type: typeof CUE_BATCH;
 }
 
-interface GoAction {
-    type: typeof GO;
+interface ChangePausedAction {
+    type: typeof CHANGE_PAUSED;
+    payload: boolean;
 }
 
-export type OperatorActionTypes = CueVoteAction | CueBatchAction | GoAction | StateActionTypes;
+export type OperatorActionTypes = CueVoteAction | CueBatchAction | ChangePausedAction | StateActionTypes;

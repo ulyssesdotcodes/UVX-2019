@@ -56,6 +56,7 @@ var td = __importStar(require("./td.ldjs"));
 var Socket_1 = require("./Socket");
 var ldjs = __importStar(require("lambda-designer-js"));
 var types_3 = require("./public/app/store/client/types");
+var function_1 = require("fp-ts/lib/function");
 var http = require("http");
 var express = require("express");
 var app = express();
@@ -97,26 +98,22 @@ server.listen(3000);
 var data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data.json"), { encoding: "utf8" }));
 var showState = Object.assign({}, types_1.defaultShowState, data);
 function updateVoteWrapper(f) {
+    var prevState = showState;
     showState = f(showState);
     wss.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });
     if (tdsock.connected) {
-        ldjs.validateNodes(td.stateToTD(showState))
-            .map(function (vs) {
-            return ldjs.nodesToJSON(vs);
-        })
-            .map(function (nodesjson) {
-            console.log(nodesjson);
-            tdsock.send(nodesjson);
-        })
+        ldjs.validateNodes(td.stateToTD(showState, prevState))
+            .map(function (vs) { return ldjs.nodesToJSON(vs); })
+            .map(function (nodesjson) { return tdsock.send(nodesjson); })
             .mapLeft(function (errs) { return console.log(errs); });
     }
     else {
         tdsock.makeConnection();
     }
 }
+updateVoteWrapper(function_1.identity);
 wss.on("connection", function connection(socket) {
     socket.on(store_1.REDUX_MESSAGE, function incoming(message) {
-        console.log("received: %s", JSON.stringify(message));
         switch (message.type) {
             case types_2.CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
@@ -126,7 +123,9 @@ wss.on("connection", function connection(socket) {
                 break;
             case types_3.VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));
-                console.log(showState.activeVote.map(function (a) { return a.voteMap[message.payload.userId]; }));
+                break;
+            case types_2.CHANGE_PAUSED:
+                updateVoteWrapper(_.partialRight(state.changePaused, message.payload));
                 break;
         }
     });

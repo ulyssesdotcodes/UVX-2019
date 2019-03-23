@@ -4,6 +4,8 @@
     background-color: white;
     text-decoration: none;
     cursor: pointer;
+    border: 1px solid black;
+    display: block;
 }
 
 .all-votes {
@@ -11,20 +13,30 @@
     flex-direction: row;
 }
 
-.cue-votes {
-    .header {
-        text-transform: uppercase;
-        text-align: center;
-        width: 100%;
-    }
+.operator {
+    display: flex;
+    flex-direction: column;
 
-    .cue-vote {
-        display: block;
-        border: 1px black solid;
-
-        .vote-result {
+    .cue-votes {
+        .header {
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
         }
+
+        .cue-vote {
+            display: block;
+            border: 1px black solid;
+
+            .vote-result {
+            }
+        }
+
+        width: 200px;
     }
 
-    width: 200px;
+    .controls {
+        display: flex;
+        flex-direction: row;
+    }
 }

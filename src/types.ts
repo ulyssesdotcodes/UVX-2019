@@ -3,7 +3,7 @@ import { some, none, Option } from "fp-ts/lib/Option";
 import { Refinement, Predicate } from "fp-ts/lib/function";
 import { isNull } from "util";
 
-export const VOTE_DURATION = 45;
+export const VOTE_DURATION = process.execPath.includes("node") ? 10 : 45;
 
 export type FinishTime = number;
 export type Duration = number;
@@ -144,7 +144,16 @@ export const activeMovieLens: Lens<IShowState, Option<IMovie>> = Lens.fromProp<I
 export const voteResult = Optional.fromOptionProp<IShowState>()("voteResult");
 export const voteResultLens = Lens.fromProp<IShowState>()("voteResult");
 
-export const defaultShowState: IShowState = { blackout: false, paused: true, activeVote: none, activeCues: [], activeMovie: none, voteResult: none, filmVotes: [], showVotes: [] };
+export const defaultShowState: IShowState = {
+    blackout: false,
+    paused: !process.execPath.includes("node"),
+    activeVote: none,
+    activeCues: [],
+    activeMovie: none,
+    voteResult: none,
+    filmVotes: [],
+    showVotes: []
+};
 
 export function deserializeOption<T>(a: {_tag: string, value?: T}): Option<T> {
     return <Option<T>>(a._tag === "None" ? none : some(a.value));

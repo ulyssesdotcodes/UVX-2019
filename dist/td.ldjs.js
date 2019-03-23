@@ -11,9 +11,9 @@ var types_1 = require("./types");
 var lambda_designer_js_1 = require("lambda-designer-js");
 var c = __importStar(require("lambda-designer-js"));
 var _ = __importStar(require("lodash"));
-function stateToTD(state) {
-    var av = state.activeVote.map(_.partial(voteNode, state));
-    var am = state.activeMovie.map(_.partial(movie, state));
+function stateToTD(state, prevState) {
+    var av = state.activeVote.map(_.partial(voteNode, state, prevState.activeVote == state.activeVote));
+    var am = state.activeMovie.map(_.partial(movie, state, prevState.activeMovie == state.activeMovie));
     return [c.top("composite", { operand: c.mp(31) })
             .run([av, am]
             .filter(function (n) { return n.isSome(); })
@@ -21,14 +21,14 @@ function stateToTD(state) {
             .connect(c.tope("out")).out()];
 }
 exports.stateToTD = stateToTD;
-function movie(state, movie) {
+function movie(state, wasPrev, movie) {
     // timer, movie, loop
     var timer = c.chop("timer", {
         length: movie.batchLength + Math.random() * 0.01,
         outtimercount: c.mp(2),
         outdone: c.tp(true),
         play: c.tp(!state.paused)
-    }, [{ type: "pulse", param: "start", val: 1, frames: 1 }]);
+    }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
     var movieNode = c.top("moviefilein", {
         resolutionh: 1080,
         resolutionw: 1920,
@@ -47,7 +47,7 @@ function movie(state, movie) {
         index: lambda_designer_js_1.chan(c.sp("done"), timer.runT())
     }).run([movieNode, loopNode]);
     return movSwitch.c(c.top("resolution", {
-        soutputresolution: c.mp(9),
+        outputresolution: c.mp(9),
         resolutionh: 1080,
         resolutionw: 1920,
         outputaspect: c.mp(1),
@@ -65,12 +65,12 @@ function textNode(text, horizonalAlign, verticalAlign, yOff) {
         position2: yOff
     });
 }
-function voteNode(state, vote) {
+function voteNode(state, wasPrev, vote) {
     var timer = c.chop("timer", {
         length: types_1.VOTE_DURATION,
         play: c.tp(!state.paused),
         outtimercount: c.mp(3),
-    }, [{ type: "pulse", param: "start", val: 1, frames: 1 }]);
+    }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
     var timertext = textNode(c.casts(c.subp(c.fp(types_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT()))), 1, 0, 120);
     var voteName = textNode(c.sp(vote.vote.text), 1, 0, 60);
     var optionANode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionA; })
@@ -88,6 +88,6 @@ function voteNode(state, vote) {
         .run([timertext, voteName].concat(optionlist));
 }
 function voteResult(voteResult) {
-    return textNode(c.sp(voteResult.name), 1, 0).runT();
+    return textNode(c.sp("Vote Result " + voteResult.name), 1, 0).runT();
 }
 //# sourceMappingURL=td.ldjs.js.map

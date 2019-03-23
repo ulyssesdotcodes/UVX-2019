@@ -36,6 +36,11 @@ function startVote(state, voteId) {
 }
 exports.startVote = startVote;
 function endVote(state) {
+    var options = state.activeVote.map(function (av) { return av.vote; }).chain(function (v) {
+        return types_1.filmVote.getOption(v).map(function (_) { return ["optionA", "optionB", "optionC"]; })
+            .alt(types_1.showVote.getOption(v).map(function (_) { return ["optionA", "optionB"]; }));
+    })
+        .getOrElse([]);
     var maybeWinner = state.activeVote.map(function (v) {
         return _.reduce(Object.values(v.voteMap), function (voteCount, voteAction) {
             var count = voteCount[voteAction] | 0;
@@ -44,10 +49,9 @@ function endVote(state) {
             return voteCount;
         }, {});
     })
-        .chain(function (vc) { return _.reduce(vc, function (v, count, key) {
-        return v.map(function (vv) { return vv[0] > count ? vv : [count, key]; })
-            .alt(Option_1.some([count, key]));
-    }, Option_1.none); });
+        .map(function (vc) { return _.reduce(vc, function (vv, count, key) {
+        return vv[0] > count ? vv : [count, key];
+    }, [0, options[Math.floor(Math.random() * options.length)]]); });
     state = types_1.voteResultLens.set(state.activeVote.chain(function (av) {
         return maybeWinner.map(function (winner) { return winner[1]; })
             .chain(function (winnername) { return types_1.voteChoice(av.vote, winnername)
@@ -84,4 +88,8 @@ function clearInactiveCues(state) {
     return state;
 }
 exports.clearInactiveCues = clearInactiveCues;
+function changePaused(state, newPaused) {
+    return types_1.paused.set(newPaused)(state);
+}
+exports.changePaused = changePaused;
 //# sourceMappingURL=state.js.map

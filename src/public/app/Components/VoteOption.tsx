@@ -16,7 +16,7 @@ const VoteOption: React.FunctionComponent<VoteOptionProps> =
 
     return(
         <div className="cue-vote">
-            <button onClick={ cue }>{ optionText }</button>
+            <a className="button" onClick={ cue }>{ optionText }</a>
         </div>
     );
 };

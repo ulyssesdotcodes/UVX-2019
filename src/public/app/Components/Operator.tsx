@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
@@ -12,13 +12,21 @@ import { option, fromNullable } from "fp-ts/lib/Option";
 interface OperatorProps {
     operator: OperatorState;
     thunkCueVote: (voteId: string) => void;
+    thunkChangePaused: (paused: boolean) => void;
     connectws: (url: string) => void;
 }
 
 export type CueVoteParam = React.SyntheticEvent<{ value: string }>;
 
-class Operator extends React.Component<OperatorProps & RouteChildrenProps, {activeVoteMap: {[key: string]: string}}> {
+class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: string]: string}}> {
     state: {activeVoteMap: {[key: string]: string}} = {activeVoteMap: {}};
+
+    constructor(props: OperatorProps) {
+        super(props);
+
+        this.go = this.go.bind(this);
+        this.pause = this.pause.bind(this);
+    }
 
     componentDidMount() {
         this.props.connectws("ws://localhost:8080");
@@ -30,6 +38,14 @@ class Operator extends React.Component<OperatorProps & RouteChildrenProps, {acti
             this.props.operator.activeVote.chain(av =>
             voteChoice(av.vote, v)
                 .map(s => this.state.activeVoteMap[k] = s))));
+    }
+
+    pause() {
+        this.props.thunkChangePaused(true);
+    }
+
+    go() {
+        this.props.thunkChangePaused(false);
     }
 
     render() {
@@ -64,6 +80,10 @@ class Operator extends React.Component<OperatorProps & RouteChildrenProps, {acti
                                 />))}
                     </div>
                 </div>
+                <div className="controls">
+                    <a className="button" onClick={this.go}>Go</a>
+                    <a className="button" onClick={this.pause}>Pause</a>
+                </div>
             </div>
         );
     }
@@ -73,4 +93,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, connectws })(Operator);

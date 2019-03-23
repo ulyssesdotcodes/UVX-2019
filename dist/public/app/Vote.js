@@ -8,5 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
-exports.Vote = function (props) { return React.createElement("h1", { className: props.selected ? "selected" : "not-selected" }, props.text); };
+exports.Vote = function (props) {
+    return React.createElement("h1", { className: props.selected ? "selected" : "not-selected" }, props.text);
+};
 //# sourceMappingURL=Vote.js.map

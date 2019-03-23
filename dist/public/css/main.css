@@ -3,18 +3,26 @@
   text-align: center;
   background-color: white;
   text-decoration: none;
-  cursor: pointer; }
+  cursor: pointer;
+  border: 1px solid black;
+  display: block; }
 
 .all-votes {
   display: flex;
   flex-direction: row; }
 
-.cue-votes {
-  width: 200px; }
-  .cue-votes .header {
-    text-transform: uppercase;
-    text-align: center;
-    width: 100%; }
-  .cue-votes .cue-vote {
-    display: block;
-    border: 1px black solid; }
+.operator {
+  display: flex;
+  flex-direction: column; }
+  .operator .cue-votes {
+    width: 200px; }
+    .operator .cue-votes .header {
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%; }
+    .operator .cue-votes .cue-vote {
+      display: block;
+      border: 1px black solid; }
+  .operator .controls {
+    display: flex;
+    flex-direction: row; }

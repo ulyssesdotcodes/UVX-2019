@@ -14,7 +14,7 @@ var VoteOption = function (_a) {
         vote(voteId, voteChoice);
     }
     return (React.createElement("div", { className: "cue-vote" },
-        React.createElement("button", { onClick: cue }, optionText)));
+        React.createElement("a", { className: "button", onClick: cue }, optionText)));
 };
 exports.default = VoteOption;
 //# sourceMappingURL=VoteOption.js.map

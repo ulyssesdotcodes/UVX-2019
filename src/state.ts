@@ -1,8 +1,10 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteResultLens, voteChoice, activeVoteVote, filmVote, voteMovie } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteResultLens, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpfold from "fp-ts/lib/Foldable2v";
 import * as _ from "lodash";
+import { stateToTD } from "./td.ldjs";
+import { pause } from "./public/app/store/operator/actions";
 
 export function startVote(state: IShowState, voteId: string): IShowState {
     return fparr
@@ -18,6 +20,11 @@ export function startVote(state: IShowState, voteId: string): IShowState {
 }
 
 export function endVote(state: IShowState): IShowState {
+    const options: VoteChoice[] = state.activeVote.map(av => av.vote).chain(v =>
+        filmVote.getOption(v).map(_ => [<VoteChoice>"optionA", <VoteChoice>"optionB", <VoteChoice>"optionC"])
+            .alt(showVote.getOption(v).map(_ => [<VoteChoice>"optionA", <VoteChoice>"optionB"])))
+            .getOrElse([]);
+
     const maybeWinner =
         state.activeVote.map(v =>
             _.reduce(Object.values(v.voteMap),
@@ -27,10 +34,9 @@ export function endVote(state: IShowState): IShowState {
                     voteCount[voteAction] = count;
                     return voteCount;
                 }, {} as {[key: string]: number}))
-            .chain(vc => _.reduce(vc, (v, count, key) =>
-                v.map(vv => vv[0] > count ? vv : [count, key] as [number, VoteChoice])
-                .alt(some([count, key] as [number, VoteChoice])),
-                none as Option<[number, VoteChoice]>));
+            .map(vc => _.reduce(vc, (vv, count, key) =>
+                vv[0] > count ? vv : [count, key] as [number, VoteChoice],
+                [0, options[Math.floor(Math.random() * options.length)]] as [number, VoteChoice]));
 
     state = voteResultLens.set(
         state.activeVote.chain(av =>
@@ -71,4 +77,8 @@ export function runCue(state: IShowState, cue: ICue): IShowState {
 
 export function clearInactiveCues(state: IShowState): IShowState {
     return state;
+}
+
+export function changePaused(state: IShowState, newPaused: boolean): IShowState {
+    return paused.set(newPaused)(state);
 }

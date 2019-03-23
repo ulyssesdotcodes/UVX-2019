@@ -8,4 +8,11 @@ function cueVote(voteId) {
     };
 }
 exports.cueVote = cueVote;
+function pause(paused) {
+    return {
+        type: types_1.CHANGE_PAUSED,
+        payload: paused
+    };
+}
+exports.pause = pause;
 //# sourceMappingURL=actions.js.map

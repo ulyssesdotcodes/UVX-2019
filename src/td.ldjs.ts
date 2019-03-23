@@ -4,9 +4,9 @@ import * as c from "lambda-designer-js";
 import * as _ from "lodash";
 import { fromTraversable } from "monocle-ts";
 
-export function stateToTD(state: IShowState): Array<INode> {
-    const av = state.activeVote.map(_.partial(voteNode, state));
-    const am = state.activeMovie.map(_.partial(movie, state));
+export function stateToTD(state: IShowState, prevState: IShowState): Array<INode> {
+    const av = state.activeVote.map(_.partial(voteNode, state, prevState.activeVote == state.activeVote));
+    const am = state.activeMovie.map(_.partial(movie, state, prevState.activeMovie == state.activeMovie));
     return [c.top("composite", { operand: c.mp(31)})
         .run([av, am]
             .filter(n => n.isSome())
@@ -14,14 +14,14 @@ export function stateToTD(state: IShowState): Array<INode> {
         .connect(c.tope("out")).out()];
 }
 
-function movie(state: IShowState, movie: IMovie): Node<"TOP"> {
+function movie(state: IShowState, wasPrev: boolean, movie: IMovie): Node<"TOP"> {
     // timer, movie, loop
     const timer = c.chop("timer", {
         length: movie.batchLength + Math.random() * 0.01,
         outtimercount: c.mp(2),
         outdone: c.tp(true),
         play: c.tp(!state.paused)
-    }, [{type: "pulse", param: "start", val: 1, frames: 1}]);
+    }, wasPrev ? [] : [{type: "pulse", param: "start", val: 1, frames: 2}]);
 
     const movieNode = c.top("moviefilein", {
         resolutionh: 1080,
@@ -44,7 +44,7 @@ function movie(state: IShowState, movie: IMovie): Node<"TOP"> {
     }).run([movieNode, loopNode]);
 
     return movSwitch.c(c.top("resolution", {
-        soutputresolution: c.mp(9),
+        outputresolution: c.mp(9),
         resolutionh: 1080,
         resolutionw: 1920,
         outputaspect: c.mp(1),
@@ -67,12 +67,12 @@ function textNode(
     });
 }
 
-function voteNode(state: IShowState, vote: ActiveVote): Node<"TOP"> {
+function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"TOP"> {
     const timer = c.chop("timer", {
         length: VOTE_DURATION,
         play: c.tp(!state.paused),
         outtimercount: c.mp(3),
-    }, [{type: "pulse", param: "start", val: 1, frames: 1}]);
+    }, wasPrev ? [] : [{type: "pulse", param: "start", val: 1, frames: 2}]);
 
     const timertext = textNode(
         c.casts(
@@ -103,5 +103,5 @@ function voteNode(state: IShowState, vote: ActiveVote): Node<"TOP"> {
 }
 
 function voteResult(voteResult: IVoteResult): Node<"TOP"> {
-    return textNode(c.sp(voteResult.name), 1, 0).runT();
+    return textNode(c.sp("Vote Result " + voteResult.name), 1, 0).runT();
 }
