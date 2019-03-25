@@ -48,6 +48,12 @@ exports.thunkCueVote = function (voteId) { return function (dispatch) { return _
         return [2 /*return*/];
     });
 }); }; };
+exports.thunkCueBatch = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.CUE_BATCH }));
+        return [2 /*return*/];
+    });
+}); }; };
 exports.thunkVote = function (userId, voteId, voteChoice) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     var voteAction;
     return __generator(this, function (_a) {

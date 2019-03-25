@@ -1,4 +1,5 @@
-import { defaultShowState, IShowState, VOTE_DURATION } from "./types";
+import { IShowState } from "./types";
+import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
 import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED } from "./public/app/store/operator/types";
@@ -63,6 +64,11 @@ let showState: IShowState = Object.assign({}, defaultShowState, data);
 function updateVoteWrapper(f: (state: IShowState) => IShowState) {
     const prevState = showState;
     showState = f(showState);
+
+    if (process.execPath.includes("node")) {
+        console.log(showState);
+    }
+
     wss.emit(REDUX_MESSAGE, {type: UPDATE_SHOW_STATE, payload: showState});
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState, prevState))
@@ -78,6 +84,10 @@ updateVoteWrapper(identity);
 
 wss.on("connection", function connection(socket: any) {
     socket.on(REDUX_MESSAGE, function incoming(message: SendableAction) {
+        if (process.execPath.includes("node")) {
+            console.log(message);
+        }
+
         switch (message.type) {
             case CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
@@ -91,6 +101,8 @@ wss.on("connection", function connection(socket: any) {
             case CHANGE_PAUSED:
                 updateVoteWrapper(_.partialRight(state.changePaused, message.payload));
                 break;
+            case CUE_BATCH:
+                updateVoteWrapper(state.cueBatch);
         }
     });
     socket.emit(REDUX_MESSAGE, {type: UPDATE_SHOW_STATE, payload: showState});

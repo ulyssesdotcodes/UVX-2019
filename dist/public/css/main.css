@@ -5,7 +5,16 @@
   text-decoration: none;
   cursor: pointer;
   border: 1px solid black;
-  display: block; }
+  display: block;
+  padding: 2px; }
+
+.button:hover {
+  border: 3px solid black;
+  padding: 0px; }
+
+.button:active {
+  background-color: black;
+  color: white; }
 
 .all-votes {
   display: flex;

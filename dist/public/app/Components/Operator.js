@@ -49,7 +49,7 @@ var Operator = /** @class */ (function (_super) {
                 var k = _a[0], v = _a[1];
                 return _this.props.operator.activeVote.chain(function (av) {
                     return types_1.voteChoice(av.vote, v)
-                        .map(function (s) { return _this.state.activeVoteMap[k] = s; });
+                        .map(function (s) { return _this.state.activeVoteMap[k] = s.voteId; });
                 });
             });
         });
@@ -79,12 +79,13 @@ var Operator = /** @class */ (function (_super) {
                     }))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.go }, "Go"),
-                React.createElement("a", { className: "button", onClick: this.pause }, "Pause"))));
+                React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
+                React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"))));
     };
     return Operator;
 }(React.Component));
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

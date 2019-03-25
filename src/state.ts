@@ -1,4 +1,4 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteResultLens, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteResultLens, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, voteResultId } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpfold from "fp-ts/lib/Foldable2v";
@@ -41,18 +41,28 @@ export function endVote(state: IShowState): IShowState {
     state = voteResultLens.set(
         state.activeVote.chain(av =>
             maybeWinner.map(winner => winner[1])
-            .chain(winnername => voteChoice(av.vote, winnername)
-            .map((w: string) => ({ voteId: av.vote.id, name: w })))))(state);
-
-    state = activeMovieLens.set(
-            activeVote
-                .composeLens(activeVoteVote)
-                .composePrism(filmVote)
-                .getOption(state)
-                .chain(fv => maybeWinner.map(w => voteMovie(fv, w[1])))
-            )(state);
+            .chain(winnername => voteChoice(av.vote, winnername))))(state);
 
     state = activeVoteLens.set(none)(state);
+    return state;
+}
+
+export function cueBatch(state: IShowState): IShowState {
+    state = voteResult
+        .getOption(state)
+        .chain(vr => fparr
+                .findFirst(state.filmVotes, x => x.id === vr.voteId)
+                .map(fv => voteMovie(fv, vr.choice)))
+        .map(vr => some(vr))
+        .map(activeMovieLens.set)
+        .map(f => f(state))
+        .map(voteResultLens.set(none))
+        .getOrElse(state);
+
+    state = activeMovie.getOption(state)
+        .map(_ => voteResultLens.set(none)(state))
+        .getOrElse(state);
+
     return state;
 }
 

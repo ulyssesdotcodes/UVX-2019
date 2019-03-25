@@ -1,4 +1,5 @@
-import { IShowState, IMovie, IVote, ActiveVote, VOTE_DURATION, filmVote, IVoteResult, showVote } from "./types";
+import { IShowState, IMovie, IVote, ActiveVote, filmVote, IVoteResult, showVote } from "./types";
+import { VOTE_DURATION } from "./util";
 import { Node, INode, chan, IParam } from "lambda-designer-js";
 import * as c from "lambda-designer-js";
 import * as _ from "lodash";

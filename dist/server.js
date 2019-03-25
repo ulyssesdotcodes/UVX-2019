@@ -43,10 +43,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = require("./types");
+var util_1 = require("./util");
 var store_1 = require("./public/app/store");
 var state_types_1 = require("./public/app/store/common/state_types");
-var types_2 = require("./public/app/store/operator/types");
+var types_1 = require("./public/app/store/operator/types");
 var _ = __importStar(require("lodash"));
 var fs = __importStar(require("fs"));
 var cp = __importStar(require("child_process"));
@@ -55,7 +55,7 @@ var state = __importStar(require("./state"));
 var td = __importStar(require("./td.ldjs"));
 var Socket_1 = require("./Socket");
 var ldjs = __importStar(require("lambda-designer-js"));
-var types_3 = require("./public/app/store/client/types");
+var types_2 = require("./public/app/store/client/types");
 var function_1 = require("fp-ts/lib/function");
 var http = require("http");
 var express = require("express");
@@ -96,10 +96,13 @@ var server = http.Server(app);
 var wss = socketio.listen(server);
 server.listen(3000);
 var data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data.json"), { encoding: "utf8" }));
-var showState = Object.assign({}, types_1.defaultShowState, data);
+var showState = Object.assign({}, util_1.defaultShowState, data);
 function updateVoteWrapper(f) {
     var prevState = showState;
     showState = f(showState);
+    if (process.execPath.includes("node")) {
+        console.log(showState);
+    }
     wss.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState, prevState))
@@ -114,19 +117,24 @@ function updateVoteWrapper(f) {
 updateVoteWrapper(function_1.identity);
 wss.on("connection", function connection(socket) {
     socket.on(store_1.REDUX_MESSAGE, function incoming(message) {
+        if (process.execPath.includes("node")) {
+            console.log(message);
+        }
         switch (message.type) {
-            case types_2.CUE_VOTE:
+            case types_1.CUE_VOTE:
                 updateVoteWrapper(_.partialRight(state.startVote, message.payload));
                 setTimeout(function () {
                     updateVoteWrapper(state.endVote);
-                }, types_1.VOTE_DURATION * 1000);
+                }, util_1.VOTE_DURATION * 1000);
                 break;
-            case types_3.VOTE:
+            case types_2.VOTE:
                 updateVoteWrapper(_.partialRight(state.vote, message.payload));
                 break;
-            case types_2.CHANGE_PAUSED:
+            case types_1.CHANGE_PAUSED:
                 updateVoteWrapper(_.partialRight(state.changePaused, message.payload));
                 break;
+            case types_1.CUE_BATCH:
+                updateVoteWrapper(state.cueBatch);
         }
     });
     socket.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });

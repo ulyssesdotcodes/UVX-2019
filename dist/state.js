@@ -54,18 +54,29 @@ function endVote(state) {
     }, [0, options[Math.floor(Math.random() * options.length)]]); });
     state = types_1.voteResultLens.set(state.activeVote.chain(function (av) {
         return maybeWinner.map(function (winner) { return winner[1]; })
-            .chain(function (winnername) { return types_1.voteChoice(av.vote, winnername)
-            .map(function (w) { return ({ voteId: av.vote.id, name: w }); }); });
+            .chain(function (winnername) { return types_1.voteChoice(av.vote, winnername); });
     }))(state);
-    state = types_1.activeMovieLens.set(types_1.activeVote
-        .composeLens(types_1.activeVoteVote)
-        .composePrism(types_1.filmVote)
-        .getOption(state)
-        .chain(function (fv) { return maybeWinner.map(function (w) { return types_1.voteMovie(fv, w[1]); }); }))(state);
     state = types_1.activeVoteLens.set(Option_1.none)(state);
     return state;
 }
 exports.endVote = endVote;
+function cueBatch(state) {
+    state = types_1.voteResult
+        .getOption(state)
+        .chain(function (vr) { return fparr
+        .findFirst(state.filmVotes, function (x) { return x.id === vr.voteId; })
+        .map(function (fv) { return types_1.voteMovie(fv, vr.choice); }); })
+        .map(function (vr) { return Option_1.some(vr); })
+        .map(types_1.activeMovieLens.set)
+        .map(function (f) { return f(state); })
+        .map(types_1.voteResultLens.set(Option_1.none))
+        .getOrElse(state);
+    state = types_1.activeMovie.getOption(state)
+        .map(function (_) { return types_1.voteResultLens.set(Option_1.none)(state); })
+        .getOrElse(state);
+    return state;
+}
+exports.cueBatch = cueBatch;
 function vote(state, voteAction) {
     return types_1.activeVote.composeLens(types_1.voteMap).modify(function (vm) {
         var m = __assign({}, vm);

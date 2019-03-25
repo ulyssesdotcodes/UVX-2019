@@ -3,8 +3,6 @@ import { some, none, Option } from "fp-ts/lib/Option";
 import { Refinement, Predicate } from "fp-ts/lib/function";
 import { isNull } from "util";
 
-export const VOTE_DURATION = process.execPath.includes("node") ? 10 : 45;
-
 export type FinishTime = number;
 export type Duration = number;
 
@@ -60,19 +58,19 @@ export function options(vote: IVote): [string, VoteChoice][] {
     return [optionA, optionB, optionC].filter(v => v.isSome()).map(v => v.getOrElse(["", "optionA"]));
 }
 
-export function voteChoice(vote: IVote, vc: VoteChoice): Option<string> {
+export function voteChoice(vote: IVote, vc: VoteChoice): Option<IVoteResult> {
     switch (vc) {
         case "optionA":
             return (<IShowVote | IFilmVote>vote).optionA ?
-                some((<IShowVote | IFilmVote>vote).optionA)
+                some({voteId: vote.id, name: (<IShowVote | IFilmVote>vote).optionA, choice: vc})
                 : none;
         case "optionB":
             return (<IShowVote | IFilmVote>vote).optionB ?
-                some((<IShowVote | IFilmVote>vote).optionB)
+                some({voteId: vote.id, choice: vc, name: (<IShowVote | IFilmVote>vote).optionB})
                 : none;
         case "optionC":
             return (<IFilmVote>vote).optionC ?
-                some((<IFilmVote>vote).optionC)
+                some({voteId: vote.id, choice: vc, name: (<IFilmVote>vote).optionC})
                 : none;
         default: return none;
     }
@@ -111,7 +109,11 @@ export interface IMovie {
 export interface IVoteResult {
     readonly voteId: string;
     readonly name: string;
+    readonly choice: VoteChoice;
 }
+
+export const voteResultId: Lens<IVoteResult, string> = Lens.fromProp("voteId");
+export const voteResultName: Lens<IVoteResult, string> = Lens.fromProp("name");
 
 export type VoteMap = {[key: string]: VoteChoice};
 export interface ActiveVote {
@@ -143,17 +145,6 @@ export const activeMovie: Optional<IShowState, IMovie> = Optional.fromOptionProp
 export const activeMovieLens: Lens<IShowState, Option<IMovie>> = Lens.fromProp<IShowState>()("activeMovie");
 export const voteResult = Optional.fromOptionProp<IShowState>()("voteResult");
 export const voteResultLens = Lens.fromProp<IShowState>()("voteResult");
-
-export const defaultShowState: IShowState = {
-    blackout: false,
-    paused: !process.execPath.includes("node"),
-    activeVote: none,
-    activeCues: [],
-    activeMovie: none,
-    voteResult: none,
-    filmVotes: [],
-    showVotes: []
-};
 
 export function deserializeOption<T>(a: {_tag: string, value?: T}): Option<T> {
     return <Option<T>>(a._tag === "None" ? none : some(a.value));

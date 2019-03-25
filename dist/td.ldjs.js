@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = require("./types");
+var util_1 = require("./util");
 var lambda_designer_js_1 = require("lambda-designer-js");
 var c = __importStar(require("lambda-designer-js"));
 var _ = __importStar(require("lodash"));
@@ -67,11 +68,11 @@ function textNode(text, horizonalAlign, verticalAlign, yOff) {
 }
 function voteNode(state, wasPrev, vote) {
     var timer = c.chop("timer", {
-        length: types_1.VOTE_DURATION,
+        length: util_1.VOTE_DURATION,
         play: c.tp(!state.paused),
         outtimercount: c.mp(3),
     }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
-    var timertext = textNode(c.casts(c.subp(c.fp(types_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT()))), 1, 0, 120);
+    var timertext = textNode(c.casts(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT()))), 1, 0, 120);
     var voteName = textNode(c.sp(vote.vote.text), 1, 0, 60);
     var optionANode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionA; })
         .alt(types_1.showVote.getOption(vote.vote).map(function (v) { return v.optionA; }))

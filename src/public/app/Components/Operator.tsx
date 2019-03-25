@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
@@ -13,6 +13,7 @@ interface OperatorProps {
     operator: OperatorState;
     thunkCueVote: (voteId: string) => void;
     thunkChangePaused: (paused: boolean) => void;
+    thunkCueBatch: () => void;
     connectws: (url: string) => void;
 }
 
@@ -37,7 +38,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
             Object.entries(av.voteMap).map(([k, v]) =>
             this.props.operator.activeVote.chain(av =>
             voteChoice(av.vote, v)
-                .map(s => this.state.activeVoteMap[k] = s))));
+                .map(s => this.state.activeVoteMap[k] = s.voteId))));
     }
 
     pause() {
@@ -83,6 +84,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                 <div className="controls">
                     <a className="button" onClick={this.go}>Go</a>
                     <a className="button" onClick={this.pause}>Pause</a>
+                    <a className="button" onClick={this.props.thunkCueBatch}>Cue Batch</a>
                 </div>
             </div>
         );
@@ -93,4 +95,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, connectws })(Operator);

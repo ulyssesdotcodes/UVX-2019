@@ -29,15 +29,21 @@ describe("end vote", () => {
         expect(state.voteResult).to.not.equal(none);
         expect(state.voteResult.map(vr => vr.name === TV.showVote.optionA).getOrElse(false)).to.be.true;
     });
+});
+
+describe("cue batch", () => {
+    const votestate = S.startVote(TV.defaultShowState, TV.showVote.id);
+    const votedstate = S.vote(votestate, TV.showVoteAction);
+    const state = S.endVote(votedstate);
 
     const filmvotestate = S.startVote(TV.defaultShowState, TV.filmVote.id);
     const filmvotedstate = S.vote(filmvotestate, TV.filmVoteActionOptB);
     const filmstate = S.endVote(filmvotedstate);
-
+    const filmstatecued = S.cueBatch(filmstate);
 
     it("should make the chosen film active", () => {
-        expect(filmstate.activeMovie).to.not.equal(none);
-        expect(filmstate.activeMovie.map(am =>
+        expect(filmstatecued.activeMovie).to.not.equal(none);
+        expect(filmstatecued.activeMovie.map(am =>
             am.batchFile === TV.filmVote.optionBMovie.batchFile
             ).getOrElse(false)).to.be.true;
     });
@@ -78,7 +84,7 @@ describe("vote", () => {
 });
 
 describe("movie", () => {
-    const state = S.runMovie(T.defaultShowState, TV.movie);
+    const state = S.runMovie(TV.defaultShowState, TV.movie);
 
     it("should make a movie active", () => {
         expect(state.activeMovie).to.deep.equal(some(TV.movie));
@@ -86,7 +92,7 @@ describe("movie", () => {
 });
 
 describe("run cue", () => {
-    const state = S.runCue(T.defaultShowState, TV.allCue);
+    const state = S.runCue(TV.defaultShowState, TV.allCue);
     const endTime = new Date().getTime() + TV.allCue.duration;
 
     it("should add a single cue to active cues", () => {

@@ -27,7 +27,7 @@ const sendData = (data: Array<INode>) => {
 
 describe("TD state changes", () => {
     it("should show a movie if there is one", function(done) {
-        sendData(stateToTD(S.runMovie(T.defaultShowState, TV.movie), T.defaultShowState));
+        sendData(stateToTD(S.runMovie(TV.defaultShowState, TV.movie), TV.defaultShowState));
         done();
     });
 });
