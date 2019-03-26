@@ -23,13 +23,10 @@ function configureStore() {
 }
 exports.default = configureStore;
 var socketMiddleware = function (store) {
-    var onIncomingMessage = function (message) {
-    };
     var socket = io({ transports: ["websocket"], upgrade: false });
     socket.on(exports.REDUX_MESSAGE, function (message) {
         store.dispatch(message);
     });
-    socket.emit(exports.REDUX_MESSAGE, "Hi there");
     return function (next) { return function (action) {
         switch (action.type) {
             case websocket_types_1.WEBSOCKET_CONNECT:

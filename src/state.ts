@@ -1,77 +1,63 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteResultLens, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, voteResultId } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
+import * as fpm from "fp-ts/lib/StrMap";
 import * as fpfold from "fp-ts/lib/Foldable2v";
 import * as _ from "lodash";
 import { stateToTD } from "./td.ldjs";
 import { pause } from "./public/app/store/operator/actions";
+import { createActiveVote } from "./util";
+import { setoidString } from "fp-ts/lib/Setoid";
 
-export function startVote(state: IShowState, voteId: string): IShowState {
-    return fparr
-        .findFirst((<IVote[]>state.filmVotes).concat(state.showVotes), x => x.id === voteId)
-        .map(vote => {
-            return activeVoteLens.set(some({
-                vote: vote,
-                finishTime: new Date().getTime(),
-                voteMap: {}
-            }))(state);
-        })
-        .getOrElse(state);
+export function startVote(voteId: string): (s: IShowState) => IShowState {
+    return s => activeVoteLens.set(
+        findVote.at(voteId)
+            .get(s)
+            .map(createActiveVote))(s);
 }
 
-export function endVote(state: IShowState): IShowState {
-    const options: VoteChoice[] = state.activeVote.map(av => av.vote).chain(v =>
-        filmVote.getOption(v).map(_ => [<VoteChoice>"optionA", <VoteChoice>"optionB", <VoteChoice>"optionC"])
-            .alt(showVote.getOption(v).map(_ => [<VoteChoice>"optionA", <VoteChoice>"optionB"])))
-            .getOrElse([]);
-
-    const maybeWinner =
-        state.activeVote.map(v =>
-            _.reduce(Object.values(v.voteMap),
-                (voteCount, voteAction: VoteChoice) => {
-                    let count = voteCount[voteAction] | 0;
-                    count += 1;
-                    voteCount[voteAction] = count;
-                    return voteCount;
-                }, {} as {[key: string]: number}))
-            .map(vc => _.reduce(vc, (vv, count, key) =>
-                vv[0] > count ? vv : [count, key] as [number, VoteChoice],
-                [0, options[Math.floor(Math.random() * options.length)]] as [number, VoteChoice]));
-
-    state = voteResultLens.set(
-        state.activeVote.chain(av =>
-            maybeWinner.map(winner => winner[1])
-            .chain(winnername => voteChoice(av.vote, winnername))))(state);
-
-    state = activeVoteLens.set(none)(state);
-    return state;
+export function endVote(): (s: IShowState) => IShowState {
+    const findWinner = (v: IVote, vm: fpm.StrMap<VoteChoice>) =>
+            vm.reduceWithKey(new fpm.StrMap({}),
+                (k, counts, vc) =>
+                    fpm.insert(vc,
+                        fpm.lookup(vc, counts).getOrElse(1),
+                        counts))
+            .reduceWithKey(
+                [0, options(v)[Math.floor(Math.random() * options(v).length)][1]] as [number, VoteChoice],
+                (key, vv, count) =>
+                    vv[0] > count ?
+                    vv : [count, key] as [number, VoteChoice])[1];
+    return s =>
+        activeVote.getOption(s)
+            .map(av =>
+                voteResults.modify(vrs =>
+                    fpm.insert(av.vote.id, findWinner(av.vote, av.voteMap), vrs))
+                    (latestVoteResultId.set(some(av.vote.id))(s)))
+            .map(activeVoteLens.set(none))
+            .getOrElse(s);
 }
 
-export function cueBatch(state: IShowState): IShowState {
-    state = voteResult
-        .getOption(state)
-        .chain(vr => fparr
-                .findFirst(state.filmVotes, x => x.id === vr.voteId)
-                .map(fv => voteMovie(fv, vr.choice)))
-        .map(vr => some(vr))
-        .map(activeMovieLens.set)
-        .map(f => f(state))
-        .map(voteResultLens.set(none))
-        .getOrElse(state);
-
-    state = activeMovie.getOption(state)
-        .map(_ => voteResultLens.set(none)(state))
-        .getOrElse(state);
-
-    return state;
+export function cueBatch(): (s: IShowState) => IShowState {
+    return s =>
+        latestVoteResultId.get(s)
+            .chain(vrid =>
+                latestVoteResultChoice.get(s)
+                    .map(vrch => [vrid, vrch] as [string, VoteChoice]))
+            .chain(vr => fparr
+                    .findFirst(s.filmVotes, x => x.id === vr[0])
+                    .map(fv => voteMovie(fv, vr[1])))
+            .map(vr => some(vr))
+            .map(activeMovieLens.set)
+            .map(setActiveMovie => latestVoteResultId.set(none)(setActiveMovie(s)))
+            .getOrElse(s);
 }
 
-export function vote(state: IShowState, voteAction: IVoteAction): IShowState {
-    return activeVote.composeLens(voteMap).modify(vm => {
-        const m = {...vm};
-        m[voteAction.userId] = voteAction.vote;
-        return m;
-    })(state);
+export function vote(voteAction: IVoteAction): (state: IShowState) => IShowState {
+    return s =>
+        activeVote.composeLens(voteMap)
+            .modify(vm =>
+                fpm.insert(voteAction.userId, voteAction.vote, vm))(s);
 }
 
 export function runMovie(state: IShowState, movie: IMovie): IShowState {
@@ -89,6 +75,6 @@ export function clearInactiveCues(state: IShowState): IShowState {
     return state;
 }
 
-export function changePaused(state: IShowState, newPaused: boolean): IShowState {
-    return paused.set(newPaused)(state);
+export function changePaused(newPaused: boolean): (state: IShowState) => IShowState {
+    return paused.set(newPaused);
 }

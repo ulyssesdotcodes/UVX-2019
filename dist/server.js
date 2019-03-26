@@ -47,7 +47,6 @@ var util_1 = require("./util");
 var store_1 = require("./public/app/store");
 var state_types_1 = require("./public/app/store/common/state_types");
 var types_1 = require("./public/app/store/operator/types");
-var _ = __importStar(require("lodash"));
 var fs = __importStar(require("fs"));
 var cp = __importStar(require("child_process"));
 var find = require("find-process");
@@ -57,6 +56,7 @@ var Socket_1 = require("./Socket");
 var ldjs = __importStar(require("lambda-designer-js"));
 var types_2 = require("./public/app/store/client/types");
 var function_1 = require("fp-ts/lib/function");
+var Option_1 = require("fp-ts/lib/Option");
 var http = require("http");
 var express = require("express");
 var app = express();
@@ -95,6 +95,7 @@ app.use(express.static(path.join(__dirname, "public")));
 var server = http.Server(app);
 var wss = socketio.listen(server);
 server.listen(3000);
+var voteTimer = Option_1.none;
 var data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data.json"), { encoding: "utf8" }));
 var showState = Object.assign({}, util_1.defaultShowState, data);
 function updateVoteWrapper(f) {
@@ -122,19 +123,27 @@ wss.on("connection", function connection(socket) {
         }
         switch (message.type) {
             case types_1.CUE_VOTE:
-                updateVoteWrapper(_.partialRight(state.startVote, message.payload));
-                setTimeout(function () {
-                    updateVoteWrapper(state.endVote);
-                }, util_1.VOTE_DURATION * 1000);
+                updateVoteWrapper(state.startVote(message.payload));
+                voteTimer = Option_1.some(setTimeout(function () {
+                    updateVoteWrapper(state.endVote());
+                }, util_1.VOTE_DURATION * 1000));
                 break;
             case types_2.VOTE:
-                updateVoteWrapper(_.partialRight(state.vote, message.payload));
+                updateVoteWrapper(state.vote(message.payload));
                 break;
             case types_1.CHANGE_PAUSED:
-                updateVoteWrapper(_.partialRight(state.changePaused, message.payload));
+                updateVoteWrapper(state.changePaused(message.payload));
                 break;
             case types_1.CUE_BATCH:
-                updateVoteWrapper(state.cueBatch);
+                updateVoteWrapper(state.cueBatch());
+                break;
+            case types_1.END_VOTE:
+                voteTimer.map(function (vt) { return vt.unref(); });
+                updateVoteWrapper(state.endVote());
+                break;
+            case types_1.RESET:
+                updateVoteWrapper(function (_) { return Object.assign({}, util_1.defaultShowState, data); });
+                break;
         }
     });
     socket.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });

@@ -2,18 +2,21 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, thunkCueBatch, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkReset, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
 import { VoteChoice, voteChoice } from "../../../types";
 import { option, fromNullable } from "fp-ts/lib/Option";
+import { lookup } from "fp-ts/lib/StrMap";
 
 interface OperatorProps {
     operator: OperatorState;
     thunkCueVote: (voteId: string) => void;
     thunkChangePaused: (paused: boolean) => void;
     thunkCueBatch: () => void;
+    thunkEndVote: () => void;
+    thunkReset: () => void;
     connectws: (url: string) => void;
 }
 
@@ -37,8 +40,8 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
         this.props.operator.activeVote.map(av =>
             Object.entries(av.voteMap).map(([k, v]) =>
             this.props.operator.activeVote.chain(av =>
-            voteChoice(av.vote, v)
-                .map(s => this.state.activeVoteMap[k] = s.voteId))));
+                voteChoice.getOption([av.vote, v])
+                .map(s => this.state.activeVoteMap[k] = s))));
     }
 
     pause() {
@@ -52,13 +55,13 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
     render() {
         return (
             <div className="operator">
-                {this.props.operator.activeVote.map(av =>
+                {/* {this.props.operator.activeVote.map(av =>
                 <ShowVoteOp
                     key={"test"}
                     activeVote={av}
                     voteMap={this.state.activeVoteMap}
                     />
-                ).getOrElse((<div></div>))}
+                ).getOrElse((<div></div>))} */}
                 <div className="all-votes">
                     <div className="cue-votes film-votes">
                         <div className="header">Film Votes</div>
@@ -67,7 +70,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 key={v.id}
                                 vote={v}
                                 cueVote={this.props.thunkCueVote}
-                                voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
+                                voteResult={lookup(v.id, this.props.operator.voteResults.all)}
                                 />))}
                     </div>
                     <div className="cue-votes show-votes">
@@ -77,14 +80,16 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 key={v.id}
                                 vote={v}
                                 cueVote={this.props.thunkCueVote}
-                                voteResult={fromNullable(this.props.operator.voteResults.get(v.id))}
+                                voteResult={lookup(v.id, this.props.operator.voteResults.all)}
                                 />))}
                     </div>
                 </div>
                 <div className="controls">
+                    <a className="button" onClick={this.props.thunkEndVote}>Early Vote Lock</a>
                     <a className="button" onClick={this.go}>Go</a>
                     <a className="button" onClick={this.pause}>Pause</a>
                     <a className="button" onClick={this.props.thunkCueBatch}>Cue Batch</a>
+                    <a className="button" onClick={this.props.thunkReset}>Reset</a>
                 </div>
             </div>
         );
@@ -95,4 +100,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkReset, connectws })(Operator);

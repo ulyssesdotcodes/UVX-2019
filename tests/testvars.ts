@@ -1,6 +1,7 @@
 import * as S from "../src/state";
 import * as T from "../src/types";
 import { some, none } from "fp-ts/lib/Option";
+import { StrMap } from "fp-ts/lib/StrMap";
 
 export const showVote: T.IShowVote = { id: "testShow", text: "test", optionA: "test A", optionB: "test B", type: "show", operatorName: "test vote" };
 export const filmVote: T.IFilmVote = { "id": "film-1",
@@ -26,9 +27,8 @@ export const filmVote: T.IFilmVote = { "id": "film-1",
                 "loopFile": "video/optionCloop.mp4"
             }};
 
-export const defaultShowState: T.IShowState = { blackout: false, paused: true, activeVote: none, activeCues: [], activeMovie: none, voteResult: none,
+export const defaultShowState: T.IShowState = { blackout: false, paused: true, activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, all: new StrMap<T.VoteChoice>({}) },
     filmVotes: [filmVote], showVotes: [showVote] };
-
 
 export const showVoteAction: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionA" };
 export const showVoteActionB: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionB" };

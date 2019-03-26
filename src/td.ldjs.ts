@@ -1,4 +1,4 @@
-import { IShowState, IMovie, IVote, ActiveVote, filmVote, IVoteResult, showVote } from "./types";
+import { IShowState, IMovie, IVote, ActiveVote, filmVote, showVote } from "./types";
 import { VOTE_DURATION } from "./util";
 import { Node, INode, chan, IParam } from "lambda-designer-js";
 import * as c from "lambda-designer-js";
@@ -103,6 +103,6 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
         .run([timertext, voteName].concat(optionlist));
 }
 
-function voteResult(voteResult: IVoteResult): Node<"TOP"> {
-    return textNode(c.sp("Vote Result " + voteResult.name), 1, 0).runT();
+function voteResult(voteResultName: string): Node<"TOP"> {
+    return textNode(c.sp("Vote Result " + voteResultName), 1, 0).runT();
 }

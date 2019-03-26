@@ -35,14 +35,12 @@ export default function configureStore() {
 }
 
 const socketMiddleware: Middleware = (store: MiddlewareAPI) => {
-  const onIncomingMessage = (message: SendableAction) => {
-  };
-
   const socket = io({transports: ["websocket"], upgrade: false});
+
   socket.on(REDUX_MESSAGE, (message: any) => {
     store.dispatch(message);
   });
-  socket.emit(REDUX_MESSAGE, "Hi there");
+
   return (next: Dispatch<AnyAction>) => (action: WebsocketActions) => {
     switch (action.type) {
       case WEBSOCKET_CONNECT:

@@ -27,9 +27,8 @@ var React = __importStar(require("react"));
 var react_redux_1 = require("react-redux");
 var thunks_1 = require("../thunks");
 var CueVote_1 = __importDefault(require("./CueVote"));
-var ShowVoteOp_1 = __importDefault(require("./ShowVoteOp"));
 var types_1 = require("../../../types");
-var Option_1 = require("fp-ts/lib/Option");
+var StrMap_1 = require("fp-ts/lib/StrMap");
 var Operator = /** @class */ (function (_super) {
     __extends(Operator, _super);
     function Operator(props) {
@@ -48,8 +47,8 @@ var Operator = /** @class */ (function (_super) {
             return Object.entries(av.voteMap).map(function (_a) {
                 var k = _a[0], v = _a[1];
                 return _this.props.operator.activeVote.chain(function (av) {
-                    return types_1.voteChoice(av.vote, v)
-                        .map(function (s) { return _this.state.activeVoteMap[k] = s.voteId; });
+                    return types_1.voteChoice.getOption([av.vote, v])
+                        .map(function (s) { return _this.state.activeVoteMap[k] = s; });
                 });
             });
         });
@@ -63,29 +62,28 @@ var Operator = /** @class */ (function (_super) {
     Operator.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", { className: "operator" },
-            this.props.operator.activeVote.map(function (av) {
-                return React.createElement(ShowVoteOp_1.default, { key: "test", activeVote: av, voteMap: _this.state.activeVoteMap });
-            }).getOrElse((React.createElement("div", null))),
             React.createElement("div", { className: "all-votes" },
                 React.createElement("div", { className: "cue-votes film-votes" },
                     React.createElement("div", { className: "header" }, "Film Votes"),
                     this.props.operator.filmVotes.map(function (v) {
-                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: StrMap_1.lookup(v.id, _this.props.operator.voteResults.all) }));
                     })),
                 React.createElement("div", { className: "cue-votes show-votes" },
                     React.createElement("div", { className: "header" }, "Show Votes"),
                     this.props.operator.showVotes.map(function (v) {
-                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: Option_1.fromNullable(_this.props.operator.voteResults.get(v.id)) }));
+                        return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: StrMap_1.lookup(v.id, _this.props.operator.voteResults.all) }));
                     }))),
             React.createElement("div", { className: "controls" },
+                React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
                 React.createElement("a", { className: "button", onClick: this.go }, "Go"),
                 React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
-                React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"))));
+                React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"),
+                React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset"))));
     };
     return Operator;
 }(React.Component));
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkReset: thunks_1.thunkReset, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

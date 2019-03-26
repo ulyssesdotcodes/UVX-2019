@@ -7,9 +7,11 @@ import * as T from "../src/types";
 import * as TV from "./testvars";
 
 import { fromNullable, some, none, Option } from "fp-ts/lib/Option";
+import { debug } from "util";
+import { lookup, size } from "fp-ts/lib/StrMap";
 
 describe("start vote", () => {
-    const state = S.startVote(TV.defaultShowState, TV.showVote.id);
+    const state = S.startVote(TV.showVote.id)(TV.defaultShowState);
 
     it("should make a vote active", () => {
         expect(state.activeVote.map(av => av.vote)).to.deep.equal(some(TV.showVote));
@@ -17,29 +19,31 @@ describe("start vote", () => {
 });
 
 describe("end vote", () => {
-    const votestate = S.startVote(TV.defaultShowState, TV.showVote.id);
-    const votedstate = S.vote(votestate, TV.showVoteAction);
-    const state = S.endVote(votedstate);
+    const votestate = S.startVote(TV.showVote.id)(TV.defaultShowState);
+    const votedstate = S.vote(TV.showVoteAction)(votestate);
+    const state = S.endVote()(votedstate);
 
     it("should make a vote inactive", () => {
         expect(state.activeVote).to.equal(none);
     });
 
     it("should make the chosen option the result", () => {
-        expect(state.voteResult).to.not.equal(none);
-        expect(state.voteResult.map(vr => vr.name === TV.showVote.optionA).getOrElse(false)).to.be.true;
+        expect(state.voteResults.latest).to.not.equal(none);
+        expect(state.voteResults.latest
+            .chain(l => lookup(l, state.voteResults.all))
+            .map(vr => vr === "optionA").getOrElse(false)).to.be.true;
     });
 });
 
 describe("cue batch", () => {
-    const votestate = S.startVote(TV.defaultShowState, TV.showVote.id);
-    const votedstate = S.vote(votestate, TV.showVoteAction);
-    const state = S.endVote(votedstate);
+    const votestate = S.startVote(TV.showVote.id)(TV.defaultShowState);
+    const votedstate = S.vote(TV.showVoteAction)(votestate);
+    const state = S.endVote()(votedstate);
 
-    const filmvotestate = S.startVote(TV.defaultShowState, TV.filmVote.id);
-    const filmvotedstate = S.vote(filmvotestate, TV.filmVoteActionOptB);
-    const filmstate = S.endVote(filmvotedstate);
-    const filmstatecued = S.cueBatch(filmstate);
+    const filmvotestate = S.startVote(TV.filmVote.id)(TV.defaultShowState);
+    const filmvotedstate = S.vote(TV.filmVoteActionOptB)(filmvotestate);
+    const filmstate = S.endVote()(filmvotedstate);
+    const filmstatecued = S.cueBatch()(filmstate);
 
     it("should make the chosen film active", () => {
         expect(filmstatecued.activeMovie).to.not.equal(none);
@@ -51,9 +55,9 @@ describe("cue batch", () => {
 
 describe("vote", () => {
     const novoteState = TV.defaultShowState;
-    const novoteVotedState = S.vote(novoteState, TV.showVoteAction);
-    const unvotedState = S.startVote(novoteState, TV.showVote.id);
-    const state = S.vote(unvotedState, TV.showVoteAction);
+    const novoteVotedState = S.vote(TV.showVoteAction)(novoteState);
+    const unvotedState = S.startVote(TV.showVote.id)(novoteState);
+    const state = S.vote(TV.showVoteAction)(unvotedState);
 
     it("shouldn't do anything if there's no active vote", () => {
         expect(novoteVotedState.activeVote).to.equal(none);
@@ -61,25 +65,27 @@ describe("vote", () => {
 
     it("should start with 0 votes", () => {
         expect(unvotedState.activeVote).to.not.equal(none);
-        expect(unvotedState.activeVote.map(av => Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(0);
+        expect(unvotedState.activeVote.map(av =>
+            size(av.voteMap)).getOrElse(-1)).to.equal(0);
     });
 
     it("should add to vote count", () => {
         expect(state.activeVote).to.not.be.null;
-        expect(state.activeVote.map(av =>
-            av.voteMap.hasOwnProperty(TV.showVoteAction.userId))
-                .getOrElse(false)).to.be.true;
+        expect(state.activeVote
+            .chain(av => lookup(TV.showVoteAction.userId, av.voteMap))
+            .map(_ => true)
+            .getOrElse(false)).to.be.true;
     });
 
     it("shouldn't allow the user to vote twice", () => {
-        const votedTwiceState = S.vote(state, TV.showVoteActionB);
-        expect(votedTwiceState.activeVote.map(av => Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(1);
+        const votedTwiceState = S.vote(TV.showVoteActionB)(state);
+        expect(votedTwiceState.activeVote.map(av => size(av.voteMap)).getOrElse(-1)).to.equal(1);
     });
 
     it("should add second vote to vote count", () => {
-        const votedTwiceState = S.vote(state, TV.showVoteActionUserB);
-        expect(state.activeVote.map(av =>
-            Object.keys(av.voteMap).length).getOrElse(-1)).to.equal(2);
+        const votedTwiceState = S.vote(TV.showVoteActionUserB)(state);
+        expect(votedTwiceState.activeVote.map(av =>
+            size(av.voteMap)).getOrElse(-1)).to.equal(2);
     });
 });
 

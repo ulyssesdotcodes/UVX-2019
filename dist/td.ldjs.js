@@ -88,7 +88,7 @@ function voteNode(state, wasPrev, vote) {
     return c.top("composite", { operand: c.mp(0) })
         .run([timertext, voteName].concat(optionlist));
 }
-function voteResult(voteResult) {
-    return textNode(c.sp("Vote Result " + voteResult.name), 1, 0).runT();
+function voteResult(voteResultName) {
+    return textNode(c.sp("Vote Result " + voteResultName), 1, 0).runT();
 }
 //# sourceMappingURL=td.ldjs.js.map

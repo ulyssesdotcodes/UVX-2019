@@ -54,6 +54,18 @@ exports.thunkCueBatch = function () { return function (dispatch) { return __awai
         return [2 /*return*/];
     });
 }); }; };
+exports.thunkEndVote = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.END_VOTE }));
+        return [2 /*return*/];
+    });
+}); }; };
+exports.thunkReset = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.RESET }));
+        return [2 /*return*/];
+    });
+}); }; };
 exports.thunkVote = function (userId, voteId, voteChoice) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     var voteAction;
     return __generator(this, function (_a) {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IVote, VoteChoice, voteResult } from "../../../types";
+import { IVote, VoteChoice } from "../../../types";
 
 interface VoteOptionProps {
     voteId: string;
