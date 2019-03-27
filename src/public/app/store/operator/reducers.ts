@@ -10,7 +10,9 @@ const initialState: OperatorState = {
     filmVotes: [],
     showVotes: [],
     voteResults: { latest: none, all: new fpmap.StrMap({}) },
-    activeVote: none
+    activeVote: none,
+    paused: none,
+    activeMovie: none,
 };
 
 export function operatorReducer(
@@ -22,7 +24,9 @@ export function operatorReducer(
             return {
                 ...state,
                 ...action.payload,
-                ...{activeVote: deserializeOption(action.payload.activeVote)}
+                ...{activeVote: deserializeOption(action.payload.activeVote)},
+                ...{activeMovie: deserializeOption(action.payload.activeMovie)},
+                ...{paused: deserializeOption(action.payload.paused)}
             };
         }
         case CUE_VOTE:

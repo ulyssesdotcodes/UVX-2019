@@ -75,10 +75,20 @@ var Operator = /** @class */ (function (_super) {
                     }))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
-                React.createElement("a", { className: "button", onClick: this.go }, "Go"),
-                React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
+                this.props.operator.paused.isSome() ?
+                    React.createElement("a", { className: "button", onClick: this.go }, "Go") :
+                    React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
                 React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"),
-                React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset"))));
+                React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset")),
+            React.createElement("div", { className: "info" },
+                React.createElement("h3", null, "Runtime Info"),
+                this.props.operator.activeMovie.map(function (mov) { return (React.createElement("div", { className: "movieFile", key: "activemovie" },
+                    React.createElement("p", null,
+                        "File: ",
+                        mov.batchFile),
+                    React.createElement("p", null,
+                        "Loop: ",
+                        mov.loopFile))); }).getOrElse(React.createElement("div", null)))));
     };
     return Operator;
 }(React.Component));

@@ -1,4 +1,4 @@
-import { IShowState } from "./types";
+import { IShowState, activeVoteLens, activeVoteFinish, paused } from "./types";
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
@@ -17,13 +17,13 @@ import { start } from "repl";
 import { identity } from "fp-ts/lib/function";
 import { thunkVote } from "./public/app/thunks";
 import { none, some, Option } from "fp-ts/lib/Option";
+import { pause } from "./public/app/store/operator/actions";
 
 const http = require("http");
 const express = require("express");
 const app = express();
 const path = require("path");
 const socketio = require("socket.io");
-
 
 // TD tcp socket
 const tdsock = new Socket("127.0.0.1", 5959);
@@ -95,21 +95,34 @@ wss.on("connection", function connection(socket: any) {
         switch (message.type) {
             case CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
-                voteTimer =  some(setTimeout(() => {
-                    updateVoteWrapper(state.endVote());
-                }, VOTE_DURATION * 1000));
+                voteTimer =
+                    activeVoteFinish.getOption(showState)
+                        .chain(av => paused.get(showState).isSome() ? none : some(av))
+                        .map(t =>
+                            setTimeout(() => updateVoteWrapper(state.endVote()),
+                                t - new Date().getTime()));
                 break;
             case VOTE:
                 updateVoteWrapper(state.vote(message.payload));
                 break;
             case CHANGE_PAUSED:
                 updateVoteWrapper(state.changePaused(message.payload));
+                voteTimer = message.payload ?
+                    voteTimer.map(vt => clearTimeout(vt)).chain<NodeJS.Timeout>(_ => none) :
+                    activeVoteFinish.getOption(showState)
+                        .map(t =>
+                            setTimeout(
+                                () => updateVoteWrapper(state.endVote()),
+                                t - new Date().getTime()));
                 break;
             case CUE_BATCH:
                 updateVoteWrapper(state.cueBatch());
                 break;
             case END_VOTE:
-                voteTimer.map(vt => vt.unref());
+                voteTimer = voteTimer.chain(vt => {
+                    clearTimeout(vt);
+                    return none;
+                });
                 updateVoteWrapper(state.endVote());
                 break;
             case RESET:

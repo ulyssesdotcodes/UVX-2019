@@ -27,13 +27,15 @@ var initialState = {
     filmVotes: [],
     showVotes: [],
     voteResults: { latest: Option_1.none, all: new fpmap.StrMap({}) },
-    activeVote: Option_1.none
+    activeVote: Option_1.none,
+    paused: Option_1.none,
+    activeMovie: Option_1.none,
 };
 function operatorReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case state_types_1.UPDATE_SHOW_STATE: {
-            return __assign({}, state, action.payload, { activeVote: types_2.deserializeOption(action.payload.activeVote) });
+            return __assign({}, state, action.payload, { activeVote: types_2.deserializeOption(action.payload.activeVote) }, { activeMovie: types_2.deserializeOption(action.payload.activeMovie) }, { paused: types_2.deserializeOption(action.payload.paused) });
         }
         case types_1.CUE_VOTE:
         case types_1.CUE_BATCH:

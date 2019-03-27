@@ -46,8 +46,6 @@ function voteMovie(vote, vc) {
     }
 }
 exports.voteMovie = voteMovie;
-exports.voteMap = monocle_ts_1.Lens.fromProp()("voteMap");
-exports.activeVoteVote = monocle_ts_1.Lens.fromProp()("vote");
 exports.strMapValueLens = function (key) {
     return new monocle_ts_1.Lens(function (s) { return fpmap.lookup(key, s); }, function (a) { return function (s) { return a.map(function (ap) { return fpmap.insert(key, ap, s); }).getOrElse(s); }; });
 };
@@ -61,6 +59,9 @@ exports.activeVote = monocle_ts_1.Optional.fromOptionProp()("activeVote");
 exports.activeVoteLens = monocle_ts_1.Lens.fromProp()("activeVote");
 exports.activeMovie = monocle_ts_1.Optional.fromOptionProp()("activeMovie");
 exports.activeMovieLens = monocle_ts_1.Lens.fromProp()("activeMovie");
+exports.activeVoteMap = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("voteMap"));
+exports.activeVoteVote = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("vote"));
+exports.activeVoteFinish = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("finishTime"));
 exports.voteResults = monocle_ts_1.Lens.fromProp()("voteResults")
     .compose(monocle_ts_1.Lens.fromProp("all"));
 exports.latestVoteResultId = monocle_ts_1.Lens.fromProp()("voteResults")

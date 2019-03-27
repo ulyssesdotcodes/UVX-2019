@@ -5,7 +5,7 @@ var StrMap_1 = require("fp-ts/lib/StrMap");
 exports.VOTE_DURATION = process.execPath.includes("node") ? 10 : 45;
 exports.defaultShowState = {
     blackout: false,
-    paused: !process.execPath.includes("node"),
+    paused: process.execPath.includes("node") ? Option_1.none : Option_1.some(new Date().getTime()),
     activeVote: Option_1.none,
     activeCues: [],
     activeMovie: Option_1.none,

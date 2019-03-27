@@ -1,4 +1,4 @@
-import { VoteID, IVote, ActiveVote, VoteChoice, IFilmVote, IShowVote, IVoteResults } from "../../../../types";
+import { VoteID, IVote, ActiveVote, VoteChoice, IFilmVote, IShowVote, IVoteResults, IMovie } from "../../../../types";
 import { string } from "prop-types";
 import { WebsocketTypes } from "../common/websocket_types";
 import { StateActionTypes } from "../common/state_types";
@@ -9,7 +9,9 @@ export interface OperatorState {
     filmVotes: Array<IFilmVote>;
     showVotes: Array<IShowVote>;
     activeVote: Option<ActiveVote>;
+    activeMovie: Option<IMovie>;
     voteResults: IVoteResults;
+    paused: Option<number>;
 }
 
 export const CUE_VOTE = "CUE_VOTE";

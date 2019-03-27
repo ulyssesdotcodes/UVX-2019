@@ -10,6 +10,7 @@ import { VoteChoice, voteChoice } from "../../../types";
 import { option, fromNullable } from "fp-ts/lib/Option";
 import { lookup } from "fp-ts/lib/StrMap";
 
+
 interface OperatorProps {
     operator: OperatorState;
     thunkCueVote: (voteId: string) => void;
@@ -55,13 +56,6 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
     render() {
         return (
             <div className="operator">
-                {/* {this.props.operator.activeVote.map(av =>
-                <ShowVoteOp
-                    key={"test"}
-                    activeVote={av}
-                    voteMap={this.state.activeVoteMap}
-                    />
-                ).getOrElse((<div></div>))} */}
                 <div className="all-votes">
                     <div className="cue-votes film-votes">
                         <div className="header">Film Votes</div>
@@ -84,12 +78,24 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 />))}
                     </div>
                 </div>
+
                 <div className="controls">
                     <a className="button" onClick={this.props.thunkEndVote}>Early Vote Lock</a>
-                    <a className="button" onClick={this.go}>Go</a>
-                    <a className="button" onClick={this.pause}>Pause</a>
+                    {this.props.operator.paused.isSome() ?
+                        <a className="button" onClick={this.go}>Go</a> :
+                        <a className="button" onClick={this.pause}>Pause</a>
+                    }
                     <a className="button" onClick={this.props.thunkCueBatch}>Cue Batch</a>
                     <a className="button" onClick={this.props.thunkReset}>Reset</a>
+                </div>
+                <div className="info">
+                    <h3>Runtime Info</h3>
+                    {this.props.operator.activeMovie.map(mov => (
+                        <div className="movieFile" key="activemovie">
+                            <p>File: {mov.batchFile}</p>
+                            <p>Loop: {mov.loopFile}</p>
+                        </div>
+                    )).getOrElse(<div></div>)}
                 </div>
             </div>
         );

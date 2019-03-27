@@ -107,9 +107,6 @@ export interface ActiveVote {
     voteMap: fpmap.StrMap<VoteChoice>;
 }
 
-export const voteMap = Lens.fromProp<ActiveVote>()("voteMap");
-export const activeVoteVote = Lens.fromProp<ActiveVote>()("vote");
-
 export interface IVoteResults {
     readonly latest: Option<string>;
     readonly all: fpmap.StrMap<VoteChoice>;
@@ -117,7 +114,7 @@ export interface IVoteResults {
 
 export interface IShowState {
     readonly blackout: boolean;
-    readonly paused: boolean;
+    readonly paused: Option<number>;
     readonly activeCues: Array<[ICue, FinishTime]>;
     readonly activeVote: Option<ActiveVote>;
     readonly activeMovie: Option<IMovie>;
@@ -142,6 +139,13 @@ export const activeVote: Optional<IShowState, ActiveVote> = Optional.fromOptionP
 export const activeVoteLens: Lens<IShowState, Option<ActiveVote>> = Lens.fromProp<IShowState>()("activeVote");
 export const activeMovie: Optional<IShowState, IMovie> = Optional.fromOptionProp<IShowState>()("activeMovie");
 export const activeMovieLens: Lens<IShowState, Option<IMovie>> = Lens.fromProp<IShowState>()("activeMovie");
+
+export const activeVoteMap =
+    activeVote.composeLens(Lens.fromProp<ActiveVote>()("voteMap"));
+export const activeVoteVote =
+    activeVote.composeLens(Lens.fromProp<ActiveVote>()("vote"));
+export const activeVoteFinish =
+    activeVote.composeLens(Lens.fromProp<ActiveVote>()("finishTime"));
 
 export const voteResults =
     Lens.fromProp<IShowState>()("voteResults")

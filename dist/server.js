@@ -43,10 +43,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = require("./types");
 var util_1 = require("./util");
 var store_1 = require("./public/app/store");
 var state_types_1 = require("./public/app/store/common/state_types");
-var types_1 = require("./public/app/store/operator/types");
+var types_2 = require("./public/app/store/operator/types");
 var fs = __importStar(require("fs"));
 var cp = __importStar(require("child_process"));
 var find = require("find-process");
@@ -54,7 +55,7 @@ var state = __importStar(require("./state"));
 var td = __importStar(require("./td.ldjs"));
 var Socket_1 = require("./Socket");
 var ldjs = __importStar(require("lambda-designer-js"));
-var types_2 = require("./public/app/store/client/types");
+var types_3 = require("./public/app/store/client/types");
 var function_1 = require("fp-ts/lib/function");
 var Option_1 = require("fp-ts/lib/Option");
 var http = require("http");
@@ -122,26 +123,38 @@ wss.on("connection", function connection(socket) {
             console.log(message);
         }
         switch (message.type) {
-            case types_1.CUE_VOTE:
+            case types_2.CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
-                voteTimer = Option_1.some(setTimeout(function () {
-                    updateVoteWrapper(state.endVote());
-                }, util_1.VOTE_DURATION * 1000));
+                voteTimer =
+                    types_1.activeVoteFinish.getOption(showState)
+                        .chain(function (av) { return types_1.paused.get(showState).isSome() ? Option_1.none : Option_1.some(av); })
+                        .map(function (t) {
+                        return setTimeout(function () { return updateVoteWrapper(state.endVote()); }, t - new Date().getTime());
+                    });
                 break;
-            case types_2.VOTE:
+            case types_3.VOTE:
                 updateVoteWrapper(state.vote(message.payload));
                 break;
-            case types_1.CHANGE_PAUSED:
+            case types_2.CHANGE_PAUSED:
                 updateVoteWrapper(state.changePaused(message.payload));
+                voteTimer = message.payload ?
+                    voteTimer.map(function (vt) { return clearTimeout(vt); }).chain(function (_) { return Option_1.none; }) :
+                    types_1.activeVoteFinish.getOption(showState)
+                        .map(function (t) {
+                        return setTimeout(function () { return updateVoteWrapper(state.endVote()); }, t - new Date().getTime());
+                    });
                 break;
-            case types_1.CUE_BATCH:
+            case types_2.CUE_BATCH:
                 updateVoteWrapper(state.cueBatch());
                 break;
-            case types_1.END_VOTE:
-                voteTimer.map(function (vt) { return vt.unref(); });
+            case types_2.END_VOTE:
+                voteTimer = voteTimer.chain(function (vt) {
+                    clearTimeout(vt);
+                    return Option_1.none;
+                });
                 updateVoteWrapper(state.endVote());
                 break;
-            case types_1.RESET:
+            case types_2.RESET:
                 updateVoteWrapper(function (_) { return Object.assign({}, util_1.defaultShowState, data); });
                 break;
         }

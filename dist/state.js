@@ -70,7 +70,7 @@ function cueBatch() {
 exports.cueBatch = cueBatch;
 function vote(voteAction) {
     return function (s) {
-        return types_1.activeVote.composeLens(types_1.voteMap)
+        return types_1.activeVoteMap
             .modify(function (vm) {
             return fpm.insert(voteAction.userId, voteAction.vote, vm);
         })(s);
@@ -92,7 +92,12 @@ function clearInactiveCues(state) {
 }
 exports.clearInactiveCues = clearInactiveCues;
 function changePaused(newPaused) {
-    return types_1.paused.set(newPaused);
+    return function (s) {
+        return types_1.paused.set(newPaused ? Option_1.some(new Date().getTime()) : Option_1.none)(types_1.paused.get(s)
+            .map(function (p) { return types_1.activeVoteFinish.modify(function (t) { return t + new Date().getTime() - p; }); })
+            .map(function (avf) { return avf(s); })
+            .getOrElse(s));
+    };
 }
 exports.changePaused = changePaused;
 //# sourceMappingURL=state.js.map

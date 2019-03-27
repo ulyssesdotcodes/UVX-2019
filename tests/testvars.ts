@@ -27,7 +27,7 @@ export const filmVote: T.IFilmVote = { "id": "film-1",
                 "loopFile": "video/optionCloop.mp4"
             }};
 
-export const defaultShowState: T.IShowState = { blackout: false, paused: true, activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, all: new StrMap<T.VoteChoice>({}) },
+export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, all: new StrMap<T.VoteChoice>({}) },
     filmVotes: [filmVote], showVotes: [showVote] };
 
 export const showVoteAction: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionA" };

@@ -1,4 +1,4 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpm from "fp-ts/lib/StrMap";
@@ -55,7 +55,7 @@ export function cueBatch(): (s: IShowState) => IShowState {
 
 export function vote(voteAction: IVoteAction): (state: IShowState) => IShowState {
     return s =>
-        activeVote.composeLens(voteMap)
+        activeVoteMap
             .modify(vm =>
                 fpm.insert(voteAction.userId, voteAction.vote, vm))(s);
 }
@@ -76,5 +76,11 @@ export function clearInactiveCues(state: IShowState): IShowState {
 }
 
 export function changePaused(newPaused: boolean): (state: IShowState) => IShowState {
-    return paused.set(newPaused);
+    return s =>
+        paused.set(newPaused ? some(new Date().getTime()) : none)(
+            paused.get(s)
+                .map(p => activeVoteFinish.modify(t => t + new Date().getTime() - p))
+                .map(avf => avf(s))
+                .getOrElse(s)
+        );
 }

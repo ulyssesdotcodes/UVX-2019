@@ -1,1 +1,1 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, voteMap, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens } from "./types";
