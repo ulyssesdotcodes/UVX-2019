@@ -154,6 +154,11 @@ wss.on("connection", function connection(socket) {
                 });
                 updateVoteWrapper(state.endVote());
                 break;
+            case types_2.CUE_CUE:
+                types_1.findCue.at(message.payload)
+                    .get(showState.cues)
+                    .map(function (c) { return updateVoteWrapper(state.runCue(c)); });
+                break;
             case types_2.RESET:
                 updateVoteWrapper(function (_) { return Object.assign({}, util_1.defaultShowState, data); });
                 break;

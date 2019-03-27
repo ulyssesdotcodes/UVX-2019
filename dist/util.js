@@ -9,9 +9,10 @@ exports.defaultShowState = {
     activeVote: Option_1.none,
     activeCues: [],
     activeMovie: Option_1.none,
-    voteResults: { latest: Option_1.none, all: new StrMap_1.StrMap({}) },
+    voteResults: { latest: Option_1.none, latestFilm: Option_1.none, latestShow: Option_1.none, all: new StrMap_1.StrMap({}) },
     filmVotes: [],
-    showVotes: []
+    showVotes: [],
+    cues: []
 };
 function createActiveVote(vote) {
     return {

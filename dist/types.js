@@ -12,6 +12,14 @@ var Option_1 = require("fp-ts/lib/Option");
 var function_1 = require("fp-ts/lib/function");
 var fpmap = __importStar(require("fp-ts/lib/StrMap"));
 var Array_1 = require("fp-ts/lib/Array");
+var isAudioCue = function (v) { return v.type === "audio"; };
+var isVideoCue = function (v) { return v.type === "video"; };
+var isTextCue = function (v) { return v.type === "text"; };
+exports.cueId = monocle_ts_1.Lens.fromProp("id");
+exports.cuetype = monocle_ts_1.Lens.fromProp("type");
+exports.cueVideoFile = monocle_ts_1.Prism.fromRefinement(isVideoCue).composeLens(monocle_ts_1.Lens.fromProp("file"));
+exports.cueAudioFile = monocle_ts_1.Prism.fromRefinement(isAudioCue).composeLens(monocle_ts_1.Lens.fromProp("file"));
+exports.cueText = monocle_ts_1.Prism.fromRefinement(isTextCue).composeLens(monocle_ts_1.Lens.fromProp("text"));
 var isFilmVote = function (v) { return v.type === "film"; };
 var isShowVote = function (v) { return v.type === "show"; };
 exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
@@ -62,16 +70,18 @@ exports.activeMovieLens = monocle_ts_1.Lens.fromProp()("activeMovie");
 exports.activeVoteMap = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("voteMap"));
 exports.activeVoteVote = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("vote"));
 exports.activeVoteFinish = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("finishTime"));
-exports.voteResults = monocle_ts_1.Lens.fromProp()("voteResults")
-    .compose(monocle_ts_1.Lens.fromProp("all"));
+exports.voteResults = monocle_ts_1.Lens.fromProp()("voteResults");
+exports.allVoteResults = exports.voteResults.compose(monocle_ts_1.Lens.fromProp("all"));
 exports.latestVoteResultId = monocle_ts_1.Lens.fromProp()("voteResults")
     .compose(monocle_ts_1.Lens.fromProp("latest"));
+exports.latestShowVoteId = monocle_ts_1.Lens.fromProp("latestShow");
+exports.latestFilmVoteId = monocle_ts_1.Lens.fromProp("latestFilm");
 exports.latestVoteResultChoice = new monocle_ts_1.Lens(function (s) { return exports.latestVoteResultId
     .get(s)
     .map(function (lvid) { return exports.voteResult.at(lvid); })
     .chain(function (f) { return f.get(s); }); }, function (a) { return function (s) { return s; }; });
 exports.voteResult = new monocle_ts_1.At(function (i) {
-    return exports.voteResults.compose(exports.strMapValueLens(i));
+    return exports.allVoteResults.compose(exports.strMapValueLens(i));
 });
 exports.filmVotes = monocle_ts_1.Lens.fromProp("filmVotes");
 exports.showVotes = monocle_ts_1.Lens.fromProp("showVotes");
@@ -87,6 +97,22 @@ exports.allVotes = new monocle_ts_1.Lens(function (s) { return s.filmVotes.conca
 exports.findVote = new monocle_ts_1.At(function (i) {
     return exports.allVotes.composeLens(exports.findByIdLens(i));
 });
+exports.cues = monocle_ts_1.Lens.fromProp("cues");
+exports.findCue = new monocle_ts_1.At(function (i) { return exports.findByIdLens(i); });
+exports.textCues = monocle_ts_1.fromTraversable(Array_1.array)().filter(isTextCue);
+exports.videoCues = monocle_ts_1.fromTraversable(Array_1.array)().filter(isVideoCue);
+exports.audioCues = monocle_ts_1.fromTraversable(Array_1.array)().filter(isAudioCue);
+exports.activeCueList = function (vr, cues) {
+    return Array_1.filter(cues, function (c) {
+        return Array_1.findFirst(c.showVoteIds, function (_a) {
+            var voteId = _a[0], opt = _a[1];
+            return exports.latestShowVoteId.get(vr)
+                .chain(function (latestShowVoteId) { return latestShowVoteId == voteId ? fpmap.lookup(voteId, vr.all) : Option_1.none; })
+                .map(function (vr) { return vr == opt; })
+                .getOrElse(false);
+        }).isSome();
+    });
+};
 function deserializeOption(a) {
     return (a._tag === "None" ? Option_1.none : Option_1.some(a.value));
 }

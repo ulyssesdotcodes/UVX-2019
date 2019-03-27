@@ -66,5 +66,37 @@
             "optionC": "Test Cf",
             "optionCMovie": {}
         }
+    ],
+    "cues": [
+        {
+            "id": "text-cue-1",
+            "type": "text",
+            "text": "Cue text cue text cue text",
+            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]]
+        },
+        {
+            "id": "video-cue-1",
+            "type": "video",
+            "file": "movies/video1.mov",
+            "showVoteIds": [["show-2", "optionB"]]
+        },
+        {
+            "id": "video-cue-2",
+            "type": "video",
+            "file": "movies/video2.mov",
+            "showVoteIds": [["show-2", "optionC"]]
+        },
+        {
+            "id": "audio-cue-1",
+            "type": "audio",
+            "file": "audio/audio1.mp3",
+            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]]
+        },
+        {
+            "id": "audio-cue-2",
+            "type": "audio",
+            "file": "audio/audio2.mp3",
+            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]]
+        }
     ]
 }

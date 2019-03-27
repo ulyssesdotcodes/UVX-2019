@@ -2,13 +2,14 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkReset, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
-import { VoteChoice, voteChoice } from "../../../types";
+import { VoteChoice, voteChoice, activeCueList } from "../../../types";
 import { option, fromNullable } from "fp-ts/lib/Option";
 import { lookup } from "fp-ts/lib/StrMap";
+import CueCue from "./CueCue";
 
 
 interface OperatorProps {
@@ -17,6 +18,7 @@ interface OperatorProps {
     thunkChangePaused: (paused: boolean) => void;
     thunkCueBatch: () => void;
     thunkEndVote: () => void;
+    thunkCueCue: (cueId: string) => void;
     thunkReset: () => void;
     connectws: (url: string) => void;
 }
@@ -77,6 +79,17 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 voteResult={lookup(v.id, this.props.operator.voteResults.all)}
                                 />))}
                     </div>
+                    <div className="cue list">
+                        <div className="header">Cues</div>
+                        {activeCueList(this.props.operator.voteResults, this.props.operator.cues)
+                            .map(c =>
+                                <CueCue
+                                    key={c.id}
+                                    cue={c}
+                                    thunkCueCue={this.props.thunkCueCue}
+                                    />
+                            )}
+                    </div>
                 </div>
 
                 <div className="controls">
@@ -106,4 +119,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkReset, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, connectws })(Operator);

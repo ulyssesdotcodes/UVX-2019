@@ -1,4 +1,4 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish } from "./types";
+import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish, latestShowVoteId, latestFilmVoteId, allVoteResults, activeCues } from "./types";
 import { some, none, Option } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpm from "fp-ts/lib/StrMap";
@@ -8,6 +8,7 @@ import { stateToTD } from "./td.ldjs";
 import { pause } from "./public/app/store/operator/actions";
 import { createActiveVote } from "./util";
 import { setoidString } from "fp-ts/lib/Setoid";
+import { compose, identity } from "fp-ts/lib/function";
 
 export function startVote(voteId: string): (s: IShowState) => IShowState {
     return s => activeVoteLens.set(
@@ -31,9 +32,12 @@ export function endVote(): (s: IShowState) => IShowState {
     return s =>
         activeVote.getOption(s)
             .map(av =>
-                voteResults.modify(vrs =>
-                    fpm.insert(av.vote.id, findWinner(av.vote, av.voteMap), vrs))
-                    (latestVoteResultId.set(some(av.vote.id))(s)))
+                compose(
+                    allVoteResults.modify(vrs => fpm.insert(av.vote.id, findWinner(av.vote, av.voteMap), vrs)),
+                    filmVote.getOption(av.vote).map(_ => voteResults.compose(latestFilmVoteId).set(some(av.vote.id))).getOrElse(identity),
+                    showVote.getOption(av.vote).map(_ => voteResults.compose(latestShowVoteId).set(some(av.vote.id))).getOrElse(identity),
+                    latestVoteResultId.set(some(av.vote.id))
+                )(s))
             .map(activeVoteLens.set(none))
             .getOrElse(s);
 }
@@ -64,11 +68,8 @@ export function runMovie(state: IShowState, movie: IMovie): IShowState {
     return activeMovieLens.set(some(movie))(state);
 }
 
-export function runCue(state: IShowState, cue: ICue): IShowState {
-    const clearedState = clearInactiveCues(state);
-
-    const endTime = new Date().getTime() + cue.duration;
-    return {...clearedState, ...{ activeCues: clearedState.activeCues.concat([[cue, endTime]]) }};
+export function runCue(cue: ICue): (state: IShowState) => IShowState {
+    return compose(activeCues.modify(cs => cs.concat([[cue, new Date().getTime() + cue.duration]])), clearInactiveCues);
 }
 
 export function clearInactiveCues(state: IShowState): IShowState {

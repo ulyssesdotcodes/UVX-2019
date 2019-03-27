@@ -9,10 +9,11 @@ import * as fpmap from "fp-ts/lib/StrMap";
 const initialState: OperatorState = {
     filmVotes: [],
     showVotes: [],
-    voteResults: { latest: none, all: new fpmap.StrMap({}) },
+    voteResults: { latest: none, latestShow: none, latestFilm: none, all: new fpmap.StrMap({}) },
     activeVote: none,
     paused: none,
     activeMovie: none,
+    cues: [],
 };
 
 export function operatorReducer(
@@ -26,7 +27,13 @@ export function operatorReducer(
                 ...action.payload,
                 ...{activeVote: deserializeOption(action.payload.activeVote)},
                 ...{activeMovie: deserializeOption(action.payload.activeMovie)},
-                ...{paused: deserializeOption(action.payload.paused)}
+                ...{paused: deserializeOption(action.payload.paused)},
+                ...{voteResults: {
+                        latest: deserializeOption(action.payload.voteResults.latest) ,
+                        latestShow: deserializeOption(action.payload.voteResults.latestShow),
+                        latestFilm: deserializeOption(action.payload.voteResults.latestFilm),
+                        all: new fpmap.StrMap(action.payload.voteResults.all.value)
+                    }}
             };
         }
         case CUE_VOTE:

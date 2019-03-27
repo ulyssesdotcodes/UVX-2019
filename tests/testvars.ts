@@ -27,9 +27,6 @@ export const filmVote: T.IFilmVote = { "id": "film-1",
                 "loopFile": "video/optionCloop.mp4"
             }};
 
-export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, all: new StrMap<T.VoteChoice>({}) },
-    filmVotes: [filmVote], showVotes: [showVote] };
-
 export const showVoteAction: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionA" };
 export const showVoteActionB: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionB" };
 export const showVoteActionUserB: T.IVoteAction = { voteId: "testShow", userId: "testUserB", vote: "optionB" };
@@ -37,5 +34,8 @@ export const filmVoteActionOptB: T.IVoteAction = { voteId: "testFilm", userId: "
 
 export const movie: T.IMovie = { batchFile: "test.mp4", batchLength: 10, loopFile: "testloop.mp4" };
 
-export const allCue: T.ICue = { text: "testAllCue", overlay: some("overlay.mp4"), sound: some("sound.mp4"), duration: 10 };
-export const textCue: T.ICue = { text: "testAllCue", overlay: none, sound: none, duration: 10 };
+export const textCue: T.ITextCue = { id: "testall", type: "text",  text: "testAllCue", showVoteIds: [[showVoteAction.voteId, "optionA"]], duration: 10000 };
+export const videoCue: T.IVideoCue = { id: "testvideo", type: "video", file: "test.mp4", showVoteIds: [], duration: 10000 };
+
+export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, latestShow: none, latestFilm: none, all: new StrMap<T.VoteChoice>({}) },
+    filmVotes: [filmVote], showVotes: [showVote], cues: [textCue, videoCue] };

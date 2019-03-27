@@ -1,4 +1,4 @@
-import { VoteID, IVote, ActiveVote, VoteChoice, IFilmVote, IShowVote, IVoteResults, IMovie } from "../../../../types";
+import { VoteID, IVote, ActiveVote, VoteChoice, IFilmVote, IShowVote, IVoteResults, IMovie, Cue } from "../../../../types";
 import { string } from "prop-types";
 import { WebsocketTypes } from "../common/websocket_types";
 import { StateActionTypes } from "../common/state_types";
@@ -8,6 +8,7 @@ import { StrMap } from "fp-ts/lib/StrMap";
 export interface OperatorState {
     filmVotes: Array<IFilmVote>;
     showVotes: Array<IShowVote>;
+    cues: Array<Cue>;
     activeVote: Option<ActiveVote>;
     activeMovie: Option<IMovie>;
     voteResults: IVoteResults;
@@ -18,6 +19,7 @@ export const CUE_VOTE = "CUE_VOTE";
 export const CUE_BATCH = "CUE_BATCH";
 export const CHANGE_PAUSED = "CHANGE_PAUSED";
 export const END_VOTE = "END_VOTE";
+export const CUE_CUE = "CUE_CUE";
 export const RESET = "RESET";
 
 interface CueVoteAction {
@@ -33,6 +35,11 @@ interface EndVote {
     type: typeof END_VOTE;
 }
 
+interface CueCue {
+    type: typeof CUE_CUE;
+    payload: string;
+}
+
 interface Reset {
     type: typeof RESET;
 }
@@ -42,4 +49,4 @@ interface ChangePausedAction {
     payload: boolean;
 }
 
-export type OperatorActionTypes = CueVoteAction | CueBatchAction | ChangePausedAction  | EndVote | Reset | StateActionTypes;
+export type OperatorActionTypes = CueVoteAction | CueBatchAction | ChangePausedAction  | EndVote | CueCue | Reset | StateActionTypes;

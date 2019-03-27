@@ -1,8 +1,8 @@
-import { IShowState, activeVoteLens, activeVoteFinish, paused } from "./types";
+import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue } from "./types";
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
-import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET } from "./public/app/store/operator/types";
+import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE } from "./public/app/store/operator/types";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as cp from "child_process";
@@ -124,6 +124,11 @@ wss.on("connection", function connection(socket: any) {
                     return none;
                 });
                 updateVoteWrapper(state.endVote());
+                break;
+            case CUE_CUE:
+                findCue.at(message.payload)
+                    .get(showState.cues)
+                    .map(c => updateVoteWrapper(state.runCue(c)));
                 break;
             case RESET:
                 updateVoteWrapper(_ => Object.assign({}, defaultShowState, data));

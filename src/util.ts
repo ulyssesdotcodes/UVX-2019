@@ -10,9 +10,10 @@ export const defaultShowState: IShowState = {
     activeVote: none,
     activeCues: [],
     activeMovie: none,
-    voteResults: { latest: none, all: new StrMap<VoteChoice>({}) },
+    voteResults: { latest: none, latestFilm: none, latestShow: none, all: new StrMap<VoteChoice>({}) },
     filmVotes: [],
-    showVotes: []
+    showVotes: [],
+    cues: []
 };
 
 export function createActiveVote(vote: IVote): ActiveVote {

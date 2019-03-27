@@ -29,6 +29,7 @@ var thunks_1 = require("../thunks");
 var CueVote_1 = __importDefault(require("./CueVote"));
 var types_1 = require("../../../types");
 var StrMap_1 = require("fp-ts/lib/StrMap");
+var CueCue_1 = __importDefault(require("./CueCue"));
 var Operator = /** @class */ (function (_super) {
     __extends(Operator, _super);
     function Operator(props) {
@@ -72,6 +73,12 @@ var Operator = /** @class */ (function (_super) {
                     React.createElement("div", { className: "header" }, "Show Votes"),
                     this.props.operator.showVotes.map(function (v) {
                         return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: StrMap_1.lookup(v.id, _this.props.operator.voteResults.all) }));
+                    })),
+                React.createElement("div", { className: "cue list" },
+                    React.createElement("div", { className: "header" }, "Cues"),
+                    types_1.activeCueList(this.props.operator.voteResults, this.props.operator.cues)
+                        .map(function (c) {
+                        return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue });
                     }))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
@@ -95,5 +102,5 @@ var Operator = /** @class */ (function (_super) {
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkReset: thunks_1.thunkReset, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkReset: thunks_1.thunkReset, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

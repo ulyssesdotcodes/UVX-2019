@@ -33,6 +33,38 @@ describe("end vote", () => {
             .chain(l => lookup(l, state.voteResults.all))
             .map(vr => vr === "optionA").getOrElse(false)).to.be.true;
     });
+
+    it("should update the latest show vote", () => {
+        expect(state.voteResults.latestShow).to.not.equal(none);
+        expect(state.voteResults.latestShow
+            .chain(l => lookup(l, state.voteResults.all))
+            .map(vr => vr === "optionA").getOrElse(false)).to.be.true;
+    });
+
+    it("should update the latest film vote", () => {
+        const filmVoteState = S.startVote(TV.filmVote.id)(state);
+        const filmVotedState = S.vote(TV.filmVoteActionOptB)(filmVoteState);
+        const stateF = S.endVote()(filmVotedState);
+        expect(stateF.voteResults.latest
+            .chain(l => lookup(l, stateF.voteResults.all))
+            .map(vr => vr === "optionB").getOrElse(false)).to.be.true;
+
+        expect(stateF.voteResults.latestFilm).to.not.equal(none);
+        expect(stateF.voteResults.latestFilm
+            .chain(l => lookup(l, stateF.voteResults.all))
+            .map(vr => vr === "optionB").getOrElse(false)).to.be.true;
+
+        expect(stateF.voteResults.latestShow).to.not.equal(none);
+        expect(stateF.voteResults.latestShow
+            .chain(l => lookup(l, stateF.voteResults.all))
+            .map(vr => vr === "optionA").getOrElse(false)).to.be.true;
+    });
+
+    it("should add appropriate cues to the cue list", () => {
+        expect(T.activeCueList(state.voteResults, state.cues)).to.not.equal(0);
+        expect(T.findCue.at(TV.textCue.id).get(T.activeCueList(state.voteResults, state.cues)).map(_ => true).getOrElse(false)).to.be.true;
+        expect(T.findCue.at(TV.videoCue.id).get(T.activeCueList(state.voteResults, state.cues)).map(_ => true).getOrElse(false)).to.be.false;
+    });
 });
 
 describe("cue batch", () => {
@@ -98,18 +130,16 @@ describe("movie", () => {
 });
 
 describe("run cue", () => {
-    const state = S.runCue(TV.defaultShowState, TV.allCue);
-    const endTime = new Date().getTime() + TV.allCue.duration;
+    const state = S.runCue(TV.textCue)(TV.defaultShowState);
 
     it("should add a single cue to active cues", () => {
         expect(state.activeCues.length).equal(1);
-        expect(state.activeCues).to.have.deep.members([[TV.allCue, endTime]]);
     });
 
-    it("should clear inactive cues", () => {
-        let changeTimeState = state;
-        changeTimeState.activeCues[0][1] = new Date().getTime() - 1;
-        changeTimeState = S.runCue(state, TV.textCue);
-        expect(state.activeCues.length).to.equal(1);
-    });
+    // it("should clear inactive cues", () => {
+    //     let changeTimeState = state;
+    //     changeTimeState.activeCues[0][1] = new Date().getTime() - 1;
+    //     changeTimeState = S.runCue(TV.textCue)(state);
+    //     expect(state.activeCues.length).to.equal(1);
+    // });
 });

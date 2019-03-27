@@ -1,4 +1,4 @@
-import { OperatorState, CUE_VOTE, CHANGE_PAUSED, CUE_BATCH, RESET, END_VOTE } from "./store/operator/types";
+import { OperatorState, CUE_VOTE, CHANGE_PAUSED, CUE_BATCH, RESET, END_VOTE, CUE_CUE } from "./store/operator/types";
 import { cueVote, pause } from "./store/operator/actions";
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
@@ -29,6 +29,10 @@ export const thunkVote = (userId: string, voteId: string, voteChoice: VoteChoice
     const voteAction = { voteId, vote: voteChoice, userId };
     dispatch(vote(voteAction));
     dispatch(websocketSend({type: VOTE, payload: voteAction}));
+};
+
+export const thunkCueCue = (cueId: string): ThunkAction<void, OperatorState, null, Action<string>> => async (dispatch: any) => {
+    dispatch(websocketSend({type: CUE_CUE, payload: cueId}));
 };
 
 export const thunkChangePaused = (paused: boolean) => async (dispatch: any) => {

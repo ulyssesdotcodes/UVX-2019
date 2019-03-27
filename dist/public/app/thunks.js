@@ -75,6 +75,12 @@ exports.thunkVote = function (userId, voteId, voteChoice) { return function (dis
         return [2 /*return*/];
     });
 }); }; };
+exports.thunkCueCue = function (cueId) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.CUE_CUE, payload: cueId }));
+        return [2 /*return*/];
+    });
+}); }; };
 exports.thunkChangePaused = function (paused) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         dispatch(websocket_actions_1.websocketSend({ type: types_1.CHANGE_PAUSED, payload: paused }));
