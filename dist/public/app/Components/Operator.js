@@ -86,6 +86,7 @@ var Operator = /** @class */ (function (_super) {
                     React.createElement("a", { className: "button", onClick: this.go }, "Go") :
                     React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
                 React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"),
+                React.createElement("a", { className: "button", onClick: this.props.thunkClearVoteResult }, "Clear Vote Result"),
                 React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset")),
             React.createElement("div", { className: "info" },
                 React.createElement("h3", null, "Runtime Info"),
@@ -102,5 +103,5 @@ var Operator = /** @class */ (function (_super) {
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkReset: thunks_1.thunkReset, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkReset: thunks_1.thunkReset, thunkClearVoteResult: thunks_1.thunkClearVoteResult, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

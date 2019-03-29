@@ -43,7 +43,7 @@ function cueBatch() {
     return function (s) {
         return types_1.latestVoteResultId.get(s)
             .chain(function (vrid) {
-            return types_1.latestVoteResultChoice.get(s)
+            return types_1.latestVoteResultChoice(s)
                 .map(function (vrch) { return [vrid, vrch]; });
         })
             .chain(function (vr) { return fparr
@@ -57,24 +57,26 @@ function cueBatch() {
 }
 exports.cueBatch = cueBatch;
 function vote(voteAction) {
-    return function (s) {
-        return types_1.activeVoteMap
-            .modify(function (vm) {
-            return fpm.insert(voteAction.userId, voteAction.vote, vm);
-        })(s);
-    };
+    return types_1.activeVoteMap.modify(function (vm) { return fpm.insert(voteAction.userId, voteAction.vote, vm); });
 }
 exports.vote = vote;
+function clearVoteResult() {
+    return types_1.latestVoteResultId.set(Option_1.none);
+}
+exports.clearVoteResult = clearVoteResult;
 function runMovie(state, movie) {
     return types_1.activeMovieLens.set(Option_1.some(movie))(state);
 }
 exports.runMovie = runMovie;
 function runCue(cue) {
-    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + cue.duration]]); }), clearInactiveCues);
+    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + cue.duration * 1000]]); }), clearInactiveCues);
 }
 exports.runCue = runCue;
 function clearInactiveCues(state) {
-    return state;
+    return types_1.activeCues.modify(function (cs) { return fparr.filter(cs, function (_a) {
+        var _ = _a[0], d = _a[1];
+        return new Date().getTime() < d;
+    }); })(state);
 }
 exports.clearInactiveCues = clearInactiveCues;
 function changePaused(newPaused) {

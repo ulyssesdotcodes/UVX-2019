@@ -36,8 +36,6 @@ export function operatorReducer(
                     }}
             };
         }
-        case CUE_VOTE:
-        case CUE_BATCH:
         default:
             return state;
     }

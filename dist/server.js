@@ -147,6 +147,9 @@ wss.on("connection", function connection(socket) {
             case types_2.CUE_BATCH:
                 updateVoteWrapper(state.cueBatch());
                 break;
+            case types_2.CLEAR_VOTE_RESULT:
+                updateVoteWrapper(state.clearVoteResult());
+                break;
             case types_2.END_VOTE:
                 voteTimer = voteTimer.chain(function (vt) {
                     clearTimeout(vt);

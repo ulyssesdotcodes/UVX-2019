@@ -18,10 +18,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = require("./types");
 var Option_1 = require("fp-ts/lib/Option");
 var state_types_1 = require("../common/state_types");
-var types_2 = require("../../../../types");
+var types_1 = require("../../../../types");
 var fpmap = __importStar(require("fp-ts/lib/StrMap"));
 var initialState = {
     filmVotes: [],
@@ -36,15 +35,13 @@ function operatorReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case state_types_1.UPDATE_SHOW_STATE: {
-            return __assign({}, state, action.payload, { activeVote: types_2.deserializeOption(action.payload.activeVote) }, { activeMovie: types_2.deserializeOption(action.payload.activeMovie) }, { paused: types_2.deserializeOption(action.payload.paused) }, { voteResults: {
-                    latest: types_2.deserializeOption(action.payload.voteResults.latest),
-                    latestShow: types_2.deserializeOption(action.payload.voteResults.latestShow),
-                    latestFilm: types_2.deserializeOption(action.payload.voteResults.latestFilm),
+            return __assign({}, state, action.payload, { activeVote: types_1.deserializeOption(action.payload.activeVote) }, { activeMovie: types_1.deserializeOption(action.payload.activeMovie) }, { paused: types_1.deserializeOption(action.payload.paused) }, { voteResults: {
+                    latest: types_1.deserializeOption(action.payload.voteResults.latest),
+                    latestShow: types_1.deserializeOption(action.payload.voteResults.latestShow),
+                    latestFilm: types_1.deserializeOption(action.payload.voteResults.latestFilm),
                     all: new fpmap.StrMap(action.payload.voteResults.all.value)
                 } });
         }
-        case types_1.CUE_VOTE:
-        case types_1.CUE_BATCH:
         default:
             return state;
     }

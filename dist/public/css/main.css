@@ -6,11 +6,11 @@
   cursor: pointer;
   border: 1px solid black;
   display: block;
-  padding: 2px; }
+  padding: 8px; }
 
 .button:hover {
   border: 3px solid black;
-  padding: 0px; }
+  padding: 6px; }
 
 .button:active {
   background-color: black;
@@ -35,3 +35,5 @@
   .operator .controls {
     display: flex;
     flex-direction: row; }
+    .operator .controls .button {
+      margin: 4px; }

@@ -34,8 +34,8 @@ export const filmVoteActionOptB: T.IVoteAction = { voteId: "testFilm", userId: "
 
 export const movie: T.IMovie = { batchFile: "test.mp4", batchLength: 10, loopFile: "testloop.mp4" };
 
-export const textCue: T.ITextCue = { id: "testall", type: "text",  text: "testAllCue", showVoteIds: [[showVoteAction.voteId, "optionA"]], duration: 10000 };
-export const videoCue: T.IVideoCue = { id: "testvideo", type: "video", file: "test.mp4", showVoteIds: [], duration: 10000 };
+export const textCue: T.TextCue = { id: "testall", textData: true,  text: [["testAllCue", 10]], showVoteIds: [[showVoteAction.voteId, "optionA"]], duration: 10000 };
+export const videoCue: T.VideoCue = { id: "testvideo", videoData: true, file: "test.mp4", showVoteIds: [], duration: 10000 };
 
 export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, latestShow: none, latestFilm: none, all: new StrMap<T.VoteChoice>({}) },
     filmVotes: [filmVote], showVotes: [showVote], cues: [textCue, videoCue] };

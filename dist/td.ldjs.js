@@ -11,15 +11,16 @@ var types_1 = require("./types");
 var util_1 = require("./util");
 var lambda_designer_js_1 = require("lambda-designer-js");
 var c = __importStar(require("lambda-designer-js"));
-var _ = __importStar(require("lodash"));
+var Array_1 = require("fp-ts/lib/Array");
+var function_1 = require("fp-ts/lib/function");
 function stateToTD(state, prevState) {
-    var av = state.activeVote.map(_.partial(voteNode, state, prevState.activeVote == state.activeVote));
-    var am = state.activeMovie.map(_.partial(movie, state, prevState.activeMovie == state.activeMovie));
-    return [c.top("composite", { operand: c.mp(31) })
-            .run([av, am]
-            .filter(function (n) { return n.isSome(); })
-            .map(function (n) { return n.getOrElse(c.tope("null").runT()); }))
-            .connect(c.tope("out")).out()];
+    var av = state.activeVote.map(function_1.curry(voteNode)(state)(prevState.activeVote == state.activeVote));
+    var am = state.activeMovie.map(function_1.curry(movie)(state)(prevState.activeMovie == state.activeMovie));
+    var vr = types_1.latestVoteResultId.get(state).map(voteResult);
+    var _a = cues(state, state.activeCues), videoCues = _a[0], audioCues = _a[1], textCue = _a[2];
+    return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
+            .run(Array_1.catOptions([av, am, vr]).concat([videoCues], Array_1.catOptions([textCue])))
+            .connect(c.tope("out")).out()].concat([audioCues.out()]);
 }
 exports.stateToTD = stateToTD;
 function movie(state, wasPrev, movie) {
@@ -28,7 +29,7 @@ function movie(state, wasPrev, movie) {
         length: movie.batchLength + Math.random() * 0.01,
         outtimercount: c.mp(2),
         outdone: c.tp(true),
-        play: c.tp(!state.paused)
+        play: c.tp(state.paused.isNone())
     }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
     var movieNode = c.top("moviefilein", {
         resolutionh: 1080,
@@ -69,10 +70,10 @@ function textNode(text, horizonalAlign, verticalAlign, yOff) {
 function voteNode(state, wasPrev, vote) {
     var timer = c.chop("timer", {
         length: util_1.VOTE_DURATION,
-        play: c.tp(!state.paused),
+        play: c.tp(state.paused.isNone()),
         outtimercount: c.mp(3),
     }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
-    var timertext = textNode(c.casts(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT()))), 1, 0, 120);
+    var timertext = textNode(c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 1, 0, 120);
     var voteName = textNode(c.sp(vote.vote.text), 1, 0, 60);
     var optionANode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionA; })
         .alt(types_1.showVote.getOption(vote.vote).map(function (v) { return v.optionA; }))
@@ -91,4 +92,38 @@ function voteNode(state, wasPrev, vote) {
 function voteResult(voteResultName) {
     return textNode(c.sp("Vote Result " + voteResultName), 1, 0).runT();
 }
+var mapCues = function (g, s, cues) {
+    return Array_1.array.map(Array_1.zip(g(Array_1.unzip(cues)[0]), Array_1.unzip(cues)[1]), s);
+};
+var cues = function (state, cues) {
+    return [
+        c.top("composite", { operand: c.mp(0), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) }).run(mapCues(types_1.videoCues, function_1.curry(videoCueNode)(state), cues)),
+        c.chop("math", { chopop: c.mp(1), })
+            .run(mapCues(types_1.audioCues, function_1.curry(audioCueNode)(state), cues)
+            .concat(c.chop("constant", { name0: c.sp("silence"), value0: 0 }).runT()))
+            .c(c.chope("audiodeviceout")).runT(),
+        Array_1.last(mapCues(types_1.textCues, function_1.curry(textCueNode)(state), cues))
+    ];
+};
+var audioCueNode = function (state, _a) {
+    var cue = _a[0], time = _a[1];
+    return c.chop("audiofilein", {
+        file: cue.file,
+        play: c.tp(state.paused.isNone())
+    }).runT();
+};
+var textCueNode = function (state, _a) {
+    var cue = _a[0], time = _a[1];
+    return c.top("switch", { index: 0 }).run(cue.text.map(function (_a) {
+        var t = _a[0], d = _a[1];
+        return textNode(c.sp(t), 1, 0);
+    }));
+};
+var videoCueNode = function (state, _a) {
+    var cue = _a[0], time = _a[1];
+    return c.top("moviefilein", {
+        file: cue.file,
+        play: c.tp(state.paused.isNone()),
+    }).runT();
+};
 //# sourceMappingURL=td.ldjs.js.map

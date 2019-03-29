@@ -60,6 +60,12 @@ exports.thunkEndVote = function () { return function (dispatch) { return __await
         return [2 /*return*/];
     });
 }); }; };
+exports.thunkClearVoteResult = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.CLEAR_VOTE_RESULT }));
+        return [2 /*return*/];
+    });
+}); }; };
 exports.thunkReset = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         dispatch(websocket_actions_1.websocketSend({ type: types_1.RESET }));

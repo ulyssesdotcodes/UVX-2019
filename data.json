@@ -70,33 +70,38 @@
     "cues": [
         {
             "id": "text-cue-1",
-            "type": "text",
-            "text": "Cue text cue text cue text",
-            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]]
+            "textData": true,
+            "text": [["Cue text cue text cue text", 10]],
+            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]],
+            "duration": 10
         },
         {
             "id": "video-cue-1",
-            "type": "video",
+            "videoData": true,
             "file": "movies/video1.mov",
-            "showVoteIds": [["show-2", "optionB"]]
+            "showVoteIds": [["show-2", "optionB"]],
+            "duration": 4
         },
         {
             "id": "video-cue-2",
-            "type": "video",
+            "videoData": true,
             "file": "movies/video2.mov",
-            "showVoteIds": [["show-2", "optionC"]]
+            "showVoteIds": [["show-2", "optionC"]],
+            "duration": 3
         },
         {
             "id": "audio-cue-1",
-            "type": "audio",
+            "audioData": true,
             "file": "audio/audio1.mp3",
-            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]]
+            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]],
+            "duration": 12
         },
         {
             "id": "audio-cue-2",
-            "type": "audio",
+            "audioData": true,
             "file": "audio/audio2.mp3",
-            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]]
+            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]],
+            "duration": 1
         }
     ]
 }

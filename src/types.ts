@@ -1,5 +1,5 @@
 import { Lens, Prism, Optional, fromTraversable, At, Index, Traversal } from "monocle-ts";
-import { some, none, Option } from "fp-ts/lib/Option";
+import { some, none, Option, fromPredicate } from "fp-ts/lib/Option";
 import { Refinement, Predicate, or } from "fp-ts/lib/function";
 import { isNull } from "util";
 import * as fpmap from "fp-ts/lib/StrMap";
@@ -38,45 +38,44 @@ export interface IShowVote extends IVote {
     readonly optionB: string;
 }
 
-export type CueType = "video" | "audio" | "text";
-export type Cue = ITextCue | IVideoCue | IAudioCue;
+export type Cue = ICue & (ITextData | IVideoData | IAudioData);
 
 export interface ICue {
-    readonly type: CueType;
     readonly id: string;
     readonly showVoteIds: [string, VoteChoice][];
     readonly duration: number;
 }
 
-interface ITextData {
-    readonly text: string;
-}
+export type AudioCue = ICue & IAudioData;
+export type TextCue = ICue & ITextData;
+export type VideoCue = ICue & IVideoData;
 
-export type ITextCue = ICue & ITextData;
+interface ITextData {
+    readonly textData: true;
+    readonly text: [[string, number]];
+}
 
 interface IVideoData {
+    readonly videoData: true;
     readonly file: string;
 }
-
-export type IVideoCue = ICue & IVideoData;
 
 interface IAudioData {
+    readonly audioData: true;
     readonly file: string;
 }
 
-export type IAudioCue = ICue & IAudioData;
-const isAudioCue: Refinement<ICue, IAudioCue> = (v): v is IAudioCue => v.type === "audio";
-const isVideoCue: Refinement<ICue, IVideoCue> = (v): v is IVideoCue => v.type === "video";
-const isTextCue: Refinement<ICue, ITextCue> = (v): v is ITextCue => v.type === "text";
+export const isAudioCue: Refinement<Cue, ICue & IAudioData> = (v): v is ICue & IAudioData => (<AudioCue>v).audioData;
+export const isVideoCue: Refinement<Cue, ICue & IVideoData> = (v): v is ICue & IVideoData => (<VideoCue>v).videoData;
+export const isTextCue: Refinement<Cue, ICue & ITextData> = (v): v is ICue & ITextData => (<TextCue>v).textData;
 
 export const cueId: Lens<ICue, string> = Lens.fromProp("id");
-export const cuetype: Lens<ICue, CueType> = Lens.fromProp("type");
-export const cueVideoFile: Optional<ICue, string> =
-    Prism.fromRefinement(isVideoCue).composeLens(Lens.fromProp("file"));
-export const cueAudioFile: Optional<ICue, string> =
-    Prism.fromRefinement(isAudioCue).composeLens(Lens.fromProp("file"));
-export const cueText: Optional<ICue, string> =
-    Prism.fromRefinement(isTextCue).composeLens(Lens.fromProp("text"));
+export const cueVideoFile = (cue: Cue): Option<string> =>
+    fromPredicate(isVideoCue)(cue).map(vc => vc.file);
+export const cueAudioFile = (cue: Cue): Option<string> =>
+    fromPredicate(isAudioCue)(cue).map(vc => vc.file);
+export const cueText = (cue: Cue): Option<[[string, number]]> =>
+    fromPredicate(isTextCue)(cue).map(vc => vc.text);
 
 
 const isFilmVote: Refinement<IVote, IFilmVote> = (v): v is IFilmVote => v.type === "film";
@@ -151,7 +150,7 @@ export interface IVoteResults {
 export interface IShowState {
     readonly blackout: boolean;
     readonly paused: Option<number>;
-    readonly activeCues: Array<[ICue, FinishTime]>;
+    readonly activeCues: Array<[Cue, FinishTime]>;
     readonly activeVote: Option<ActiveVote>;
     readonly activeMovie: Option<IMovie>;
     readonly voteResults: IVoteResults;
@@ -192,13 +191,11 @@ export const latestVoteResultId =
 export const latestShowVoteId: Lens<IVoteResults, Option<string>> = Lens.fromProp("latestShow");
 export const latestFilmVoteId: Lens<IVoteResults, Option<string>> = Lens.fromProp("latestFilm");
 
-export const latestVoteResultChoice =
-    new Lens<IShowState, Option<VoteChoice>>(
-        s => latestVoteResultId
+export const latestVoteResultChoice = (s: IShowState) =>
+        latestVoteResultId
             .get(s)
             .map(lvid => voteResult.at(lvid))
-            .chain(f => f.get(s)),
-        a => s => s);
+            .chain(f => f.get(s));
 
 export const voteResult =
     new At<IShowState, string, Option<VoteChoice>>(i =>
@@ -226,12 +223,12 @@ export const findVote =
 export const cues: Lens<IShowState, Array<Cue>> = Lens.fromProp("cues");
 export const findCue =
     new At<Cue[], string, Option<Cue>>(i => findByIdLens(i));
-export const textCues: Traversal<Cue[], ITextCue> =
-    fromTraversable(array)<Cue>().filter(isTextCue);
-export const videoCues: Traversal<Cue[], IVideoCue> =
-    fromTraversable(array)<Cue>().filter(isVideoCue);
-export const audioCues: Traversal<Cue[], IAudioCue> =
-    fromTraversable(array)<Cue>().filter(isAudioCue);
+export const textCues = (cues: Cue[]): TextCue[] =>
+    filter(cues, isTextCue);
+export const videoCues = (cues: Cue[]): VideoCue[] =>
+    filter(cues, isVideoCue);
+export const audioCues = (cues: Cue[]): AudioCue[] =>
+    filter(cues, isAudioCue);
 
 export const activeCueList = (vr: IVoteResults, cues: Array<Cue>): Array<Cue> =>
     filter(cues, c =>

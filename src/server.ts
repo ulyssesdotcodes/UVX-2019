@@ -2,7 +2,7 @@ import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue } from ".
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
-import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE } from "./public/app/store/operator/types";
+import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE, CLEAR_VOTE_RESULT } from "./public/app/store/operator/types";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as cp from "child_process";
@@ -117,6 +117,9 @@ wss.on("connection", function connection(socket: any) {
                 break;
             case CUE_BATCH:
                 updateVoteWrapper(state.cueBatch());
+                break;
+            case CLEAR_VOTE_RESULT:
+                updateVoteWrapper(state.clearVoteResult());
                 break;
             case END_VOTE:
                 voteTimer = voteTimer.chain(vt => {

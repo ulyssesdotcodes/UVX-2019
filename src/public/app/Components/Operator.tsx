@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, thunkClearVoteResult, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
@@ -20,6 +20,7 @@ interface OperatorProps {
     thunkEndVote: () => void;
     thunkCueCue: (cueId: string) => void;
     thunkReset: () => void;
+    thunkClearVoteResult: () => void;
     connectws: (url: string) => void;
 }
 
@@ -99,6 +100,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                         <a className="button" onClick={this.pause}>Pause</a>
                     }
                     <a className="button" onClick={this.props.thunkCueBatch}>Cue Batch</a>
+                    <a className="button" onClick={this.props.thunkClearVoteResult}>Clear Vote Result</a>
                     <a className="button" onClick={this.props.thunkReset}>Reset</a>
                 </div>
                 <div className="info">
@@ -119,4 +121,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, thunkClearVoteResult, connectws })(Operator);

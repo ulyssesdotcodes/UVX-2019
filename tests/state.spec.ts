@@ -136,10 +136,10 @@ describe("run cue", () => {
         expect(state.activeCues.length).equal(1);
     });
 
-    // it("should clear inactive cues", () => {
-    //     let changeTimeState = state;
-    //     changeTimeState.activeCues[0][1] = new Date().getTime() - 1;
-    //     changeTimeState = S.runCue(TV.textCue)(state);
-    //     expect(state.activeCues.length).to.equal(1);
-    // });
+    it("should clear inactive cues", () => {
+        let changeTimeState = state;
+        changeTimeState.activeCues[0][1] = new Date().getTime() - 1;
+        changeTimeState = S.runCue(TV.textCue)(state);
+        expect(state.activeCues.length).to.equal(1);
+    });
 });
