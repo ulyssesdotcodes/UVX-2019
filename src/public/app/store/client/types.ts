@@ -1,4 +1,4 @@
-import { IVoteAction, IVote, IFilmVote, IShowVote, VoteChoice, ActiveVote } from "../../../../types";
+import { IVoteAction, IVote, IShowVote, VoteChoice, ActiveVote } from "../../../../types";
 import { Option } from "fp-ts/lib/Option";
 import { WebsocketTypes } from "../common/websocket_types";
 import { StateActionTypes } from "../common/state_types";

@@ -35,14 +35,14 @@ function movie(state, wasPrev, movie) {
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: movie.batchFile,
+        file: c.sp(movie.batchFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
     var loopNode = c.top("moviefilein", {
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: movie.loopFile,
+        file: c.sp(movie.loopFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
     var movSwitch = c.top("switch", {
@@ -75,13 +75,13 @@ function voteNode(state, wasPrev, vote) {
     }, wasPrev ? [] : [{ type: "pulse", param: "start", val: 1, frames: 2 }]);
     var timertext = textNode(c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 1, 0, 120);
     var voteName = textNode(c.sp(vote.vote.text), 1, 0, 60);
-    var optionANode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionA; })
+    var optionANode = types_1.votedFilmVote.getOption(vote.vote).map(function (v) { return v.optionA; })
         .alt(types_1.showVote.getOption(vote.vote).map(function (v) { return v.optionA; }))
         .map(function (v) { return textNode(c.sp(v), 0, 0); });
-    var optionBNode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionB; })
+    var optionBNode = types_1.votedFilmVote.getOption(vote.vote).map(function (v) { return v.optionB; })
         .alt(types_1.showVote.getOption(vote.vote).map(function (v) { return v.optionB; }))
         .map(function (v) { return textNode(c.sp(v), 1, 0); });
-    var optionCNode = types_1.filmVote.getOption(vote.vote).map(function (v) { return v.optionC; })
+    var optionCNode = types_1.votedFilmVote.getOption(vote.vote).map(function (v) { return v.optionC; })
         .map(function (v) { return textNode(c.sp(v), 2, 0); });
     var optionlist = [optionANode, optionBNode, optionCNode]
         .filter(function (n) { return n.isSome(); })
@@ -122,7 +122,7 @@ var textCueNode = function (state, _a) {
 var videoCueNode = function (state, _a) {
     var cue = _a[0], time = _a[1];
     return c.top("moviefilein", {
-        file: cue.file,
+        file: c.sp(cue.file),
         play: c.tp(state.paused.isNone()),
     }).runT();
 };

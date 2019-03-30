@@ -26,12 +26,15 @@ exports.cueText = function (cue) {
     return Option_1.fromPredicate(exports.isTextCue)(cue).map(function (vc) { return vc.text; });
 };
 var isFilmVote = function (v) { return v.type === "film"; };
-var isShowVote = function (v) { return v.type === "show"; };
+exports.isVotedFilmVote = function (v) { return v.optionA !== undefined; };
+exports.isBasisFilmVote = function (v) { return v.basis !== undefined; };
+exports.isShowVote = function (v) { return v.type === "show"; };
 exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);
-exports.showVote = monocle_ts_1.Prism.fromRefinement(isShowVote);
-exports.optionA = monocle_ts_1.Prism.fromRefinement(function_1.or(isFilmVote, isShowVote)).composeLens(monocle_ts_1.Lens.fromProp("optionA"));
-exports.optionB = monocle_ts_1.Prism.fromRefinement(function_1.or(isFilmVote, isShowVote)).composeLens(monocle_ts_1.Lens.fromProp("optionB"));
-exports.optionC = monocle_ts_1.Prism.fromRefinement(isFilmVote).composeLens(monocle_ts_1.Lens.fromProp("optionC"));
+exports.votedFilmVote = monocle_ts_1.Prism.fromRefinement(exports.isVotedFilmVote);
+exports.showVote = monocle_ts_1.Prism.fromRefinement(exports.isShowVote);
+exports.optionA = monocle_ts_1.Prism.fromRefinement(function_1.or(exports.isVotedFilmVote, exports.isShowVote)).composeLens(monocle_ts_1.Lens.fromProp("optionA"));
+exports.optionB = monocle_ts_1.Prism.fromRefinement(function_1.or(exports.isVotedFilmVote, exports.isShowVote)).composeLens(monocle_ts_1.Lens.fromProp("optionB"));
+exports.optionC = monocle_ts_1.Prism.fromRefinement(exports.isVotedFilmVote).composeLens(monocle_ts_1.Lens.fromProp("optionC"));
 exports.voteChoice = new monocle_ts_1.Optional(function (s) { return s[1] == "optionA" ? exports.optionA.getOption(s[0]) :
     s[1] == "optionB" ? exports.optionB.getOption(s[0]) :
         exports.optionC.getOption(s[0]); }, function (a) { return function (s) { return s; }; });
@@ -84,11 +87,11 @@ exports.latestFilmVoteId = monocle_ts_1.Lens.fromProp("latestFilm");
 exports.latestVoteResultChoice = function (s) {
     return exports.latestVoteResultId
         .get(s)
-        .map(function (lvid) { return exports.voteResult.at(lvid); })
+        .map(function (lvid) { return exports.voteResults.compose(exports.voteResult.at(lvid)); })
         .chain(function (f) { return f.get(s); });
 };
 exports.voteResult = new monocle_ts_1.At(function (i) {
-    return exports.allVoteResults.compose(exports.strMapValueLens(i));
+    return monocle_ts_1.Lens.fromProp()("all").compose(exports.strMapValueLens(i));
 });
 exports.filmVotes = monocle_ts_1.Lens.fromProp("filmVotes");
 exports.showVotes = monocle_ts_1.Lens.fromProp("showVotes");

@@ -4,7 +4,7 @@ import { some, none } from "fp-ts/lib/Option";
 import { StrMap } from "fp-ts/lib/StrMap";
 
 export const showVote: T.IShowVote = { id: "testShow", text: "test", optionA: "test A", optionB: "test B", type: "show", operatorName: "test vote" };
-export const filmVote: T.IFilmVote = { "id": "film-1",
+export const filmVote: T.FilmVote & T.IVotedFilmVote = { "id": "film-1",
             "type": "film",
             "text": "First film vote!",
             "operatorName": "Cue first film vote",
@@ -27,6 +27,16 @@ export const filmVote: T.IFilmVote = { "id": "film-1",
                 "loopFile": "video/optionCloop.mp4"
             }};
 
+export const dependentFilmVote: T.FilmVote = {
+    "id": "film-3",
+    "type": "film",
+    "operatorName": "Cue dependent film vote",
+    "prefix": "S5100",
+    "extension": ".mov",
+    "basis": ["film-1", "film-2"],
+    "durations": {"12": 4}
+};
+
 export const showVoteAction: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionA" };
 export const showVoteActionB: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionB" };
 export const showVoteActionUserB: T.IVoteAction = { voteId: "testShow", userId: "testUserB", vote: "optionB" };
@@ -39,3 +49,16 @@ export const videoCue: T.VideoCue = { id: "testvideo", videoData: true, file: "t
 
 export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, latestShow: none, latestFilm: none, all: new StrMap<T.VoteChoice>({}) },
     filmVotes: [filmVote], showVotes: [showVote], cues: [textCue, videoCue] };
+
+export const votedShowState: T.IShowState = {
+    ...defaultShowState,
+    ...{
+        voteResuts: {
+            latest: none,
+            latestFilm: none,
+            latestShow: none,
+            all: new StrMap({ "film-1": "optionA", "film-2": "optionB" })
+        },
+        filmVotes: [dependentFilmVote]
+    }
+};

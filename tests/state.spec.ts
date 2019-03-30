@@ -16,6 +16,11 @@ describe("start vote", () => {
     it("should make a vote active", () => {
         expect(state.activeVote.map(av => av.vote)).to.deep.equal(some(TV.showVote));
     });
+
+    it("should run a vote based on previous votes", () => {
+        const startedBatch = S.startVote("film-3")(TV.votedShowState);
+        expect(state.activeVote.map(av => av.vote)).to.deep.equal(some(TV.showVote));
+    });
 });
 
 describe("end vote", () => {

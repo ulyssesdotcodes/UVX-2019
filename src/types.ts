@@ -18,12 +18,24 @@ export type VoteID = string;
 export interface IVote {
     readonly id: VoteID;
     readonly operatorName: string;
-    readonly text: string;
     readonly type: VoteType;
 }
 
-export interface IFilmVote extends IVote {
+export type FilmVote = IFilmVote & (IBasisFilmVote | IVotedFilmVote);
+
+interface IFilmVote extends IVote {
     readonly type: "film";
+}
+
+export interface IBasisFilmVote extends IVote {
+    readonly prefix: string;
+    readonly extension: string;
+    readonly basis: string[];
+    readonly durations: { [key: string]: number };
+}
+
+export interface IVotedFilmVote extends IVote {
+    readonly text: string;
     readonly optionA: string;
     readonly optionAMovie: IMovie;
     readonly optionB: string;
@@ -34,6 +46,7 @@ export interface IFilmVote extends IVote {
 
 export interface IShowVote extends IVote {
     readonly type: "show";
+    readonly text: string;
     readonly optionA: string;
     readonly optionB: string;
 }
@@ -78,16 +91,19 @@ export const cueText = (cue: Cue): Option<[[string, number]]> =>
     fromPredicate(isTextCue)(cue).map(vc => vc.text);
 
 
-const isFilmVote: Refinement<IVote, IFilmVote> = (v): v is IFilmVote => v.type === "film";
-const isShowVote: Refinement<IVote, IShowVote> = (v): v is IShowVote => v.type === "show";
-export const filmVote: Prism<IVote, IFilmVote> = Prism.fromRefinement(isFilmVote);
+const isFilmVote: Refinement<IVote, FilmVote> = (v): v is FilmVote => v.type === "film";
+export const isVotedFilmVote: Refinement<IVote, IFilmVote & IVotedFilmVote> = (v): v is IFilmVote & IVotedFilmVote => (<IVotedFilmVote>v).optionA !== undefined;
+export const isBasisFilmVote: Refinement<IVote, IFilmVote & IBasisFilmVote> = (v): v is IFilmVote & IBasisFilmVote => (<IBasisFilmVote>v).basis !== undefined;
+export const isShowVote: Refinement<IVote, IShowVote> = (v): v is IShowVote => v.type === "show";
+export const filmVote: Prism<IVote, FilmVote> = Prism.fromRefinement(isFilmVote);
+export const votedFilmVote: Prism<IVote, IFilmVote & IVotedFilmVote> = Prism.fromRefinement(isVotedFilmVote);
 export const showVote: Prism<IVote, IShowVote> = Prism.fromRefinement(isShowVote);
 export const optionA: Optional<IVote, string> =
-    Prism.fromRefinement(or(isFilmVote, isShowVote)).composeLens(Lens.fromProp("optionA"));
+    Prism.fromRefinement(or(isVotedFilmVote, isShowVote)).composeLens(Lens.fromProp("optionA"));
 export const optionB: Optional<IVote, string> =
-    Prism.fromRefinement(or(isFilmVote, isShowVote)).composeLens(Lens.fromProp("optionB"));
+    Prism.fromRefinement(or(isVotedFilmVote, isShowVote)).composeLens(Lens.fromProp("optionB"));
 export const optionC: Optional<IVote, string> =
-    Prism.fromRefinement(isFilmVote).composeLens(Lens.fromProp("optionC"));
+    Prism.fromRefinement(isVotedFilmVote).composeLens(Lens.fromProp("optionC"));
 export const voteChoice: Optional<[IVote, VoteChoice], string> =
     new Optional(
         s => s[1] == "optionA" ? optionA.getOption(s[0]) :
@@ -97,21 +113,21 @@ export const voteChoice: Optional<[IVote, VoteChoice], string> =
 
 export function options(vote: IVote): [string, VoteChoice][] {
     const optionA: Option<[string, VoteChoice]> =
-        (<IFilmVote | IShowVote>vote).optionA ?
-            <Option<[string, VoteChoice]>>some([(<IFilmVote | IShowVote>vote).optionA, "optionA"]) :
+        (<IVotedFilmVote | IShowVote>vote).optionA ?
+            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote | IShowVote>vote).optionA, "optionA"]) :
             <Option<[string, VoteChoice]>>none;
     const optionB: Option<[string, VoteChoice]> =
-        (<IFilmVote | IShowVote>vote).optionB ?
-            <Option<[string, VoteChoice]>>some([(<IFilmVote | IShowVote>vote).optionB, "optionB"]) :
+        (<IVotedFilmVote | IShowVote>vote).optionB ?
+            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote | IShowVote>vote).optionB, "optionB"]) :
             <Option<[string, VoteChoice]>>none;
     const optionC: Option<[string, VoteChoice]> =
-        (<IFilmVote>vote).optionC ?
-            <Option<[string, VoteChoice]>>some([(<IFilmVote>vote).optionC, "optionC"]) :
+        (<IVotedFilmVote>vote).optionC ?
+            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote>vote).optionC, "optionC"]) :
             <Option<[string, VoteChoice]>>none;
     return [optionA, optionB, optionC].filter(v => v.isSome()).map(v => v.getOrElse(["", "optionA"]));
 }
 
-export function voteMovie(vote: IFilmVote, vc: VoteChoice): IMovie {
+export function voteMovie(vote: IVotedFilmVote, vc: VoteChoice): IMovie {
     switch (vc) {
         case "optionA":
             return vote.optionAMovie;
@@ -135,7 +151,7 @@ export interface IMovie {
 }
 
 export interface ActiveVote {
-    vote: IVote;
+    vote: IShowVote | IVotedFilmVote;
     finishTime: FinishTime;
     voteMap: fpmap.StrMap<VoteChoice>;
 }
@@ -155,7 +171,7 @@ export interface IShowState {
     readonly activeMovie: Option<IMovie>;
     readonly voteResults: IVoteResults;
     readonly showVotes: Array<IShowVote>;
-    readonly filmVotes: Array<IFilmVote>;
+    readonly filmVotes: Array<FilmVote>;
     readonly cues: Array<Cue>;
 }
 
@@ -194,14 +210,14 @@ export const latestFilmVoteId: Lens<IVoteResults, Option<string>> = Lens.fromPro
 export const latestVoteResultChoice = (s: IShowState) =>
         latestVoteResultId
             .get(s)
-            .map(lvid => voteResult.at(lvid))
+            .map(lvid => voteResults.compose(voteResult.at(lvid)))
             .chain(f => f.get(s));
 
 export const voteResult =
-    new At<IShowState, string, Option<VoteChoice>>(i =>
-        allVoteResults.compose(strMapValueLens(i)));
+    new At<IVoteResults, string, Option<VoteChoice>>(i =>
+        Lens.fromProp<IVoteResults>()("all").compose(strMapValueLens(i)));
 
-export const filmVotes: Lens<IShowState, Array<IFilmVote>> =
+export const filmVotes: Lens<IShowState, Array<FilmVote>> =
     Lens.fromProp("filmVotes");
 export const showVotes: Lens<IShowState, Array<IShowVote>> =
     Lens.fromProp("showVotes");
@@ -210,8 +226,8 @@ export const allVotes: Lens<IShowState, Array<IVote>> =
         s => (<IVote[]>s.filmVotes).concat(s.showVotes),
         a => s => array.reduce(a, s, (b, a) =>
             (isFilmVote(a) ?
-                filmVotes.modify((arr: IFilmVote[]) =>
-                    arr.concat([<IFilmVote>a]))(s) :
+                filmVotes.modify((arr: FilmVote[]) =>
+                    arr.concat([<FilmVote>a]))(s) :
                 showVotes.modify((arr: IShowVote[]) =>
                     arr.concat([<IShowVote>a]))(s))));
 

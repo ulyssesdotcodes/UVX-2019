@@ -23,6 +23,8 @@
 .operator {
   display: flex;
   flex-direction: column; }
+  .operator div {
+    margin: 8px; }
   .operator .cue-votes {
     width: 200px; }
     .operator .cue-votes .header {

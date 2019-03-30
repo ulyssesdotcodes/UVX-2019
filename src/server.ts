@@ -1,4 +1,4 @@
-import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue } from "./types";
+import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue, isVotedFilmVote, isShowVote } from "./types";
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
@@ -14,7 +14,7 @@ import { Socket } from "./Socket";
 import * as ldjs from "lambda-designer-js";
 import { VOTE } from "./public/app/store/client/types";
 import { start } from "repl";
-import { identity } from "fp-ts/lib/function";
+import { identity, or } from "fp-ts/lib/function";
 import { thunkVote } from "./public/app/thunks";
 import { none, some, Option } from "fp-ts/lib/Option";
 import { pause } from "./public/app/store/operator/actions";
@@ -96,8 +96,11 @@ wss.on("connection", function connection(socket: any) {
             case CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
                 voteTimer =
-                    activeVoteFinish.getOption(showState)
-                        .chain(av => paused.get(showState).isSome() ? none : some(av))
+                    activeVoteLens.get(showState)
+                        .map(av => av.vote)
+                        .filter(or(isVotedFilmVote, isShowVote))
+                        .chain(_ => activeVoteFinish.getOption(showState))
+                        .chain(av => paused.get(showState).isSome() ? (none as Option<number>) : some(av))
                         .map(t =>
                             setTimeout(() => updateVoteWrapper(state.endVote()),
                                 t - new Date().getTime()));

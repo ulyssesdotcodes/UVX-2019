@@ -11,12 +11,45 @@ var types_1 = require("./types");
 var Option_1 = require("fp-ts/lib/Option");
 var fparr = __importStar(require("fp-ts/lib/Array"));
 var fpm = __importStar(require("fp-ts/lib/StrMap"));
+var fpfold = __importStar(require("fp-ts/lib/Foldable2v"));
 var util_1 = require("./util");
 var function_1 = require("fp-ts/lib/function");
+var Monoid_1 = require("fp-ts/lib/Monoid");
 function startVote(voteId) {
-    return function (s) { return types_1.activeVoteLens.set(types_1.findVote.at(voteId)
-        .get(s)
-        .map(util_1.createActiveVote))(s); };
+    var voteChoiceToNum = function (vc) {
+        switch (vc) {
+            case "optionA": return "1";
+            case "optionB": return "2";
+            case "optionC": return "3";
+        }
+    };
+    var F = fpfold.getFoldableComposition(fparr.array, Option_1.option);
+    var bfvToMovie = function (bfv, vrs) {
+        return Option_1.some(fparr.array.map(bfv.basis, function (s) { return types_1.voteResult.at(s).get(vrs); }))
+            .filter(function (vcs) { return fparr.array.foldr(vcs, true, function (a, b) { return a.isSome() && b; }); })
+            .map(function (vcs) { return fparr.array.map(vcs, function (vc) { return vc.map(voteChoiceToNum); }); })
+            .map(function (vcs) { return F.reduce(vcs, "", Monoid_1.monoidString.concat); })
+            .chain(function (nums) { return Option_1.fromNullable(bfv.durations[nums]).map(function (d) { return [nums, d]; }); })
+            .map(function (_a) {
+            var nums = _a[0], d = _a[1];
+            return ({
+                batchFile: bfv.prefix + nums + bfv.extension,
+                batchLength: d,
+                loopFile: bfv.prefix + nums + "_loop" + bfv.extension
+            });
+        });
+    };
+    return function (s) {
+        return types_1.findVote.at(voteId).get(s)
+            .filter(types_1.isVotedFilmVote)
+            .map(util_1.createActiveVote)
+            .map(function (v) { return types_1.activeVoteLens.set(Option_1.some(v))(s); })
+            .alt(types_1.findVote.at(voteId).get(s)
+            .filter(types_1.isBasisFilmVote)
+            .map(function (bfv) { return bfvToMovie(bfv, s.voteResults); })
+            .map(function (movie) { return types_1.activeMovieLens.set(movie)(s); }))
+            .getOrElse(s);
+    };
 }
 exports.startVote = startVote;
 function endVote() {
@@ -48,6 +81,7 @@ function cueBatch() {
         })
             .chain(function (vr) { return fparr
             .findFirst(s.filmVotes, function (x) { return x.id === vr[0]; })
+            .filter(types_1.isVotedFilmVote)
             .map(function (fv) { return types_1.voteMovie(fv, vr[1]); }); })
             .map(function (vr) { return Option_1.some(vr); })
             .map(types_1.activeMovieLens.set)

@@ -126,7 +126,10 @@ wss.on("connection", function connection(socket) {
             case types_2.CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
                 voteTimer =
-                    types_1.activeVoteFinish.getOption(showState)
+                    types_1.activeVoteLens.get(showState)
+                        .map(function (av) { return av.vote; })
+                        .filter(function_1.or(types_1.isVotedFilmVote, types_1.isShowVote))
+                        .chain(function (_) { return types_1.activeVoteFinish.getOption(showState); })
                         .chain(function (av) { return types_1.paused.get(showState).isSome() ? Option_1.none : Option_1.some(av); })
                         .map(function (t) {
                         return setTimeout(function () { return updateVoteWrapper(state.endVote()); }, t - new Date().getTime());

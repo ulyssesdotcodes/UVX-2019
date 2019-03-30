@@ -1,4 +1,4 @@
-import { IShowState, IMovie, IVote, ActiveVote, filmVote, showVote, latestVoteResultId, Cue, cueAudioFile, isAudioCue, activeCues, isTextCue, cueText, AudioCue, TextCue, VideoCue, cueVideoFile, videoCues, audioCues, textCues } from "./types";
+import { IShowState, IMovie, IVote, ActiveVote, filmVote, showVote, latestVoteResultId, Cue, cueAudioFile, isAudioCue, activeCues, isTextCue, cueText, AudioCue, TextCue, VideoCue, cueVideoFile, videoCues, audioCues, textCues, votedFilmVote } from "./types";
 import { VOTE_DURATION } from "./util";
 import { Node, INode, chan, IParam, OP } from "lambda-designer-js";
 import * as c from "lambda-designer-js";
@@ -37,7 +37,7 @@ function movie(state: IShowState, wasPrev: boolean, movie: IMovie): Node<"TOP"> 
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: movie.batchFile,
+        file: c.sp(movie.batchFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
 
@@ -45,7 +45,7 @@ function movie(state: IShowState, wasPrev: boolean, movie: IMovie): Node<"TOP"> 
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: movie.loopFile,
+        file: c.sp(movie.loopFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
 
@@ -93,16 +93,16 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
 
     const voteName = textNode(c.sp(vote.vote.text), 1, 0, 60);
     const optionANode =
-        filmVote.getOption(vote.vote).map(v => v.optionA)
+        votedFilmVote.getOption(vote.vote).map(v => v.optionA)
                 .alt(showVote.getOption(vote.vote).map(v => v.optionA))
         .map(v => textNode(c.sp(v), 0, 0));
     const optionBNode =
-        filmVote.getOption(vote.vote).map(v => v.optionB)
+        votedFilmVote.getOption(vote.vote).map(v => v.optionB)
                 .alt(showVote.getOption(vote.vote).map(v => v.optionB))
         .map(v => textNode(c.sp(v), 1, 0));
 
     const optionCNode =
-        filmVote.getOption(vote.vote).map(v => v.optionC)
+        votedFilmVote.getOption(vote.vote).map(v => v.optionC)
         .map(v => textNode(c.sp(v), 2, 0));
 
     const optionlist = [optionANode, optionBNode, optionCNode]
@@ -141,6 +141,6 @@ const textCueNode = (state: IShowState, [cue, time]: [TextCue, number]): TextCue
 
 const videoCueNode = (state: IShowState, [cue, time]: [VideoCue, number]): VideoCueNode =>
     c.top("moviefilein", {
-        file: cue.file,
+        file: c.sp(cue.file),
         play: c.tp(state.paused.isNone()),
     }).runT();

@@ -7,7 +7,7 @@ import { RouteComponentProps, RouteProps } from "react-router";
 import { ClientState } from "../store/client/types";
 import { Vote } from "../Vote";
 import VoteOption from "./VoteOption";
-import { IFilmVote, IVote, VoteChoice, options } from "../../../types";
+import { IVote, VoteChoice, options } from "../../../types";
 import { stat } from "fs";
 import * as uuid from "uuid";
 import { string } from "prop-types";

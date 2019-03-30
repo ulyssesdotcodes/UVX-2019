@@ -1,4 +1,4 @@
-import { VoteID, IVote, ActiveVote, VoteChoice, IFilmVote, IShowVote, IVoteResults, IMovie, Cue } from "../../../../types";
+import { VoteID, IVote, ActiveVote, VoteChoice, IShowVote, IVoteResults, IMovie, Cue, FilmVote } from "../../../../types";
 import { string } from "prop-types";
 import { WebsocketTypes } from "../common/websocket_types";
 import { StateActionTypes } from "../common/state_types";
@@ -6,7 +6,7 @@ import { Option } from "fp-ts/lib/Option";
 import { StrMap } from "fp-ts/lib/StrMap";
 
 export interface OperatorState {
-    filmVotes: Array<IFilmVote>;
+    filmVotes: Array<FilmVote>;
     showVotes: Array<IShowVote>;
     cues: Array<Cue>;
     activeVote: Option<ActiveVote>;

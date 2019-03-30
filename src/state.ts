@@ -1,5 +1,5 @@
-import { IShowState, IFilmVote, IShowVote, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovie, activeMovieLens, activeVoteLens, IVote, voteResult, voteChoice, activeVoteVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish, latestShowVoteId, latestFilmVoteId, allVoteResults, activeCues, Cue } from "./types";
-import { some, none, Option } from "fp-ts/lib/Option";
+import { IShowState, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovieLens, activeVoteLens, IVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish, latestShowVoteId, latestFilmVoteId, allVoteResults, activeCues, Cue, isVotedFilmVote, IVotedFilmVote, FilmVote, isBasisFilmVote, IBasisFilmVote, IVoteResults, voteResult } from "./types";
+import { some, none, Option, isSome, option, fromNullable } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpm from "fp-ts/lib/StrMap";
 import * as fpfold from "fp-ts/lib/Foldable2v";
@@ -8,14 +8,47 @@ import { stateToTD } from "./td.ldjs";
 import { pause } from "./public/app/store/operator/actions";
 import { createActiveVote } from "./util";
 import { setoidString } from "fp-ts/lib/Setoid";
-import { compose, identity } from "fp-ts/lib/function";
-import { array } from "prop-types";
+import { compose, identity, Refinement } from "fp-ts/lib/function";
+import { find } from "fp-ts/lib/Foldable";
+import { create } from "domain";
+import { monoidAll, monoidString } from "fp-ts/lib/Monoid";
+import { sequence } from "fp-ts/lib/Traversable";
+import { getMonoid } from "fp-ts/lib/Applicative";
+import { string } from "prop-types";
 
 export function startVote(voteId: string): (s: IShowState) => IShowState {
-    return s => activeVoteLens.set(
-        findVote.at(voteId)
-            .get(s)
-            .map(createActiveVote))(s);
+    const voteChoiceToNum = (vc: VoteChoice): string => {
+        switch (vc) {
+            case "optionA": return "1";
+            case "optionB": return "2";
+            case "optionC": return "3";
+        }
+    };
+
+    const F = fpfold.getFoldableComposition(fparr.array, option);
+
+    const bfvToMovie = (bfv: IBasisFilmVote, vrs: IVoteResults): Option<IMovie> =>
+        some(fparr.array.map(bfv.basis, s => voteResult.at(s).get(vrs)))
+            .filter(vcs => fparr.array.foldr(vcs, true, (a, b) => a.isSome() && b))
+            .map(vcs => fparr.array.map(vcs, vc => vc.map(voteChoiceToNum)))
+            .map(vcs => F.reduce(vcs, "", monoidString.concat))
+            .chain(nums => fromNullable(bfv.durations[nums]).map(d => [nums, d] as [string, number]))
+            .map(([nums, d]) => ({
+                batchFile: bfv.prefix + nums + bfv.extension,
+                batchLength: d,
+                loopFile: bfv.prefix + nums + "_loop" + bfv.extension
+            }));
+
+    return s =>
+        findVote.at(voteId).get(s)
+            .filter(isVotedFilmVote)
+            .map(createActiveVote)
+            .map(v => activeVoteLens.set(some(v))(s))
+            .alt(findVote.at(voteId).get(s)
+                .filter(isBasisFilmVote)
+                .map(bfv => bfvToMovie(bfv, s.voteResults))
+                .map(movie => activeMovieLens.set(movie)(s)))
+            .getOrElse(s);
 }
 
 export function endVote(): (s: IShowState) => IShowState {
@@ -51,6 +84,7 @@ export function cueBatch(): (s: IShowState) => IShowState {
                     .map(vrch => [vrid, vrch] as [string, VoteChoice]))
             .chain(vr => fparr
                     .findFirst(s.filmVotes, x => x.id === vr[0])
+                    .filter(isVotedFilmVote)
                     .map(fv => voteMovie(fv, vr[1])))
             .map(vr => some(vr))
             .map(activeMovieLens.set)
