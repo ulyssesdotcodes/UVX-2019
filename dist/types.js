@@ -12,6 +12,7 @@ var Option_1 = require("fp-ts/lib/Option");
 var function_1 = require("fp-ts/lib/function");
 var fpmap = __importStar(require("fp-ts/lib/StrMap"));
 var Array_1 = require("fp-ts/lib/Array");
+var Semigroup_1 = require("fp-ts/lib/Semigroup");
 exports.isAudioCue = function (v) { return v.audioData; };
 exports.isVideoCue = function (v) { return v.videoData; };
 exports.isTextCue = function (v) { return v.textData; };
@@ -25,8 +26,13 @@ exports.cueAudioFile = function (cue) {
 exports.cueText = function (cue) {
     return Option_1.fromPredicate(exports.isTextCue)(cue).map(function (vc) { return vc.text; });
 };
+exports.cueDuration = function (cue) {
+    return function_1.or(exports.isVideoCue, exports.isAudioCue)(cue) ?
+        cue.duration :
+        Semigroup_1.fold(Semigroup_1.semigroupSum)(0)(Array_1.unzip(cue.text)[1]);
+};
 var isFilmVote = function (v) { return v.type === "film"; };
-exports.isVotedFilmVote = function (v) { return v.optionA !== undefined; };
+exports.isVotedFilmVote = function (v) { return v.optionA !== undefined && v.type === "film"; };
 exports.isBasisFilmVote = function (v) { return v.basis !== undefined; };
 exports.isShowVote = function (v) { return v.type === "show"; };
 exports.filmVote = monocle_ts_1.Prism.fromRefinement(isFilmVote);

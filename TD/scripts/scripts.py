@@ -47,8 +47,6 @@ def apply(newState):
         addParameter(curop, splits[2], diffi[2][1])
       elif diffi[0] == 'remove':
         for param in diffi[2]:
-          print("remove")
-          print(param[0])
           if(param[0] == 'tx'):
             curop.par.tx = 0
           elif param[0] == 'ty':
@@ -58,9 +56,7 @@ def apply(newState):
           elif str.startswith(param[0], "name"):
             curop.pars(param[0])[0].val = ""
           par = curop.pars(param[0])[0]
-          print("val: " + str(par.val))
           if par.val:
-            print("def: " + str(par.default))
             par.val = par.default
 
     elif splits[1] == 'text':
@@ -68,7 +64,7 @@ def apply(newState):
 
   for name in state:
     for cmd in state[name]['commands']:
-      runCommand("lambda/" + name, cmd['command'], cmd['args'])
+      runCommand(name, cmd['command'], cmd['delay'], cmd['args'])
 
 
 def getName(name):
@@ -95,7 +91,6 @@ def addAll(state):
         connector.disconnect()
     op(getName(conn[0])).outputConnectors[0].connect(op(conn[1]).inputConnectors[conn[2]])
     if op(conn[1]).type == 'feedback' and op(conn[1]).isCHOP:
-      print("feedback chop11")
       op(conn[1]).par.reset.pulse(1, frames=2)
 
 
@@ -187,15 +182,25 @@ def addParameter(newOp, name, value):
   elif name == 'file' and (newOp.type == "text" or newOp.type == "table"):
     newOp.par.loadonstartpulse.pulse()
 
-def runCommand(newOpName, command, args):
+def runCommand(newOpName, command, delay, args):
     if command == "pulse":
-      newOp = op(newOpName)
+      newOp = op("lambda/" + newOpName)
       pars = newOp.pars(args[0])
       if len(pars) > 0:
         if isfloat(args[1]):
-          pars[0].pulse(float(args[1]), frames=float(args[2]))
+          if delay == 0:
+            print(args)
+            pars[0].pulse(float(args[1]), frames=float(args[2]))
+          else:
+            print("node" + newOpName)
+            print("command" + str(args))
+            run("op(\"/project1/lambda" + newOpName + "\").pars(\"" + args[0] + "\")[0].pulse(float(" + str(args[1]) + "), frames=float(" + str(args[2]) + "))", delayFrames = delay)
         else:
-          pars[0].pulse(args[1])
+          if delay == 0:
+            print(args)
+            pars[0].pulse(args[1])
+          else:
+            run("op(\"/project1/lambda" + newOpName + "\").pars(\"" + args[0] + "\")[0].pulse(float(" + str(args[1]) + "), frames=float(" + str(args[2]) + "))", delayFrames = delay)
     elif command == "store":
       newOp.store(args[0], args[1])
 

@@ -163,6 +163,11 @@ wss.on("connection", function connection(socket) {
             case types_2.CUE_CUE:
                 types_1.findCue.at(message.payload)
                     .get(showState.cues)
+                    .map(function (c) {
+                    // TODO: Ugly side effect
+                    setTimeout(function () { return updateVoteWrapper(state.clearInactiveCues); }, types_1.cueDuration(c) * 1000);
+                    return c;
+                })
                     .map(function (c) { return updateVoteWrapper(state.runCue(c)); });
                 break;
             case types_2.RESET:

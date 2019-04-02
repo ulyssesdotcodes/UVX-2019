@@ -1,4 +1,4 @@
-import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue, isVotedFilmVote, isShowVote } from "./types";
+import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue, isVotedFilmVote, isShowVote, cueDuration } from "./types";
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
@@ -134,6 +134,11 @@ wss.on("connection", function connection(socket: any) {
             case CUE_CUE:
                 findCue.at(message.payload)
                     .get(showState.cues)
+                    .map(c => {
+                        // TODO: Ugly side effect
+                        setTimeout(() => updateVoteWrapper(state.clearInactiveCues), cueDuration(c) * 1000);
+                        return c;
+                    })
                     .map(c => updateVoteWrapper(state.runCue(c)));
                 break;
             case RESET:

@@ -41,7 +41,7 @@ function startVote(voteId) {
     };
     return function (s) {
         return types_1.findVote.at(voteId).get(s)
-            .filter(types_1.isVotedFilmVote)
+            .filter(function_1.or(types_1.isVotedFilmVote, types_1.isShowVote))
             .map(util_1.createActiveVote)
             .map(function (v) { return types_1.activeVoteLens.set(Option_1.some(v))(s); })
             .alt(types_1.findVote.at(voteId).get(s)
@@ -103,7 +103,7 @@ function runMovie(state, movie) {
 }
 exports.runMovie = runMovie;
 function runCue(cue) {
-    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + cue.duration * 1000]]); }), clearInactiveCues);
+    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + types_1.cueDuration(cue) * 1000]]); }), clearInactiveCues);
 }
 exports.runCue = runCue;
 function clearInactiveCues(state) {

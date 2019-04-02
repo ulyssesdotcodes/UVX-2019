@@ -1,4 +1,4 @@
-import { IShowState, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovieLens, activeVoteLens, IVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish, latestShowVoteId, latestFilmVoteId, allVoteResults, activeCues, Cue, isVotedFilmVote, IVotedFilmVote, FilmVote, isBasisFilmVote, IBasisFilmVote, IVoteResults, voteResult } from "./types";
+import { IShowState, ICue, IVoteAction, activeVote, VoteChoice, IMovie, activeMovieLens, activeVoteLens, IVote, filmVote, voteMovie, paused, showVote, findVote, options, allVotes, voteResults, latestVoteResultId, latestVoteResultChoice, activeVoteMap, activeVoteFinish, latestShowVoteId, latestFilmVoteId, allVoteResults, activeCues, Cue, isVotedFilmVote, IVotedFilmVote, FilmVote, isBasisFilmVote, IBasisFilmVote, IVoteResults, voteResult, isShowVote, cueDuration } from "./types";
 import { some, none, Option, isSome, option, fromNullable } from "fp-ts/lib/Option";
 import * as fparr from "fp-ts/lib/Array";
 import * as fpm from "fp-ts/lib/StrMap";
@@ -8,7 +8,7 @@ import { stateToTD } from "./td.ldjs";
 import { pause } from "./public/app/store/operator/actions";
 import { createActiveVote } from "./util";
 import { setoidString } from "fp-ts/lib/Setoid";
-import { compose, identity, Refinement } from "fp-ts/lib/function";
+import { compose, identity, Refinement, or } from "fp-ts/lib/function";
 import { find } from "fp-ts/lib/Foldable";
 import { create } from "domain";
 import { monoidAll, monoidString } from "fp-ts/lib/Monoid";
@@ -41,7 +41,7 @@ export function startVote(voteId: string): (s: IShowState) => IShowState {
 
     return s =>
         findVote.at(voteId).get(s)
-            .filter(isVotedFilmVote)
+            .filter(or(isVotedFilmVote, isShowVote))
             .map(createActiveVote)
             .map(v => activeVoteLens.set(some(v))(s))
             .alt(findVote.at(voteId).get(s)
@@ -104,8 +104,8 @@ export function runMovie(state: IShowState, movie: IMovie): IShowState {
     return activeMovieLens.set(some(movie))(state);
 }
 
-export function runCue(cue: ICue): (state: IShowState) => IShowState {
-    return compose(activeCues.modify(cs => cs.concat([[cue, new Date().getTime() + cue.duration * 1000] as [Cue, number]])), clearInactiveCues);
+export function runCue(cue: Cue): (state: IShowState) => IShowState {
+    return compose(activeCues.modify(cs => cs.concat([[cue, new Date().getTime() + cueDuration(cue) * 1000] as [Cue, number]])), clearInactiveCues);
 }
 
 export function clearInactiveCues(state: IShowState): IShowState {

@@ -1,14 +1,18 @@
 import { IShowState, IMovie, IVote, ActiveVote, filmVote, showVote, latestVoteResultId, Cue, cueAudioFile, isAudioCue, activeCues, isTextCue, cueText, AudioCue, TextCue, VideoCue, cueVideoFile, videoCues, audioCues, textCues, votedFilmVote } from "./types";
 import { VOTE_DURATION } from "./util";
-import { Node, INode, chan, IParam, OP } from "lambda-designer-js";
+import { Node, INode, chan, IParam, OP, PulseAction } from "lambda-designer-js";
 import * as c from "lambda-designer-js";
 import * as _ from "lodash";
 import { fromTraversable, Index, Optional } from "monocle-ts";
-import { catOptions, array, fold, zipWith, replicate, flatten, unzip, lookup, updateAt, zip, last } from "fp-ts/lib/Array";
+import { catOptions, array, zipWith, replicate, flatten, unzip, lookup, updateAt, zip, last, findFirst, reverse } from "fp-ts/lib/Array";
 import { curry, apply, flip } from "fp-ts/lib/function";
-import { Option, none, some } from "fp-ts/lib/Option";
+import { Option, none, some, option } from "fp-ts/lib/Option";
 import { tuple, Tuple } from "fp-ts/lib/Tuple";
 import { Functor1, Functor2 } from "fp-ts/lib/Functor";
+import { fold, semigroupString } from "fp-ts/lib/Semigroup";
+import { trace, traceM } from "fp-ts/lib/Trace";
+
+const timerStartActions: PulseAction[] = [{type: "pulse", param: "initialize", val: 1, frames: 1, delay: 0}, {type: "pulse", param: "start", val: 1, frames: 2, delay: 1}];
 
 type TextCueNode = Node<"TOP">;
 type AudioCueNode = Node<"CHOP">;
@@ -18,20 +22,20 @@ export function stateToTD(state: IShowState, prevState: IShowState): Array<INode
     const av = state.activeVote.map(curry(voteNode)(state)(prevState.activeVote == state.activeVote));
     const am = state.activeMovie.map(curry(movie)(state)(prevState.activeMovie == state.activeMovie));
     const vr = latestVoteResultId.get(state).map(voteResult);
-    const [videoCues, audioCues, textCue] = cues(state, state.activeCues);
+    const [videoCues, audioCues, textCue] = cues(state, prevState, state.activeCues);
     return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
-        .run(catOptions([av, am, vr]).concat([videoCues], catOptions([textCue])))
+        .run(reverse(catOptions([av, am, vr]).concat([videoCues], catOptions([textCue]))))
         .connect(c.tope("out")).out()].concat([audioCues.out()]);
 }
 
 function movie(state: IShowState, wasPrev: boolean, movie: IMovie): Node<"TOP"> {
     // timer, movie, loop
     const timer = c.chop("timer", {
-        length: movie.batchLength + Math.random() * 0.01,
+        length: movie.batchLength * 0.001,
         outtimercount: c.mp(2),
         outdone: c.tp(true),
         play: c.tp(state.paused.isNone())
-    }, wasPrev ? [] : [{type: "pulse", param: "start", val: 1, frames: 2}]);
+    }, wasPrev ? [] : timerStartActions, "movieTimer");
 
     const movieNode = c.top("moviefilein", {
         resolutionh: 1080,
@@ -82,7 +86,7 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
         length: VOTE_DURATION,
         play: c.tp(state.paused.isNone()),
         outtimercount: c.mp(3),
-    }, wasPrev ? [] : [{type: "pulse", param: "start", val: 1, frames: 2}]);
+    }, wasPrev ? [] : timerStartActions, "voteTimer");
 
     const timertext = textNode(
         c.casts(c.floorp(
@@ -102,8 +106,9 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
         .map(v => textNode(c.sp(v), 1, 0));
 
     const optionCNode =
-        votedFilmVote.getOption(vote.vote).map(v => v.optionC)
-        .map(v => textNode(c.sp(v), 2, 0));
+        votedFilmVote.getOption(vote.vote)
+            .map(v => v.optionC)
+            .map(v => textNode(c.sp(v), 2, 0));
 
     const optionlist = [optionANode, optionBNode, optionCNode]
         .filter(n => n.isSome())
@@ -120,14 +125,14 @@ function voteResult(voteResultName: string): Node<"TOP"> {
 const mapCues = <CueType, NodeType extends OP>(g: (c: Cue[]) => CueType[], s: (c: [CueType, number]) => Node<NodeType>, cues: [Cue, number][]): Node<NodeType>[] =>
     array.map(zip(g(unzip(cues)[0]), unzip(cues)[1]), s);
 
-const cues = (state: IShowState, cues: [Cue, number][]): [VideoCueNode, AudioCueNode, Option<TextCueNode>] =>
+const cues = (state: IShowState, prevState: IShowState, cues: [Cue, number][]): [VideoCueNode, AudioCueNode, Option<TextCueNode>] =>
     [
         c.top("composite", {  operand: c.mp(0), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) }).run(mapCues(videoCues, curry(videoCueNode)(state), cues)),
         c.chop("math", {  chopop: c.mp(1), })
             .run(mapCues(audioCues, curry(audioCueNode)(state), cues)
                 .concat(c.chop("constant", { name0: c.sp("silence"), value0: 0 }).runT()))
             .c(c.chope("audiodeviceout")).runT(),
-        last(mapCues(textCues, curry(textCueNode)(state), cues))
+        last(mapCues(textCues, curry(textCueNode)(state)(prevState), cues))
     ];
 
 const audioCueNode = (state: IShowState, [cue, time]: [AudioCue, number]): AudioCueNode =>
@@ -136,8 +141,23 @@ const audioCueNode = (state: IShowState, [cue, time]: [AudioCue, number]): Audio
         play: c.tp(state.paused.isNone())
     }).runT();
 
-const textCueNode = (state: IShowState, [cue, time]: [TextCue, number]): TextCueNode =>
-    c.top("switch", { index: 0 }).run(cue.text.map(([t, d]) => textNode(c.sp(t), 1, 0)));
+const textCueNode = (state: IShowState, prevState: IShowState, [cue, time]: [TextCue, number]): TextCueNode =>
+    c.top("switch", {
+        index: c.chan(c.sp("segment"),
+            makeSegmentTimer(cue.id,
+                unzip(cue.text)[1],
+                findFirst(
+                    activeCues.get(prevState),
+                    (cd => cd[0].id === cue.id)).isSome()))
+    })
+        .run(cue.text.map(([t, d]) => textNode(c.sp(t), 1, 0)));
+
+const makeSegmentTimer = (id: string, times: number[], wasPrev: boolean): Node<"CHOP"> =>
+    c.chop("timer", {  segdat: c.datp([c.dat("table", {}, [], undefined,
+        "length\n" + fold(semigroupString)("")(array.map(times, t => t + "\n"))
+        ).runT()]),
+        outseg: c.tp(true),
+    }, wasPrev ? [] : timerStartActions, "textCueTimer" + id.replace(/-/g, "_")).runT();
 
 const videoCueNode = (state: IShowState, [cue, time]: [VideoCue, number]): VideoCueNode =>
     c.top("moviefilein", {

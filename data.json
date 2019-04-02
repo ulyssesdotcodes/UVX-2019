@@ -48,11 +48,23 @@
             "text": "Second vote!",
             "operatorName": "Cue second film vote!",
             "optionA": "Test A2",
-            "optionAMovie": {},
+            "optionAMovie": { 
+                "batchFile": "video/optionA.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionAloop.mp4"
+             },
             "optionB": "Test Bf",
-            "optionBMovie": {},
+            "optionBMovie": {
+                "batchFile": "video/optionB.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionBloop.mp4"
+            },
             "optionC": "Test Cf",
-            "optionCMovie": {}
+            "optionCMovie": {
+                "batchFile": "video/optionC.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionCloop.mp4"
+            }
         },
         {
             "id": "film-3",
@@ -60,11 +72,23 @@
             "text": "Second vote!",
             "operatorName": "Cue third film vote!",
             "optionA": "Test A2",
-            "optionAMovie": {},
+            "optionAMovie": { 
+                "batchFile": "video/optionA.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionAloop.mp4"
+             },
             "optionB": "Test Bf",
-            "optionBMovie": {},
+            "optionBMovie": {
+                "batchFile": "video/optionB.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionBloop.mp4"
+            },
             "optionC": "Test Cf",
-            "optionCMovie": {}
+            "optionCMovie": {
+                "batchFile": "video/optionC.mp4",
+                "batchLength": 10000,
+                "loopFile": "video/optionCloop.mp4"
+            }
         },
         {
             "id": "film-4",
@@ -90,9 +114,12 @@
         {
             "id": "text-cue-1",
             "textData": true,
-            "text": [["Cue text cue text cue text", 10]],
-            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]],
-            "duration": 10
+            "text": [
+                    ["Cue text cue text cue text", 10], 
+                    ["cue text 2", 4],
+                    ["cue text 3", 3] 
+                ],
+            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]]
         },
         {
             "id": "video-cue-1",

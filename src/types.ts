@@ -4,7 +4,8 @@ import { Refinement, Predicate, or } from "fp-ts/lib/function";
 import { isNull } from "util";
 import * as fpmap from "fp-ts/lib/StrMap";
 import { getTraversableComposition } from "fp-ts/lib/Traversable2v";
-import { array, findFirst, findIndex, updateAt, filter } from "fp-ts/lib/Array";
+import { array, findFirst, findIndex, updateAt, filter, unzip } from "fp-ts/lib/Array";
+import { fold, semigroupSum } from "fp-ts/lib/Semigroup";
 
 export type FinishTime = number;
 export type Duration = number;
@@ -56,7 +57,6 @@ export type Cue = ICue & (ITextData | IVideoData | IAudioData);
 export interface ICue {
     readonly id: string;
     readonly showVoteIds: [string, VoteChoice][];
-    readonly duration: number;
 }
 
 export type AudioCue = ICue & IAudioData;
@@ -65,17 +65,19 @@ export type VideoCue = ICue & IVideoData;
 
 interface ITextData {
     readonly textData: true;
-    readonly text: [[string, number]];
+    readonly text: [string, number][];
 }
 
 interface IVideoData {
     readonly videoData: true;
     readonly file: string;
+    readonly duration: number;
 }
 
 interface IAudioData {
     readonly audioData: true;
     readonly file: string;
+    readonly duration: number;
 }
 
 export const isAudioCue: Refinement<Cue, ICue & IAudioData> = (v): v is ICue & IAudioData => (<AudioCue>v).audioData;
@@ -87,12 +89,16 @@ export const cueVideoFile = (cue: Cue): Option<string> =>
     fromPredicate(isVideoCue)(cue).map(vc => vc.file);
 export const cueAudioFile = (cue: Cue): Option<string> =>
     fromPredicate(isAudioCue)(cue).map(vc => vc.file);
-export const cueText = (cue: Cue): Option<[[string, number]]> =>
+export const cueText = (cue: Cue): Option<[string, number][]> =>
     fromPredicate(isTextCue)(cue).map(vc => vc.text);
+export const cueDuration = (cue: Cue): number =>
+    or(isVideoCue, isAudioCue)(cue) ?
+        cue.duration :
+        fold(semigroupSum)(0)(unzip(cue.text)[1]);
 
 
 const isFilmVote: Refinement<IVote, FilmVote> = (v): v is FilmVote => v.type === "film";
-export const isVotedFilmVote: Refinement<IVote, IFilmVote & IVotedFilmVote> = (v): v is IFilmVote & IVotedFilmVote => (<IVotedFilmVote>v).optionA !== undefined;
+export const isVotedFilmVote: Refinement<IVote, IFilmVote & IVotedFilmVote> = (v): v is IFilmVote & IVotedFilmVote => (<IVotedFilmVote>v).optionA !== undefined && v.type === "film";
 export const isBasisFilmVote: Refinement<IVote, IFilmVote & IBasisFilmVote> = (v): v is IFilmVote & IBasisFilmVote => (<IBasisFilmVote>v).basis !== undefined;
 export const isShowVote: Refinement<IVote, IShowVote> = (v): v is IShowVote => v.type === "show";
 export const filmVote: Prism<IVote, FilmVote> = Prism.fromRefinement(isFilmVote);
