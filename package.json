@@ -42,7 +42,7 @@
     "finalhandler": "^1.1.1",
     "find-process": "^1.2.1",
     "fp-ts": "^1.14.4",
-    "lambda-designer-js": "^1.0.14",
+    "lambda-designer-js": "^1.0.16",
     "lodash": "^4.17.11",
     "monocle-ts": "^1.7.1",
     "node": "^11.12.0",

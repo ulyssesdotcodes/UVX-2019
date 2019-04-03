@@ -21,92 +21,228 @@
         {
             "id": "film-1",
             "type": "film",
-            "text": "First film vote modified!",
-            "operatorName": "Cue first film vote modified",
-            "optionA": "Test Af modified again",
+            "text": "Vote 1",
+            "operatorName": "Cue 1",
+            "optionA": "Raw",
             "optionAMovie": {
-                "batchFile": "video/optionA.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionAloop.mp4"
+                "batchFile": "video/B10.mov",
+                "batchLength": 318750,
+                "loopFile": "video/B10_loop.mov"
             },
-            "optionB": "Test Bf",
+            "optionB": "SFO",
             "optionBMovie": {
-                "batchFile": "video/optionB.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionBloop.mp4"
+                "batchFile": "video/B11.mov",
+                "batchLength": 318000,
+                "loopFile": "video/B11_loop.mov"
             },
-            "optionC": "Test Cf",
+            "optionC": "SFO",
             "optionCMovie": {
-                "batchFile": "video/optionC.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionCloop.mp4"
+                "batchFile": "video/B11.mov",
+                "batchLength": 318000,
+                "loopFile": "video/B11_loop.mov"
             }
         },
         {
             "id": "film-2",
             "type": "film",
-            "text": "Second vote!",
-            "operatorName": "Cue second film vote!",
-            "optionA": "Test A2",
-            "optionAMovie": { 
-                "batchFile": "video/optionA.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionAloop.mp4"
-             },
-            "optionB": "Test Bf",
-            "optionBMovie": {
-                "batchFile": "video/optionB.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionBloop.mp4"
-            },
-            "optionC": "Test Cf",
-            "optionCMovie": {
-                "batchFile": "video/optionC.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionCloop.mp4"
+            "operatorName": "Cue 2",
+            "prefix": "video/B20",
+            "extension": ".mov",
+            "basis": [],
+            "durations": {
+                "": 191125
             }
         },
         {
             "id": "film-3",
             "type": "film",
-            "text": "Second vote!",
-            "operatorName": "Cue third film vote!",
-            "optionA": "Test A2",
-            "optionAMovie": { 
-                "batchFile": "video/optionA.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionAloop.mp4"
-             },
-            "optionB": "Test Bf",
-            "optionBMovie": {
-                "batchFile": "video/optionB.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionBloop.mp4"
+            "text": "Vote 3",
+            "operatorName": "Cue 3",
+            "optionA": "Chivalry",
+            "optionAMovie": {
+                "batchFile": "video/B31.mov",
+                "batchLength": 422916,
+                "loopFile": "video/B31_loop.mov"
             },
-            "optionC": "Test Cf",
+            "optionB": "Doc",
+            "optionBMovie": {
+                "batchFile": "video/B32.mov",
+                "batchLength": 726333,
+                "loopFile": "video/B32_loop.mov"
+            },
+            "optionC": "Western",
             "optionCMovie": {
-                "batchFile": "video/optionC.mp4",
-                "batchLength": 10000,
-                "loopFile": "video/optionCloop.mp4"
+                "batchFile": "video/B33.mov",
+                "batchLength": 422375,
+                "loopFile": "video/B33_loop.mov"
             }
         },
         {
             "id": "film-4",
             "type": "film",
-            "operatorName": "Dependent film vote",
-            "prefix": "S5100",
+            "text": "Vote 4",
+            "operatorName": "Cue 4",
+            "optionA": "Haunted",
+            "optionAMovie": {
+                "batchFile": "video/B41.mov",
+                "batchLength": 574458,
+                "loopFile": "video/B41_loop.mov"
+            },
+            "optionB": "Musical",
+            "optionBMovie": {
+                "batchFile": "video/B42.mov",
+                "batchLength": 613916,
+                "loopFile": "video/B42_loop.mov"
+            },
+            "optionC": "Shower",
+            "optionCMovie": {
+                "batchFile": "video/B43.mov",
+                "batchLength": 614291,
+                "loopFile": "video/B43_loop.mov"
+            }
+        },
+        {
+            "id": "film-5",
+            "type": "film",
+            "text": "Vote 5",
+            "operatorName": "Cue 5",
+            "optionA": "MTV",
+            "optionAMovie": {
+                "batchFile": "video/B51.mov",
+                "batchLength": 426833,
+                "loopFile": "video/B51_loop.mov"
+            },
+            "optionB": "Pierogi",
+            "optionBMovie": {
+                "batchFile": "video/B52.mov",
+                "batchLength": 449208,
+                "loopFile": "video/B52_loop.mov"
+            },
+            "optionC": "Puppets",
+            "optionCMovie": {
+                "batchFile": "video/B53.mov",
+                "batchLength": 326166,
+                "loopFile": "video/B53_loop.mov"
+            }
+        },
+        {
+            "id": "film-6 Scene 51",
+            "type": "film",
+            "operatorName": "Cue 6 Scene 51",
+            "prefix": "video/S5100",
             "extension": ".mov",
-            "basis": ["film-1", "film-3"],
+            "basis": [
+                "film-3",
+                "film-4",
+                "film-5"
+            ],
             "durations": {
-                "11": 10,
-                "12": 20,
-                "13": 40,
-                "21": 10,
-                "22": 10,
-                "23": 10,
-                "31": 10,
-                "32": 10,
-                "33": 10
+                "111": 52875,
+                "112": 55125,
+                "113": 51041,
+                "121": 52875,
+                "122": 55125,
+                "123": 51041,
+                "131": 51375,
+                "132": 55708,
+                "133": 53541,
+                "211": 76333,
+                "212": 81791,
+                "213": 77125,
+                "221": 76333,
+                "222": 81791,
+                "223": 77125,
+                "231": 76541,
+                "232": 78625,
+                "233": 76333,
+                "311": 52958,
+                "312": 53791,
+                "313": 52041,
+                "321": 52958,
+                "322": 53791,
+                "323": 52041,
+                "331": 51875,
+                "332": 55208,
+                "333": 54625
+            }
+        },
+        {
+            "id": "film-6 a",
+            "type": "film",
+            "text": "Vote 6 a",
+            "operatorName": "Cue 6 a",
+            "optionA": "Big Budget P1",
+            "optionAMovie": {
+                "batchFile": "video/B61a\n.mov",
+                "batchLength": 128208,
+                "loopFile": "video/B61a\n_loop.mov"
+            },
+            "optionB": "Sports P1",
+            "optionBMovie": {
+                "batchFile": "video/B63a.mov",
+                "batchLength": 147916,
+                "loopFile": "video/B63a_loop.mov"
+            },
+            "optionC": "Fantasy P1",
+            "optionCMovie": {
+                "batchFile": "video/B62a.mov",
+                "batchLength": 113125,
+                "loopFile": "video/B62a_loop.mov"
+            }
+        },
+        {
+            "id": "film-6 b",
+            "type": "film",
+            "operatorName": "Cue 6 b",
+            "prefix": "video/B6b",
+            "extension": ".mov",
+            "basis": [
+                "film-6 a"
+            ],
+            "durations": {
+                "1": 80666,
+                "2": 109250,
+                "3": 78916
+            }
+        },
+        {
+            "id": "film-7",
+            "type": "film",
+            "operatorName": "Cue 7",
+            "prefix": "video/B700",
+            "extension": ".mov",
+            "basis": [
+                "film-3",
+                "film-4",
+                "film-5",
+                "film-6 b"
+            ],
+            "durations": {
+                "1111": 585875,
+                "1112": 582666,
+                "1113": 635375,
+                "1121": 604708,
+                "1122": 600541,
+                "1123": 647916,
+                "1131": 550875,
+                "1132": 547458,
+                "1133": 591041,
+                "1211": 579875,
+                "1212": 578541,
+                "1213": 629666,
+                "1221": 607625,
+                "1222": 597375,
+                "1223": 645541,
+                "1231": 550458,
+                "1232": 544166,
+                "1233": 590041,
+                "1311": 579875,
+                "1312": 578541,
+                "1313": 629666,
+                "1321": 601708,
+                "1322": 597375,
+                "1323": 645541,
+                "1331": 550458
             }
         }
     ],
@@ -115,39 +251,73 @@
             "id": "text-cue-1",
             "textData": true,
             "text": [
-                    ["Cue text cue text cue text", 10], 
-                    ["cue text 2", 4],
-                    ["cue text 3", 3] 
+                [
+                    "Cue text cue text cue text",
+                    10000
                 ],
-            "showVoteIds": [["show-1", "optionA"], ["show-2", "optionB"]]
+                [
+                    "cue text 2",
+                    4000
+                ],
+                [
+                    "cue text 3",
+                    3000
+                ]
+            ],
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-2",
+                    "optionB"
+                ]
+            ]
         },
         {
             "id": "video-cue-1",
             "videoData": true,
             "file": "movies/video1.mov",
-            "showVoteIds": [["show-2", "optionB"]],
-            "duration": 4
-        },
-        {
-            "id": "video-cue-2",
-            "videoData": true,
-            "file": "movies/video2.mov",
-            "showVoteIds": [["show-2", "optionC"]],
-            "duration": 3
+            "showVoteIds": [
+                [
+                    "show-2",
+                    "optionB"
+                ]
+            ],
+            "duration": 3000
         },
         {
             "id": "audio-cue-1",
             "audioData": true,
             "file": "audio/audio1.mp3",
-            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]],
-            "duration": 12
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-1",
+                    "optionC"
+                ]
+            ],
+            "duration": 12000
         },
         {
             "id": "audio-cue-2",
             "audioData": true,
             "file": "audio/audio2.mp3",
-            "showVoteIds": [["show-1", "optionA"], ["show-1", "optionC"]],
-            "duration": 1
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-1",
+                    "optionC"
+                ]
+            ],
+            "duration": 1000
         }
     ]
 }

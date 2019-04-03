@@ -16,13 +16,18 @@ var function_1 = require("fp-ts/lib/function");
 var Semigroup_1 = require("fp-ts/lib/Semigroup");
 var timerStartActions = [{ type: "pulse", param: "initialize", val: 1, frames: 1, delay: 0 }, { type: "pulse", param: "start", val: 1, frames: 2, delay: 1 }];
 function stateToTD(state, prevState) {
-    var av = state.activeVote.map(function_1.curry(voteNode)(state)(prevState.activeVote == state.activeVote));
-    var am = state.activeMovie.map(function_1.curry(movie)(state)(prevState.activeMovie == state.activeMovie));
+    var av = state.activeVote.map(function_1.curry(voteNode)(state)(prevState.activeVote.chain(function (av) { return state.activeVote.map(function (sav) { return sav.vote.id === av.vote.id; }); }).getOrElse(false)));
+    var activeMovieNode = state.activeMovie.map(function_1.curry(movie)(state)(prevState.activeMovie == state.activeMovie));
     var vr = types_1.latestVoteResultId.get(state).map(voteResult);
     var _a = cues(state, prevState, state.activeCues), videoCues = _a[0], audioCues = _a[1], textCue = _a[2];
+    var audioOut = c.chop("math", { chanop: c.mp(1), })
+        .run(audioCues.concat(Array_1.catOptions([
+        activeMovieNode.map(function (n) { return n[1]; })
+    ]), [c.chop("constant", { value0: c.fp(0), name0: c.sp("nothing") }).runT()]))
+        .c(c.chop("audiodeviceout"));
     return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
-            .run(Array_1.reverse(Array_1.catOptions([av, am, vr]).concat([videoCues], Array_1.catOptions([textCue]))))
-            .connect(c.tope("out")).out()].concat([audioCues.out()]);
+            .run(Array_1.reverse(Array_1.catOptions([activeMovieNode.map(function (n) { return n[0]; }), av, vr]).concat([videoCues], Array_1.catOptions([textCue]))))
+            .connect(c.tope("out")).out()].concat(audioOut.out());
 }
 exports.stateToTD = stateToTD;
 function movie(state, wasPrev, movie) {
@@ -50,12 +55,18 @@ function movie(state, wasPrev, movie) {
     var movSwitch = c.top("switch", {
         index: lambda_designer_js_1.chan(c.sp("done"), timer.runT())
     }).run([movieNode, loopNode]);
-    return movSwitch.c(c.top("resolution", {
-        outputresolution: c.mp(9),
-        resolutionh: 1080,
-        resolutionw: 1920,
-        outputaspect: c.mp(1),
-    }));
+    var audioSwitch = c.chop("switch", {
+        index: lambda_designer_js_1.casti(lambda_designer_js_1.chan(c.sp("done"), timer.runT()))
+    }).run([c.chop("audiomovie", { moviefileintop: c.topp(movieNode) }), c.chop("audiomovie", { moviefileintop: c.topp(loopNode) })]);
+    return [
+        movSwitch.c(c.top("resolution", {
+            outputresolution: c.mp(9),
+            resolutionh: 1080,
+            resolutionw: 1920,
+            outputaspect: c.mp(1),
+        })),
+        audioSwitch
+    ];
 }
 function textNode(text, horizonalAlign, verticalAlign, yOff) {
     if (yOff === void 0) { yOff = 0; }
@@ -101,10 +112,7 @@ var mapCues = function (g, s, cues) {
 var cues = function (state, prevState, cues) {
     return [
         c.top("composite", { operand: c.mp(0), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) }).run(mapCues(types_1.videoCues, function_1.curry(videoCueNode)(state), cues)),
-        c.chop("math", { chopop: c.mp(1), })
-            .run(mapCues(types_1.audioCues, function_1.curry(audioCueNode)(state), cues)
-            .concat(c.chop("constant", { name0: c.sp("silence"), value0: 0 }).runT()))
-            .c(c.chope("audiodeviceout")).runT(),
+        mapCues(types_1.audioCues, function_1.curry(audioCueNode)(state), cues),
         Array_1.last(mapCues(types_1.textCues, function_1.curry(textCueNode)(state)(prevState), cues))
     ];
 };
@@ -126,7 +134,7 @@ var textCueNode = function (state, prevState, _a) {
     }));
 };
 var makeSegmentTimer = function (id, times, wasPrev) {
-    return c.chop("timer", { segdat: c.datp([c.dat("table", {}, [], undefined, "length\n" + Semigroup_1.fold(Semigroup_1.semigroupString)("")(Array_1.array.map(times, function (t) { return t + "\n"; }))).runT()]),
+    return c.chop("timer", { segdat: c.datp([c.dat("table", {}, [], undefined, "length\n" + Semigroup_1.fold(Semigroup_1.semigroupString)("")(Array_1.array.map(times, function (t) { return t * 0.001 + "\n"; }))).runT()]),
         outseg: c.tp(true),
     }, wasPrev ? [] : timerStartActions, "textCueTimer" + id.replace(/-/g, "_")).runT();
 };

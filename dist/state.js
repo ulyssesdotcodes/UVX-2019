@@ -103,7 +103,7 @@ function runMovie(state, movie) {
 }
 exports.runMovie = runMovie;
 function runCue(cue) {
-    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + types_1.cueDuration(cue) * 1000]]); }), clearInactiveCues);
+    return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + types_1.cueDuration(cue)]]); }), clearInactiveCues);
 }
 exports.runCue = runCue;
 function clearInactiveCues(state) {

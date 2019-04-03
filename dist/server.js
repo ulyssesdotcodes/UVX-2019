@@ -165,7 +165,7 @@ wss.on("connection", function connection(socket) {
                     .get(showState.cues)
                     .map(function (c) {
                     // TODO: Ugly side effect
-                    setTimeout(function () { return updateVoteWrapper(state.clearInactiveCues); }, types_1.cueDuration(c) * 1000);
+                    setTimeout(function () { return updateVoteWrapper(state.clearInactiveCues); }, types_1.cueDuration(c));
                     return c;
                 })
                     .map(function (c) { return updateVoteWrapper(state.runCue(c)); });

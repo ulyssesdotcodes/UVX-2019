@@ -136,7 +136,7 @@ wss.on("connection", function connection(socket: any) {
                     .get(showState.cues)
                     .map(c => {
                         // TODO: Ugly side effect
-                        setTimeout(() => updateVoteWrapper(state.clearInactiveCues), cueDuration(c) * 1000);
+                        setTimeout(() => updateVoteWrapper(state.clearInactiveCues), cueDuration(c));
                         return c;
                     })
                     .map(c => updateVoteWrapper(state.runCue(c)));

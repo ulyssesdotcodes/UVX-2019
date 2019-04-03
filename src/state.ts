@@ -105,7 +105,7 @@ export function runMovie(state: IShowState, movie: IMovie): IShowState {
 }
 
 export function runCue(cue: Cue): (state: IShowState) => IShowState {
-    return compose(activeCues.modify(cs => cs.concat([[cue, new Date().getTime() + cueDuration(cue) * 1000] as [Cue, number]])), clearInactiveCues);
+    return compose(activeCues.modify(cs => cs.concat([[cue, new Date().getTime() + cueDuration(cue)] as [Cue, number]])), clearInactiveCues);
 }
 
 export function clearInactiveCues(state: IShowState): IShowState {
