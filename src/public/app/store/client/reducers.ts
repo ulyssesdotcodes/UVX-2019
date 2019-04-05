@@ -6,7 +6,8 @@ import { UPDATE_SHOW_STATE } from "../common/state_types";
 import { activeVote } from "../../../../types";
 
 const initialState: ClientState = {
-    activeVote: none
+    activeVote: none,
+    activeCues: []
 };
 
 
@@ -18,6 +19,7 @@ export function clientReducer(
         case UPDATE_SHOW_STATE: {
             return {
                 ...state,
+                ...action.payload,
                 // Have to hack this because full class isn't serialized
                 ...{ activeVote: action.payload.activeVote._tag === "None" ?
                         none :

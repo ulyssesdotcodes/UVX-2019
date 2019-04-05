@@ -16,15 +16,14 @@
   background-color: black;
   color: white; }
 
-.all-votes {
-  display: flex;
-  flex-direction: row; }
-
 .operator {
   display: flex;
   flex-direction: column; }
   .operator div {
     margin: 8px; }
+  .operator .all-votes {
+    display: flex;
+    flex-direction: row; }
   .operator .cue-votes {
     width: 200px; }
     .operator .cue-votes .header {
@@ -34,6 +33,11 @@
     .operator .cue-votes .cue-vote {
       display: block;
       border: 1px black solid; }
+  .operator .cue-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 624px; }
   .operator .controls {
     display: flex;
     flex-direction: row; }

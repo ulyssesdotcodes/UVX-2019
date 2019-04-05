@@ -102,9 +102,6 @@ var showState = Object.assign({}, util_1.defaultShowState, data);
 function updateVoteWrapper(f) {
     var prevState = showState;
     showState = f(showState);
-    if (process.execPath.includes("node")) {
-        console.log(showState);
-    }
     wss.emit(store_1.REDUX_MESSAGE, { type: state_types_1.UPDATE_SHOW_STATE, payload: showState });
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState, prevState))

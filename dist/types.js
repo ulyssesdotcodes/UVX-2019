@@ -84,6 +84,9 @@ exports.activeMovieLens = monocle_ts_1.Lens.fromProp()("activeMovie");
 exports.activeVoteMap = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("voteMap"));
 exports.activeVoteVote = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("vote"));
 exports.activeVoteFinish = exports.activeVote.composeLens(monocle_ts_1.Lens.fromProp()("finishTime"));
+exports.activeVoteCount = function (v, vm) {
+    return vm.reduceWithKey({ optionA: 0, optionB: 0, optionC: 0 }, function (_, counts, vc) { counts[vc] += 1; return counts; });
+};
 exports.voteResults = monocle_ts_1.Lens.fromProp()("voteResults");
 exports.allVoteResults = exports.voteResults.compose(monocle_ts_1.Lens.fromProp("all"));
 exports.latestVoteResultId = monocle_ts_1.Lens.fromProp()("voteResults")

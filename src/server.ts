@@ -69,10 +69,6 @@ function updateVoteWrapper(f: (state: IShowState) => IShowState) {
     const prevState = showState;
     showState = f(showState);
 
-    if (process.execPath.includes("node")) {
-        console.log(showState);
-    }
-
     wss.emit(REDUX_MESSAGE, {type: UPDATE_SHOW_STATE, payload: showState});
     if (tdsock.connected) {
         ldjs.validateNodes(td.stateToTD(showState, prevState))

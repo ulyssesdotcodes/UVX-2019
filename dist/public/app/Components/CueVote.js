@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
+var types_1 = require("../../../types");
 var CueVote = function (_a) {
     var vote = _a.vote, voteResult = _a.voteResult, cueVote = _a.cueVote;
     function cue() {
@@ -15,8 +16,9 @@ var CueVote = function (_a) {
     }
     return (React.createElement("div", { className: "cue-vote header" },
         React.createElement("a", { onClick: cue, className: "button" }, vote.operatorName),
-        voteResult.map(function (vr) { return (React.createElement("p", { className: "vote-result" }, vr)); })
-            .getOrElse(React.createElement("p", { className: "vote-result" }, "Not triggered yet"))));
+        voteResult.chain(function (vr) { return types_1.voteChoice.getOption([vote, vr]); })
+            .map(function (vr) { return (React.createElement("p", { className: "vote-result" }, vr)); })
+            .getOrElse(React.createElement("p", { className: "vote-result" }))));
 };
 exports.default = CueVote;
 //# sourceMappingURL=CueVote.js.map

@@ -45,11 +45,15 @@ export interface IVotedFilmVote extends IVote {
     readonly optionCMovie: IMovie;
 }
 
+export type OptionColor = "red" | "blue" | "white";
+
 export interface IShowVote extends IVote {
     readonly type: "show";
     readonly text: string;
     readonly optionA: string;
+    readonly optionAColor: OptionColor;
     readonly optionB: string;
+    readonly optionBColor: OptionColor;
 }
 
 export type Cue = ICue & (ITextData | IVideoData | IAudioData);
@@ -62,6 +66,7 @@ export interface ICue {
 export type AudioCue = ICue & IAudioData;
 export type TextCue = ICue & ITextData;
 export type VideoCue = ICue & IVideoData;
+export type ActiveCue = [Cue, number];
 
 interface ITextData {
     readonly textData: true;
@@ -79,6 +84,7 @@ interface IAudioData {
     readonly file: string;
     readonly duration: number;
 }
+
 
 export const isAudioCue: Refinement<Cue, ICue & IAudioData> = (v): v is ICue & IAudioData => (<AudioCue>v).audioData;
 export const isVideoCue: Refinement<Cue, ICue & IVideoData> = (v): v is ICue & IVideoData => (<VideoCue>v).videoData;
@@ -204,6 +210,9 @@ export const activeVoteVote =
     activeVote.composeLens(Lens.fromProp<ActiveVote>()("vote"));
 export const activeVoteFinish =
     activeVote.composeLens(Lens.fromProp<ActiveVote>()("finishTime"));
+export const activeVoteCount = (v: IVote, vm: fpmap.StrMap<VoteChoice>): { optionA: number, optionB: number, optionC: number} =>
+            vm.reduceWithKey({optionA: 0, optionB: 0, optionC: 0},
+                (_, counts, vc) => { counts[vc] += 1; return counts; });
 
 export const voteResults = Lens.fromProp<IShowState>()("voteResults");
 export const allVoteResults = voteResults.compose(Lens.fromProp("all"));

@@ -14,13 +14,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Option_1 = require("fp-ts/lib/Option");
 var state_types_1 = require("../common/state_types");
 var initialState = {
-    activeVote: Option_1.none
+    activeVote: Option_1.none,
+    activeCues: []
 };
 function clientReducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case state_types_1.UPDATE_SHOW_STATE: {
-            return __assign({}, state, { activeVote: action.payload.activeVote._tag === "None" ?
+            return __assign({}, state, action.payload, { activeVote: action.payload.activeVote._tag === "None" ?
                     Option_1.none :
                     Option_1.some(action.payload.activeVote.value) });
         }

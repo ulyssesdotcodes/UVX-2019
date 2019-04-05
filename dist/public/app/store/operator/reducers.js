@@ -30,6 +30,7 @@ var initialState = {
     paused: Option_1.none,
     activeMovie: Option_1.none,
     cues: [],
+    activeCues: []
 };
 function operatorReducer(state, action) {
     if (state === void 0) { state = initialState; }

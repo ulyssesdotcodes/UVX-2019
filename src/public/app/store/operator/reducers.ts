@@ -14,6 +14,7 @@ const initialState: OperatorState = {
     paused: none,
     activeMovie: none,
     cues: [],
+    activeCues: []
 };
 
 export function operatorReducer(

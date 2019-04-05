@@ -19,11 +19,6 @@
     color: white;
 }
 
-.all-votes {
-    display: flex;
-    flex-direction: row;
-}
-
 .operator {
     display: flex;
     flex-direction: column;
@@ -32,6 +27,11 @@
         margin: 8px;
     }
 
+
+    .all-votes {
+        display: flex;
+        flex-direction: row;
+    }
 
     .cue-votes {
         .header {
@@ -49,6 +49,13 @@
         }
 
         width: 200px;
+    }
+
+    .cue-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        height: 624px;
     }
 
     .controls {

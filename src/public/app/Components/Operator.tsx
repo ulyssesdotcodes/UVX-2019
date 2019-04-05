@@ -6,7 +6,7 @@ import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueC
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
-import { VoteChoice, voteChoice, activeCueList } from "../../../types";
+import { VoteChoice, voteChoice, activeCueList, isVotedFilmVote, votedFilmVote } from "../../../types";
 import { option, fromNullable } from "fp-ts/lib/Option";
 import { lookup } from "fp-ts/lib/StrMap";
 import CueCue from "./CueCue";
@@ -80,8 +80,9 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 voteResult={lookup(v.id, this.props.operator.voteResults.all)}
                                 />))}
                     </div>
-                    <div className="cue list">
+                    <div>
                         <div className="header">Cues</div>
+                        <div className="cue-list">
                         {activeCueList(this.props.operator.voteResults, this.props.operator.cues)
                             .map(c =>
                                 <CueCue
@@ -90,6 +91,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                     thunkCueCue={this.props.thunkCueCue}
                                     />
                             )}
+                        </div>
                     </div>
                 </div>
 
@@ -105,12 +107,34 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                 </div>
                 <div className="info">
                     <h3>Runtime Info</h3>
+                    {this.props.operator.activeVote.map(av => (
+                        <div className="voteInfo" key="activevote">
+                            <p>Active Vote: {av.vote.operatorName} </p>
+                            <p>Options: {av.vote.optionA}, {av.vote.optionB}, {votedFilmVote.getOption(av.vote).map(v => v.optionC).getOrElse("")} </p>
+                        </div>
+                    )).getOrElse(<div></div>)}
                     {this.props.operator.activeMovie.map(mov => (
                         <div className="movieFile" key="activemovie">
                             <p>File: {mov.batchFile}</p>
                             <p>Loop: {mov.loopFile}</p>
                         </div>
                     )).getOrElse(<div></div>)}
+                    <div className="cueInfo">
+                        Cues:
+                        {this.props.operator.activeCues.map(ac => (
+                            <span key={ac[0].id}> {ac[0].id} </span>
+                        ))}
+                    </div>
+                </div>
+                <div className="cue-list">
+                    {this.props.operator.cues
+                        .map(c =>
+                            <CueCue
+                                key={c.id}
+                                cue={c}
+                                thunkCueCue={this.props.thunkCueCue}
+                                />
+                        )}
                 </div>
             </div>
         );

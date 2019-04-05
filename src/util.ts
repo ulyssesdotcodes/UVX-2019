@@ -10,7 +10,7 @@ export const defaultShowState: IShowState = {
     activeVote: none,
     activeCues: [],
     activeMovie: none,
-    voteResults: { latest: none, latestFilm: none, latestShow: none, all: new StrMap<VoteChoice>({}) },
+    voteResults: { latest: none, latestFilm: none, latestShow: some("OPEN"), all: new StrMap<VoteChoice>({"OPEN": "optionA"}) },
     filmVotes: [],
     showVotes: [],
     cues: []

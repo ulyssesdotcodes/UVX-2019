@@ -74,12 +74,12 @@ var Operator = /** @class */ (function (_super) {
                     this.props.operator.showVotes.map(function (v) {
                         return (React.createElement(CueVote_1.default, { key: v.id, vote: v, cueVote: _this.props.thunkCueVote, voteResult: StrMap_1.lookup(v.id, _this.props.operator.voteResults.all) }));
                     })),
-                React.createElement("div", { className: "cue list" },
+                React.createElement("div", null,
                     React.createElement("div", { className: "header" }, "Cues"),
-                    types_1.activeCueList(this.props.operator.voteResults, this.props.operator.cues)
+                    React.createElement("div", { className: "cue-list" }, types_1.activeCueList(this.props.operator.voteResults, this.props.operator.cues)
                         .map(function (c) {
                         return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue });
-                    }))),
+                    })))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
                 this.props.operator.paused.isSome() ?
@@ -90,13 +90,36 @@ var Operator = /** @class */ (function (_super) {
                 React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset")),
             React.createElement("div", { className: "info" },
                 React.createElement("h3", null, "Runtime Info"),
+                this.props.operator.activeVote.map(function (av) { return (React.createElement("div", { className: "voteInfo", key: "activevote" },
+                    React.createElement("p", null,
+                        "Active Vote: ",
+                        av.vote.operatorName,
+                        " "),
+                    React.createElement("p", null,
+                        "Options: ",
+                        av.vote.optionA,
+                        ", ",
+                        av.vote.optionB,
+                        ", ",
+                        types_1.votedFilmVote.getOption(av.vote).map(function (v) { return v.optionC; }).getOrElse(""),
+                        " "))); }).getOrElse(React.createElement("div", null)),
                 this.props.operator.activeMovie.map(function (mov) { return (React.createElement("div", { className: "movieFile", key: "activemovie" },
                     React.createElement("p", null,
                         "File: ",
                         mov.batchFile),
                     React.createElement("p", null,
                         "Loop: ",
-                        mov.loopFile))); }).getOrElse(React.createElement("div", null)))));
+                        mov.loopFile))); }).getOrElse(React.createElement("div", null)),
+                React.createElement("div", { className: "cueInfo" },
+                    "Cues:",
+                    this.props.operator.activeCues.map(function (ac) { return (React.createElement("span", { key: ac[0].id },
+                        " ",
+                        ac[0].id,
+                        " ")); }))),
+            React.createElement("div", { className: "cue-list" }, this.props.operator.cues
+                .map(function (c) {
+                return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue });
+            }))));
     };
     return Operator;
 }(React.Component));
