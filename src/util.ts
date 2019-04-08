@@ -5,6 +5,7 @@ import { StrMap } from "fp-ts/lib/StrMap";
 export const VOTE_DURATION = process.execPath.includes("node") ? 10 : 45;
 
 export const defaultShowState: IShowState = {
+    assetPath: ".",
     blackout: false,
     paused: process.execPath.includes("node") ? none : some(new Date().getTime()),
     activeVote: none,

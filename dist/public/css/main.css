@@ -38,8 +38,17 @@
     flex-direction: column;
     flex-wrap: wrap;
     height: 624px; }
+    .operator .cue-list .cue-cue {
+      display: flex;
+      flex-direction: row; }
+      .operator .cue-list .cue-cue .button {
+        flex-basis: 1;
+        flex-grow: 1; }
   .operator .controls {
     display: flex;
     flex-direction: row; }
     .operator .controls .button {
       margin: 4px; }
+  .operator .decue {
+    text-decoration: underline;
+    cursor: pointer; }

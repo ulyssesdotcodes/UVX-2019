@@ -22,12 +22,12 @@ function stateToTD(state, prevState) {
     var vr = types_1.latestVoteResultId.get(state)
         .chain(function (id) { return types_1.findVote.at(id).get(state); })
         .chain(function (v) { return types_1.latestVoteResultChoice(state).chain(function (vc) { return types_1.voteChoice.getOption([v, vc]); }); })
-        .map(voteResult);
+        .map(function_1.curry(voteResult)(state.assetPath));
     var _a = cues(state, prevState, state.activeCues), videoCues = _a[0], audioCues = _a[1], textCue = _a[2];
-    var audioOut = c.chop("math", { chanop: c.mp(1), })
+    var audioOut = c.chop("math", { chopop: c.mp(1), })
         .run(audioCues.concat(Array_1.catOptions([
         activeMovieNode.map(function (n) { return n[1]; })
-    ]), [c.chop("constant", { value0: c.fp(0), name0: c.sp("nothing") }).runT()]))
+    ]), [c.chop("constant", { value0: c.fp(0), name0: c.sp("chan0"), value1: c.fp(0), name1: c.sp("chan1") }).runT()]))
         .c(c.chop("audiodeviceout"));
     return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
             .run(Array_1.reverse(Array_1.catOptions([activeMovieNode.map(function (n) { return n[0]; }), av, vr]).concat([videoCues], Array_1.catOptions([textCue]))))
@@ -46,14 +46,14 @@ function movie(state, wasPrev, movie) {
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: c.sp(movie.batchFile),
+        file: c.sp(state.assetPath + movie.batchFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
     var loopNode = c.top("moviefilein", {
         resolutionh: 1080,
         resolutionw: 1920,
         playmode: c.mp(1),
-        file: c.sp(movie.loopFile),
+        file: c.sp(state.assetPath + movie.loopFile),
         index: c.chan(c.sp("timer_frames"), timer.runT()),
     });
     var movSwitch = c.top("switch", {
@@ -75,14 +75,16 @@ function movie(state, wasPrev, movie) {
 function optionColorToRgbp(col) {
     switch (col) {
         case "blue":
-            return c.rgbp(c.fp(0), c.fp(0), c.fp(1));
+            return c.rgbp(c.fp(0.44), c.fp(0.82), c.fp(0.96));
         case "red":
-            return c.rgbp(c.fp(1), c.fp(0), c.fp(0));
+            return c.rgbp(c.fp(0.85), c.fp(0.2), c.fp(0));
+        case "white":
+            return c.rgbp(c.fp(0.8), c.fp(0.8), c.fp(0.8));
         default:
             return c.rgbp(c.fp(0), c.fp(0), c.fp(0));
     }
 }
-function textNode(text, horizonalAlign, verticalAlign, width, height, xOff, yOff, color) {
+function textNode(assetPath, text, horizonalAlign, verticalAlign, width, height, xOff, yOff, color) {
     if (xOff === void 0) { xOff = 0; }
     if (yOff === void 0) { yOff = 0; }
     if (color === void 0) { color = Option_1.none; }
@@ -92,9 +94,12 @@ function textNode(text, horizonalAlign, verticalAlign, width, height, xOff, yOff
         resolutionw: width,
         outputresolution: c.mp(9),
         bgcolor: optionColorToRgbp(color.getOrElse("white")),
-        bgalpha: color.map(function (_) { return 1; }).getOrElse(0),
+        bgalpha: 1,
         linespacing: c.fp(0.2),
         linespacingunit: c.mp(1),
+        fontfile: c.sp(assetPath + "misc\\Commodore Rounded v1.2.ttf"),
+        fontsizex: c.fp(22.5),
+        fontcolor: c.rgbp(c.fp(0), c.fp(0), c.fp(0)),
     }).c(c.top("layout", {
         resolutionw: 1920,
         resolutionh: 1080,
@@ -112,41 +117,42 @@ function voteNode(state, wasPrev, vote) {
         play: c.tp(state.paused.isNone()),
         outtimercount: c.mp(3),
     }, wasPrev ? [] : timerStartActions, "voteTimer");
-    var timertextleft = textNode(c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 0, 0, 128, 128, 64, 128);
-    var timertextright = textNode(c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 2, 0, 128, 128, -64, 128);
+    var timertextleft = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 0, 0, 256, 128, 0, 128);
+    var timertextright = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 2, 0, 256, 128, 0, 128);
     var activeVoteCountArr = types_1.activeVoteCount(vote.vote, vote.voteMap);
-    var voteName = textNode(c.sp(vote.vote.text), 1, 0, 240, 128, 0, 128);
+    var voteName = textNode(state.assetPath, c.sp(vote.vote.text), 1, 0, 1408, 128, 0, 128);
     var optionANode = types_1.isShowVote(vote.vote) ?
-        textNode(c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionAColor)) :
-        textNode(c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 128, 0, 0, Option_1.none);
+        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionAColor)) :
+        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 128, 0, 0, Option_1.some("blue"));
     var optionBNode = types_1.isShowVote(vote.vote) ?
-        textNode(c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionBColor)) :
-        textNode(c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 128, 0, 0, Option_1.none);
+        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionBColor)) :
+        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 128, 0, 0, Option_1.some("blue"));
     var optionCNode = types_1.votedFilmVote.getOption(vote.vote).map(function (v) {
-        return textNode(c.sp(v.optionC + "\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 128, 0, 0, Option_1.none);
+        return textNode(state.assetPath, c.sp(v.optionC + "\\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 128, 0, 0, Option_1.some("blue"));
     });
     var optionlist = [optionANode, optionBNode].concat(Array_1.catOptions([optionCNode]));
     return c.top("composite", { operand: c.mp(0) })
         .run([timertextleft, timertextright, voteName].concat(optionlist));
 }
-function voteResult(voteResultName) {
-    return c.top("composite", { operand: c.mp(0) }).run([textNode(c.sp(voteResultName), 1, 0, 1920, 128, 0, 128).runT(), textNode(c.sp("Loading..."), 1, 0, 1920, 128).runT()]);
+function voteResult(assetPath, voteResultName) {
+    return c.top("composite", { operand: c.mp(0) }).run([textNode(assetPath, c.sp(voteResultName), 1, 0, 1920, 128, 0, 128).runT(), textNode(assetPath, c.sp("Loading..."), 1, 0, 1920, 128).runT()]);
 }
 var mapCues = function (g, s, cues) {
     return Array_1.array.map(Array_1.zip(g(Array_1.unzip(cues)[0]), Array_1.unzip(cues)[1]), s);
 };
 var cues = function (state, prevState, cues) {
     return [
-        c.top("composite", { operand: c.mp(0), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) }).run(mapCues(types_1.videoCues, function_1.curry(videoCueNode)(state), cues)),
-        mapCues(types_1.audioCues, function_1.curry(audioCueNode)(state), cues),
+        c.top("composite", { operand: c.mp(0), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) }).run(mapCues(types_1.videoCues, function_1.compose(function (a) { return a[0]; }, function_1.curry(videoCueNode)(state)), cues)),
+        mapCues(types_1.audioCues, function_1.curry(audioCueNode)(state), cues).concat(mapCues(types_1.videoCues, function_1.compose(function (a) { return a[1]; }, function_1.curry(videoCueNode)(state)), cues)),
         Array_1.last(mapCues(types_1.textCues, function_1.curry(textCueNode)(state)(prevState), cues))
     ];
 };
 var audioCueNode = function (state, _a) {
     var cue = _a[0], time = _a[1];
     return c.chop("audiofilein", {
-        file: c.sp(cue.file),
-        play: c.tp(state.paused.isNone())
+        file: c.sp(state.assetPath + cue.file),
+        play: c.tp(state.paused.isNone()),
+        repeat: c.mp(0),
     }).runT();
 };
 var textCueNode = function (state, prevState, _a) {
@@ -156,19 +162,27 @@ var textCueNode = function (state, prevState, _a) {
     })
         .run(cue.text.map(function (_a) {
         var t = _a[0], d = _a[1];
-        return textNode(c.sp(t), 1, 0, 1920, 128);
+        return textNode(state.assetPath, c.sp(t), 1, 0, 1920, 128);
     }));
+};
+var idToNodeName = function (id) {
+    return id.replace(/-/g, "_").replace(/\s/g, "_").replace(/\./g, "_");
 };
 var makeSegmentTimer = function (id, times, wasPrev) {
     return c.chop("timer", { segdat: c.datp([c.dat("table", {}, [], undefined, "length\n" + Semigroup_1.fold(Semigroup_1.semigroupString)("")(Array_1.array.map(times, function (t) { return t * 0.001 + "\n"; }))).runT()]),
         outseg: c.tp(true),
-    }, wasPrev ? [] : timerStartActions, "textCueTimer" + id.replace(/-/g, "_")).runT();
+    }, wasPrev ? [] : timerStartActions, "textCueTimer" + idToNodeName(id)).runT();
 };
 var videoCueNode = function (state, _a) {
     var cue = _a[0], time = _a[1];
-    return c.top("moviefilein", {
-        file: c.sp(cue.file),
-        play: c.tp(state.paused.isNone()),
-    }).runT();
+    return [c.top("moviefilein", {
+            file: c.sp(state.assetPath + cue.file),
+            play: c.tp(state.paused.isNone()),
+        }, [], idToNodeName(cue.id) + time).runT(),
+        c.chop("audiomovie", { moviefileintop: c.topp(c.top("moviefilein", {
+                file: c.sp(state.assetPath + cue.file),
+                play: c.tp(state.paused.isNone()),
+            }, [], idToNodeName(cue.id) + time)) }).runT()
+    ];
 };
 //# sourceMappingURL=td.ldjs.js.map

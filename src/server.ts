@@ -2,7 +2,7 @@ import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue, isVotedF
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
-import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE, CLEAR_VOTE_RESULT } from "./public/app/store/operator/types";
+import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE, CLEAR_VOTE_RESULT, DECUE_CUE } from "./public/app/store/operator/types";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as cp from "child_process";
@@ -65,6 +65,8 @@ const data = JSON.parse(
         {encoding: "utf8"}));
 let showState: IShowState = Object.assign({}, defaultShowState, data);
 
+showState = {...showState, ...{ assetPath: showState.assetPath.replace(/\\/g, "\\\\") }};
+
 function updateVoteWrapper(f: (state: IShowState) => IShowState) {
     const prevState = showState;
     showState = f(showState);
@@ -82,6 +84,16 @@ function updateVoteWrapper(f: (state: IShowState) => IShowState) {
 
 updateVoteWrapper(identity);
 
+const runCue = (id: string) =>
+    findCue.at(id)
+        .get(showState.cues)
+        .map(c => {
+            // TODO: Ugly side effect
+            setTimeout(() => updateVoteWrapper(state.clearInactiveCues), cueDuration(c) + 50);
+            return c;
+        })
+        .map(c => updateVoteWrapper(state.runCue(c)));
+
 wss.on("connection", function connection(socket: any) {
     socket.on(REDUX_MESSAGE, function incoming(message: SendableAction) {
         if (process.execPath.includes("node")) {
@@ -91,15 +103,21 @@ wss.on("connection", function connection(socket: any) {
         switch (message.type) {
             case CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
+                voteTimer.map(vt => clearTimeout(vt));
                 voteTimer =
                     activeVoteLens.get(showState)
                         .map(av => av.vote)
                         .filter(or(isVotedFilmVote, isShowVote))
-                        .chain(_ => activeVoteFinish.getOption(showState))
+                        .chain(_ => {
+                            runCue("vote-start-cue");
+                            return activeVoteFinish.getOption(showState);
+                        })
                         .chain(av => paused.get(showState).isSome() ? (none as Option<number>) : some(av))
                         .map(t =>
-                            setTimeout(() => updateVoteWrapper(state.endVote()),
-                                t - new Date().getTime()));
+                            setTimeout(() => {
+                                runCue("vote-lock-cue");
+                                updateVoteWrapper(state.endVote());
+                            }, t - new Date().getTime()));
                 break;
             case VOTE:
                 updateVoteWrapper(state.vote(message.payload));
@@ -111,7 +129,10 @@ wss.on("connection", function connection(socket: any) {
                     activeVoteFinish.getOption(showState)
                         .map(t =>
                             setTimeout(
-                                () => updateVoteWrapper(state.endVote()),
+                                () => {
+                                    runCue("vote-lock-cue");
+                                    updateVoteWrapper(state.endVote());
+                                },
                                 t - new Date().getTime()));
                 break;
             case CUE_BATCH:
@@ -122,20 +143,17 @@ wss.on("connection", function connection(socket: any) {
                 break;
             case END_VOTE:
                 voteTimer = voteTimer.chain(vt => {
+                    runCue("vote-lock-cue");
                     clearTimeout(vt);
                     return none;
                 });
                 updateVoteWrapper(state.endVote());
                 break;
             case CUE_CUE:
-                findCue.at(message.payload)
-                    .get(showState.cues)
-                    .map(c => {
-                        // TODO: Ugly side effect
-                        setTimeout(() => updateVoteWrapper(state.clearInactiveCues), cueDuration(c));
-                        return c;
-                    })
-                    .map(c => updateVoteWrapper(state.runCue(c)));
+                runCue(message.payload);
+                break;
+            case DECUE_CUE:
+                updateVoteWrapper(state.derunCue(message.payload[0], message.payload[1]));
                 break;
             case RESET:
                 updateVoteWrapper(_ => Object.assign({}, defaultShowState, data));

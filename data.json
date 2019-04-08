@@ -1,4 +1,5 @@
 {
+    "assetPath": "C:\\assettest\\",
     "showVotes": [
         {
             "id": "show-1",
@@ -6,7 +7,7 @@
             "text": "First vote!",
             "operatorName": "Cue first vote",
             "optionA": "Test A",
-            "optaionAColor": "white",
+            "optaionAColor": "blue",
             "optionB": "Test B",
             "optaionBColor": "white" 
         },
@@ -135,6 +136,7 @@
             "operatorName": "Cue 6 Scene 51",
             "prefix": "video/S5100",
             "extension": ".mov",
+            "defaultLoop": "51_loop.mov",
             "basis": [
                 "film-3",
                 "film-4",
@@ -219,7 +221,7 @@
                 "film-3",
                 "film-4",
                 "film-5",
-                "film-6 b"
+                "film-6 a"
             ],
             "durations": {
                 "1111": 585875,
@@ -254,6 +256,8 @@
         {
             "id": "text-cue-1",
             "textData": true,
+            "videoData": true,
+            "file": "OPEN/A1 Q 1.1.mov",
             "text": [
                 [
                     "Cue text cue text cue text",
@@ -277,7 +281,8 @@
                     "show-2",
                     "optionB"
                 ]
-            ]
+            ],
+            "duration": 10000
         },
         {
             "id": "video-cue-1",
@@ -292,7 +297,7 @@
             "duration": 3000
         },
         {
-            "id": "audio-cue-1",
+            "id": "vote-start-cue",
             "audioData": true,
             "file": "audio/audio1.mp3",
             "showVoteIds": [
@@ -308,7 +313,7 @@
             "duration": 12000
         },
         {
-            "id": "audio-cue-2",
+            "id": "vote-lock-cue",
             "audioData": true,
             "file": "audio/audio2.mp3",
             "showVoteIds": [
@@ -405,7 +410,7 @@
                         "optionA"
                     ]
                 ],
-                "duration": 5000
+                "duration": 10000
             },
     {
                 "id": "A1 Q 1.2",
@@ -417,7 +422,7 @@
                         "optionA"
                     ]
                 ],
-                "duration": 0
+                "duration": 10000
             },
     {
                 "id": "A1 Q 1.3",

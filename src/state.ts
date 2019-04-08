@@ -29,14 +29,20 @@ export function startVote(voteId: string): (s: IShowState) => IShowState {
 
     const bfvToMovie = (bfv: IBasisFilmVote, vrs: IVoteResults): Option<IMovie> =>
         some(fparr.array.map(bfv.basis, s => voteResult.at(s).get(vrs)))
-            .filter(vcs => fparr.array.foldr(vcs, true, (a, b) => a.isSome() && b))
+            .map(vcr => {
+                console.log(JSON.stringify(vcr));
+                return vcr;
+            })
+            .filter(vcs => fparr.array.foldr(vcs, true as boolean, (a, b) => a.isSome() && b))
             .map(vcs => fparr.array.map(vcs, vc => vc.map(voteChoiceToNum)))
             .map(vcs => F.reduce(vcs, "", monoidString.concat))
             .chain(nums => fromNullable(bfv.durations[nums]).map(d => [nums, d] as [string, number]))
             .map(([nums, d]) => ({
                 batchFile: bfv.prefix + nums + bfv.extension,
                 batchLength: d,
-                loopFile: bfv.prefix + nums + "_loop" + bfv.extension
+                loopFile: bfv.defaultLoop === undefined ?
+                    bfv.prefix + nums + "_loop" + bfv.extension :
+                    bfv.defaultLoop
             }));
 
     return s =>
@@ -89,6 +95,7 @@ export function cueBatch(): (s: IShowState) => IShowState {
             .map(vr => some(vr))
             .map(activeMovieLens.set)
             .map(setActiveMovie => latestVoteResultId.set(none)(setActiveMovie(s)))
+            .map(activeCues.set([]))
             .getOrElse(s);
 }
 
@@ -102,6 +109,10 @@ export function clearVoteResult(): (state: IShowState) => IShowState {
 
 export function runMovie(state: IShowState, movie: IMovie): IShowState {
     return activeMovieLens.set(some(movie))(state);
+}
+
+export function derunCue(cueid: string, finishTime: number | undefined): (state: IShowState) => IShowState {
+    return activeCues.modify(cs => fparr.filter(cs, ([c, n]) => c.id !== cueid || (finishTime != undefined && n != finishTime)));
 }
 
 export function runCue(cue: Cue): (state: IShowState) => IShowState {

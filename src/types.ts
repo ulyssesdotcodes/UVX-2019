@@ -32,6 +32,7 @@ export interface IBasisFilmVote extends IVote {
     readonly prefix: string;
     readonly extension: string;
     readonly basis: string[];
+    readonly defaultLoop: string | undefined;
     readonly durations: { [key: string]: number };
 }
 
@@ -176,6 +177,7 @@ export interface IVoteResults {
 }
 
 export interface IShowState {
+    readonly assetPath: string;
     readonly blackout: boolean;
     readonly paused: Option<number>;
     readonly activeCues: Array<[Cue, FinishTime]>;

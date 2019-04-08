@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, thunkClearVoteResult, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
@@ -19,6 +19,7 @@ interface OperatorProps {
     thunkCueBatch: () => void;
     thunkEndVote: () => void;
     thunkCueCue: (cueId: string) => void;
+    thunkDecueCue: (cueId: string, finishTime: number | undefined) => void;
     thunkReset: () => void;
     thunkClearVoteResult: () => void;
     connectws: (url: string) => void;
@@ -86,9 +87,10 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                         {activeCueList(this.props.operator.voteResults, this.props.operator.cues)
                             .map(c =>
                                 <CueCue
-                                    key={c.id}
+                                    key={c.id + new Date().getTime()}
                                     cue={c}
                                     thunkCueCue={this.props.thunkCueCue}
+                                    thunkDecueCue={this.props.thunkDecueCue}
                                     />
                             )}
                         </div>
@@ -122,9 +124,13 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                     <div className="cueInfo">
                         Cues:
                         {this.props.operator.activeCues.map(ac => (
-                            <span key={ac[0].id}> {ac[0].id} </span>
+                            <div key={ac[0].id + ac[1]}>
+                                <span> {ac[0].id + " - " + ac[1]} </span>
+                                <a onClick={ () => this.props.thunkDecueCue(ac[0].id, ac[1]) } className="decue">x</a>
+                            </div>
                         ))}
                     </div>
+
                 </div>
                 <div className="cue-list">
                     {this.props.operator.cues
@@ -133,6 +139,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 key={c.id}
                                 cue={c}
                                 thunkCueCue={this.props.thunkCueCue}
+                                thunkDecueCue={this.props.thunkDecueCue}
                                 />
                         )}
                 </div>
@@ -145,4 +152,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkReset, thunkClearVoteResult, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, connectws })(Operator);

@@ -26,6 +26,10 @@ function startVote(voteId) {
     var F = fpfold.getFoldableComposition(fparr.array, Option_1.option);
     var bfvToMovie = function (bfv, vrs) {
         return Option_1.some(fparr.array.map(bfv.basis, function (s) { return types_1.voteResult.at(s).get(vrs); }))
+            .map(function (vcr) {
+            console.log(JSON.stringify(vcr));
+            return vcr;
+        })
             .filter(function (vcs) { return fparr.array.foldr(vcs, true, function (a, b) { return a.isSome() && b; }); })
             .map(function (vcs) { return fparr.array.map(vcs, function (vc) { return vc.map(voteChoiceToNum); }); })
             .map(function (vcs) { return F.reduce(vcs, "", Monoid_1.monoidString.concat); })
@@ -35,7 +39,9 @@ function startVote(voteId) {
             return ({
                 batchFile: bfv.prefix + nums + bfv.extension,
                 batchLength: d,
-                loopFile: bfv.prefix + nums + "_loop" + bfv.extension
+                loopFile: bfv.defaultLoop === undefined ?
+                    bfv.prefix + nums + "_loop" + bfv.extension :
+                    bfv.defaultLoop
             });
         });
     };
@@ -86,6 +92,7 @@ function cueBatch() {
             .map(function (vr) { return Option_1.some(vr); })
             .map(types_1.activeMovieLens.set)
             .map(function (setActiveMovie) { return types_1.latestVoteResultId.set(Option_1.none)(setActiveMovie(s)); })
+            .map(types_1.activeCues.set([]))
             .getOrElse(s);
     };
 }
@@ -102,6 +109,13 @@ function runMovie(state, movie) {
     return types_1.activeMovieLens.set(Option_1.some(movie))(state);
 }
 exports.runMovie = runMovie;
+function derunCue(cueid, finishTime) {
+    return types_1.activeCues.modify(function (cs) { return fparr.filter(cs, function (_a) {
+        var c = _a[0], n = _a[1];
+        return c.id !== cueid || (finishTime != undefined && n != finishTime);
+    }); });
+}
+exports.derunCue = derunCue;
 function runCue(cue) {
     return function_1.compose(types_1.activeCues.modify(function (cs) { return cs.concat([[cue, new Date().getTime() + types_1.cueDuration(cue)]]); }), clearInactiveCues);
 }

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -99,6 +110,7 @@ server.listen(3000);
 var voteTimer = Option_1.none;
 var data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data.json"), { encoding: "utf8" }));
 var showState = Object.assign({}, util_1.defaultShowState, data);
+showState = __assign({}, showState, { assetPath: showState.assetPath.replace(/\\/g, "\\\\") });
 function updateVoteWrapper(f) {
     var prevState = showState;
     showState = f(showState);
@@ -114,6 +126,16 @@ function updateVoteWrapper(f) {
     }
 }
 updateVoteWrapper(function_1.identity);
+var runCue = function (id) {
+    return types_1.findCue.at(id)
+        .get(showState.cues)
+        .map(function (c) {
+        // TODO: Ugly side effect
+        setTimeout(function () { return updateVoteWrapper(state.clearInactiveCues); }, types_1.cueDuration(c) + 50);
+        return c;
+    })
+        .map(function (c) { return updateVoteWrapper(state.runCue(c)); });
+};
 wss.on("connection", function connection(socket) {
     socket.on(store_1.REDUX_MESSAGE, function incoming(message) {
         if (process.execPath.includes("node")) {
@@ -122,14 +144,21 @@ wss.on("connection", function connection(socket) {
         switch (message.type) {
             case types_2.CUE_VOTE:
                 updateVoteWrapper(state.startVote(message.payload));
+                voteTimer.map(function (vt) { return clearTimeout(vt); });
                 voteTimer =
                     types_1.activeVoteLens.get(showState)
                         .map(function (av) { return av.vote; })
                         .filter(function_1.or(types_1.isVotedFilmVote, types_1.isShowVote))
-                        .chain(function (_) { return types_1.activeVoteFinish.getOption(showState); })
+                        .chain(function (_) {
+                        runCue("vote-start-cue");
+                        return types_1.activeVoteFinish.getOption(showState);
+                    })
                         .chain(function (av) { return types_1.paused.get(showState).isSome() ? Option_1.none : Option_1.some(av); })
                         .map(function (t) {
-                        return setTimeout(function () { return updateVoteWrapper(state.endVote()); }, t - new Date().getTime());
+                        return setTimeout(function () {
+                            runCue("vote-lock-cue");
+                            updateVoteWrapper(state.endVote());
+                        }, t - new Date().getTime());
                     });
                 break;
             case types_3.VOTE:
@@ -141,7 +170,10 @@ wss.on("connection", function connection(socket) {
                     voteTimer.map(function (vt) { return clearTimeout(vt); }).chain(function (_) { return Option_1.none; }) :
                     types_1.activeVoteFinish.getOption(showState)
                         .map(function (t) {
-                        return setTimeout(function () { return updateVoteWrapper(state.endVote()); }, t - new Date().getTime());
+                        return setTimeout(function () {
+                            runCue("vote-lock-cue");
+                            updateVoteWrapper(state.endVote());
+                        }, t - new Date().getTime());
                     });
                 break;
             case types_2.CUE_BATCH:
@@ -152,20 +184,17 @@ wss.on("connection", function connection(socket) {
                 break;
             case types_2.END_VOTE:
                 voteTimer = voteTimer.chain(function (vt) {
+                    runCue("vote-lock-cue");
                     clearTimeout(vt);
                     return Option_1.none;
                 });
                 updateVoteWrapper(state.endVote());
                 break;
             case types_2.CUE_CUE:
-                types_1.findCue.at(message.payload)
-                    .get(showState.cues)
-                    .map(function (c) {
-                    // TODO: Ugly side effect
-                    setTimeout(function () { return updateVoteWrapper(state.clearInactiveCues); }, types_1.cueDuration(c));
-                    return c;
-                })
-                    .map(function (c) { return updateVoteWrapper(state.runCue(c)); });
+                runCue(message.payload);
+                break;
+            case types_2.DECUE_CUE:
+                updateVoteWrapper(state.derunCue(message.payload[0], message.payload[1]));
                 break;
             case types_2.RESET:
                 updateVoteWrapper(function (_) { return Object.assign({}, util_1.defaultShowState, data); });

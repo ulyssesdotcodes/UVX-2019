@@ -22,6 +22,7 @@ export const CUE_BATCH = "CUE_BATCH";
 export const CHANGE_PAUSED = "CHANGE_PAUSED";
 export const END_VOTE = "END_VOTE";
 export const CUE_CUE = "CUE_CUE";
+export const DECUE_CUE = "DECUE_CUE";
 export const CLEAR_VOTE_RESULT = "CLEAR_VOTE_RESULT";
 export const RESET = "RESET";
 
@@ -39,8 +40,13 @@ interface EndVote {
 }
 
 interface CueCue {
+
     type: typeof CUE_CUE;
     payload: string;
+}
+interface DecueCue {
+    type: typeof DECUE_CUE;
+    payload: [string, number | undefined];
 }
 
 interface ClearVoteResult {
@@ -56,4 +62,4 @@ interface ChangePausedAction {
     payload: boolean;
 }
 
-export type OperatorActionTypes = CueVoteAction | CueBatchAction | ChangePausedAction  | EndVote | CueCue | ClearVoteResult | Reset | StateActionTypes;
+export type OperatorActionTypes = CueVoteAction | CueBatchAction | ChangePausedAction  | EndVote | CueCue | DecueCue | ClearVoteResult | Reset | StateActionTypes;

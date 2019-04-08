@@ -78,7 +78,7 @@ var Operator = /** @class */ (function (_super) {
                     React.createElement("div", { className: "header" }, "Cues"),
                     React.createElement("div", { className: "cue-list" }, types_1.activeCueList(this.props.operator.voteResults, this.props.operator.cues)
                         .map(function (c) {
-                        return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue });
+                        return React.createElement(CueCue_1.default, { key: c.id + new Date().getTime(), cue: c, thunkCueCue: _this.props.thunkCueCue, thunkDecueCue: _this.props.thunkDecueCue });
                     })))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
@@ -112,13 +112,15 @@ var Operator = /** @class */ (function (_super) {
                         mov.loopFile))); }).getOrElse(React.createElement("div", null)),
                 React.createElement("div", { className: "cueInfo" },
                     "Cues:",
-                    this.props.operator.activeCues.map(function (ac) { return (React.createElement("span", { key: ac[0].id },
-                        " ",
-                        ac[0].id,
-                        " ")); }))),
+                    this.props.operator.activeCues.map(function (ac) { return (React.createElement("div", { key: ac[0].id + ac[1] },
+                        React.createElement("span", null,
+                            " ",
+                            ac[0].id + " - " + ac[1],
+                            " "),
+                        React.createElement("a", { onClick: function () { return _this.props.thunkDecueCue(ac[0].id, ac[1]); }, className: "decue" }, "x"))); }))),
             React.createElement("div", { className: "cue-list" }, this.props.operator.cues
                 .map(function (c) {
-                return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue });
+                return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue, thunkDecueCue: _this.props.thunkDecueCue });
             }))));
     };
     return Operator;
@@ -126,5 +128,5 @@ var Operator = /** @class */ (function (_super) {
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkReset: thunks_1.thunkReset, thunkClearVoteResult: thunks_1.thunkClearVoteResult, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkDecueCue: thunks_1.thunkDecueCue, thunkReset: thunks_1.thunkReset, thunkClearVoteResult: thunks_1.thunkClearVoteResult, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

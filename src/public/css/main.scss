@@ -56,6 +56,16 @@
         flex-direction: column;
         flex-wrap: wrap;
         height: 624px;
+
+        .cue-cue {
+            display: flex;
+            flex-direction: row;
+
+            .button {
+                flex-basis: 1;
+                flex-grow: 1;
+            }
+        }
     }
 
     .controls {
@@ -65,5 +75,10 @@
         .button {
             margin: 4px;
         }
+    }
+
+    .decue {
+        text-decoration: underline;
+        cursor: pointer;
     }
 }
