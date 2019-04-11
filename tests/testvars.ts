@@ -3,7 +3,7 @@ import * as T from "../src/types";
 import { some, none } from "fp-ts/lib/Option";
 import { StrMap } from "fp-ts/lib/StrMap";
 
-export const showVote: T.IShowVote = { id: "testShow", text: "test", optionA: "test A", optionB: "test B", type: "show", operatorName: "test vote" };
+export const showVote: T.IShowVote = { id: "testShow", text: "test", optionA: "test A", optionAColor: "blue", optionB: "test B", optionBColor: "blue", type: "show", operatorName: "test vote" };
 export const filmVote: T.FilmVote & T.IVotedFilmVote = { "id": "film-1",
             "type": "film",
             "text": "First film vote!",
@@ -34,7 +34,8 @@ export const dependentFilmVote: T.FilmVote = {
     "prefix": "S5100",
     "extension": ".mov",
     "basis": ["film-1", "film-2"],
-    "durations": {"12": 4}
+    "durations": {"12": 4},
+    "defaultLoop": undefined
 };
 
 export const showVoteAction: T.IVoteAction = { voteId: "testShow", userId: "testUser", vote: "optionA" };
@@ -44,10 +45,10 @@ export const filmVoteActionOptB: T.IVoteAction = { voteId: "testFilm", userId: "
 
 export const movie: T.IMovie = { batchFile: "test.mp4", batchLength: 10, loopFile: "testloop.mp4" };
 
-export const textCue: T.TextCue = { id: "testall", textData: true,  text: [["testAllCue", 10]], showVoteIds: [[showVoteAction.voteId, "optionA"]], duration: 10000 };
+export const textCue: T.TextCue = { id: "testall", textData: true,  text: [["testAllCue", 10]], showVoteIds: [[showVoteAction.voteId, "optionA"]] };
 export const videoCue: T.VideoCue = { id: "testvideo", videoData: true, file: "test.mp4", showVoteIds: [], duration: 10000 };
 
-export const defaultShowState: T.IShowState = { blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, latestShow: none, latestFilm: none, all: new StrMap<T.VoteChoice>({}) },
+export const defaultShowState: T.IShowState = { assetPath: "./", blackout: false, paused: some(new Date().getTime()), activeVote: none, activeCues: [], activeMovie: none, voteResults: { latest: none, latestShow: none, latestFilm: none, all: new StrMap<T.VoteChoice>({}) },
     filmVotes: [filmVote], showVotes: [showVote], cues: [textCue, videoCue] };
 
 export const votedShowState: T.IShowState = {

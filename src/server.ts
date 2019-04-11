@@ -2,7 +2,7 @@ import { IShowState, activeVoteLens, activeVoteFinish, paused, findCue, isVotedF
 import { VOTE_DURATION, defaultShowState } from "./util";
 import { REDUX_MESSAGE, SendableAction } from "./public/app/store";
 import { UPDATE_SHOW_STATE } from "./public/app/store/common/state_types";
-import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE, CLEAR_VOTE_RESULT, DECUE_CUE } from "./public/app/store/operator/types";
+import { CUE_BATCH, CUE_VOTE, CHANGE_PAUSED, END_VOTE, RESET, CUE_CUE, CLEAR_VOTE_RESULT, DECUE_CUE, RELOAD_DATA } from "./public/app/store/operator/types";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as cp from "child_process";
@@ -30,10 +30,12 @@ const tdsock = new Socket("127.0.0.1", 5959);
 
 // Start TD
 
+const isExe = !process.execPath.includes("node");
+
 const startTD = async (callback: () => void) => {
     const arr: Array<any> = await find("name", "TouchPlayer099");
 
-    if (arr.length == 0 && !process.execPath.includes("node")) {
+    if (arr.length == 0 && isExe) {
         const tdpath = path.join(process.cwd(), "TD\\FunctionalDesigner.toe");
         const wd = process.cwd();
         process.chdir("C:\\Program Files\\Derivative\\TouchDesigner099\\bin");
@@ -56,7 +58,7 @@ const server = http.Server(app);
 
 const wss = socketio.listen(server);
 
-server.listen(3000);
+server.listen(isExe ? 80 : 3000);
 
 let voteTimer: Option<NodeJS.Timeout> = none;
 
@@ -81,6 +83,20 @@ function updateVoteWrapper(f: (state: IShowState) => IShowState) {
         tdsock.makeConnection();
     }
 }
+
+const reloaddata = () =>
+    updateVoteWrapper(s => {
+        const cachedShowState = showState;
+        try {
+            const data = JSON.parse(
+                fs.readFileSync(path.join(process.cwd(), "data.json"),
+                    {encoding: "utf8"}));
+            return Object.assign({}, s, data);
+        } catch (e) {
+            console.log(e);
+        }
+        return cachedShowState;
+    });
 
 updateVoteWrapper(identity);
 
@@ -157,6 +173,9 @@ wss.on("connection", function connection(socket: any) {
                 break;
             case RESET:
                 updateVoteWrapper(_ => Object.assign({}, defaultShowState, data));
+                break;
+            case RELOAD_DATA:
+                reloaddata();
                 break;
         }
     });

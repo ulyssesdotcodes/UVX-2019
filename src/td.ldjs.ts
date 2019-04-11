@@ -36,7 +36,7 @@ export function stateToTD(state: IShowState, prevState: IShowState): Array<INode
             .c(c.chop("audiodeviceout"));
 
     return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
-        .run(reverse(catOptions([activeMovieNode.map(n => n[0]), av, vr]).concat([videoCues], catOptions([textCue]))))
+        .run(reverse(catOptions([activeMovieNode.map(n => n[0]), some(videoCues), textCue, av, vr])))
         .connect(c.tope("out")).out()].concat(audioOut.out());
 }
 
@@ -197,7 +197,7 @@ const audioCueNode = (state: IShowState, [cue, time]: [AudioCue, number]): Audio
         file: c.sp(state.assetPath + cue.file),
         play: c.tp(state.paused.isNone()),
         repeat: c.mp(0),
-    }).runT();
+    }, [], idToNodeName(cue.id) + time).runT();
 
 const textCueNode = (state: IShowState, prevState: IShowState, [cue, time]: [TextCue, number]): TextCueNode =>
     c.top("switch", {

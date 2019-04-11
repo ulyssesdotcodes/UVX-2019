@@ -46,15 +46,23 @@ exports.voteChoice = new monocle_ts_1.Optional(function (s) { return s[1] == "op
         exports.optionC.getOption(s[0]); }, function (a) { return function (s) { return s; }; });
 function options(vote) {
     var optionA = vote.optionA ?
-        Option_1.some([vote.optionA, "optionA"]) :
+        Option_1.some([
+            vote.optionA,
+            "optionA",
+            exports.isShowVote(vote) ? vote.optionAColor : "blue"
+        ]) :
         Option_1.none;
     var optionB = vote.optionB ?
-        Option_1.some([vote.optionB, "optionB"]) :
+        Option_1.some([
+            vote.optionB,
+            "optionB",
+            exports.isShowVote(vote) ? vote.optionBColor : "blue"
+        ]) :
         Option_1.none;
     var optionC = vote.optionC ?
-        Option_1.some([vote.optionC, "optionC"]) :
+        Option_1.some([vote.optionC, "optionC", "blue"]) :
         Option_1.none;
-    return [optionA, optionB, optionC].filter(function (v) { return v.isSome(); }).map(function (v) { return v.getOrElse(["", "optionA"]); });
+    return [optionA, optionB, optionC].filter(function (v) { return v.isSome(); }).map(function (v) { return v.getOrElse(["", "optionA", "blue"]); });
 }
 exports.options = options;
 function voteMovie(vote, vc) {

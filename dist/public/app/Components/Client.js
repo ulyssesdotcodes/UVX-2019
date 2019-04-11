@@ -96,9 +96,8 @@ var Client = /** @class */ (function (_super) {
             React.createElement("div", { className: "vote-options" }, this.props.client.activeVote
                 .map(function (av) { return av.vote; })
                 .map(function (v) {
-                return types_1.options(v)
-                    .map(function (opt) {
-                    return React.createElement(VoteOption_1.default, { key: opt[1], voteId: v.id, optionText: opt[0], voteChoice: opt[1], vote: _this.state.cookie.map(function (c) { return _.partial(_this.props.thunkVote, c); })
+                return types_1.options(v).map(function (opt) {
+                    return React.createElement(VoteOption_1.default, { key: opt[1], voteId: v.id, optionText: opt[0], voteChoice: opt[1], color: opt[2], vote: _this.state.cookie.map(function (c) { return _.partial(_this.props.thunkVote, c); })
                             .getOrElse(function () { return console.log("Couldn't vote no id"); }) });
                 });
             })

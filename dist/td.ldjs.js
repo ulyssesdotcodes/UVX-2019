@@ -30,7 +30,7 @@ function stateToTD(state, prevState) {
     ]), [c.chop("constant", { value0: c.fp(0), name0: c.sp("chan0"), value1: c.fp(0), name1: c.sp("chan1") }).runT()]))
         .c(c.chop("audiodeviceout"));
     return [c.top("composite", { operand: c.mp(31), resolutionh: 1080, resolutionw: 1920, outputresolution: c.mp(9) })
-            .run(Array_1.reverse(Array_1.catOptions([activeMovieNode.map(function (n) { return n[0]; }), av, vr]).concat([videoCues], Array_1.catOptions([textCue]))))
+            .run(Array_1.reverse(Array_1.catOptions([activeMovieNode.map(function (n) { return n[0]; }), Option_1.some(videoCues), textCue, av, vr])))
             .connect(c.tope("out")).out()].concat(audioOut.out());
 }
 exports.stateToTD = stateToTD;
@@ -153,7 +153,7 @@ var audioCueNode = function (state, _a) {
         file: c.sp(state.assetPath + cue.file),
         play: c.tp(state.paused.isNone()),
         repeat: c.mp(0),
-    }).runT();
+    }, [], idToNodeName(cue.id) + time).runT();
 };
 var textCueNode = function (state, prevState, _a) {
     var cue = _a[0], time = _a[1];

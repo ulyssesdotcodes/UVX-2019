@@ -9,12 +9,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
 var VoteOption = function (_a) {
-    var voteId = _a.voteId, optionText = _a.optionText, vote = _a.vote, voteChoice = _a.voteChoice;
+    var voteId = _a.voteId, optionText = _a.optionText, vote = _a.vote, voteChoice = _a.voteChoice, color = _a.color;
     function cue() {
         vote(voteId, voteChoice);
     }
     return (React.createElement("div", { className: "cue-vote" },
-        React.createElement("a", { className: "button", onClick: cue }, optionText)));
+        React.createElement("a", { className: "vote-option button " + color, onClick: cue }, optionText)));
 };
 exports.default = VoteOption;
 //# sourceMappingURL=VoteOption.js.map

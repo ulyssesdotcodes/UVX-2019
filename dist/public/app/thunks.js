@@ -81,6 +81,12 @@ exports.thunkVote = function (userId, voteId, voteChoice) { return function (dis
         return [2 /*return*/];
     });
 }); }; };
+exports.thunkReloadData = function () { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        dispatch(websocket_actions_1.websocketSend({ type: types_1.RELOAD_DATA }));
+        return [2 /*return*/];
+    });
+}); }; };
 exports.thunkCueCue = function (cueId) { return function (dispatch) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         dispatch(websocket_actions_1.websocketSend({ type: types_1.CUE_CUE, payload: cueId }));

@@ -1,0 +1,62 @@
+    "showVotes": [
+        {
+            "id": "show-1",
+            "type": "show",
+            "text": "Show Vote 1",
+            "operatorName": "Show Vote 2",
+            "optionA": "See a pilot",
+            "optionAColor": "blue",
+            "optionB": "Meet a pilot",
+            "optionBColor": "blue" 
+        },
+        {
+            "id": "show-2",
+            "type": "show",
+            "text": "Show Vote 2",
+            "operatorName": "Show Vote 2",
+            "optionA": "What's in Ronnie's Go Bag?",
+            "optionAColor": "blue",
+            "optionB": "LUX Financial Report",
+            "optionBColor": "red"
+        },
+        {
+            "id": "show-3",
+            "type": "show",
+            "text": "Show Vote 3",
+            "operatorName": "Show Vote 3",
+            "optionA": "Learn Labriskian",
+            "optionAColor": "blue",
+            "optionB": "Learn Russian History",
+            "optionBColor": "red"
+        },
+        {
+            "id": "show-4",
+            "type": "show",
+            "text": "Show Vote 4",
+            "operatorName": "Show Vote 4",
+            "optionA": "Quiz Show",
+            "optionAColor": "blue",
+            "optionB": "Get some Answers",
+            "optionBColor": "red"
+        },
+        {
+            "id": "show-5",
+            "type": "show",
+            "text": "Show Vote 5",
+            "operatorName": "Show Vote 5",
+            "optionA": "What's Ronnie Driving",
+            "optionAColor": "blue",
+            "optionB": "What Drives Ronnie",
+            "optionBColor": "red"
+        },
+        {
+            "id": "show-6",
+            "type": "show",
+            "text": "Show Vote 6",
+            "operatorName": "Show Vote 6",
+            "optionA": "Make Ronnie's Dreams Come True",
+            "optionAColor": "blue",
+            "optionB": "Tell Ronnie the Truth",
+            "optionBColor": "red"
+        }
+    ],

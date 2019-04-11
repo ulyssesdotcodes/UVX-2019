@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { OperatorState } from "../store/operator/types";
 import { AppState } from "../store";
-import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, connectws } from "../thunks";
+import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, thunkReloadData, connectws } from "../thunks";
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
@@ -21,6 +21,7 @@ interface OperatorProps {
     thunkCueCue: (cueId: string) => void;
     thunkDecueCue: (cueId: string, finishTime: number | undefined) => void;
     thunkReset: () => void;
+    thunkReloadData: () => void;
     thunkClearVoteResult: () => void;
     connectws: (url: string) => void;
 }
@@ -106,6 +107,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                     <a className="button" onClick={this.props.thunkCueBatch}>Cue Batch</a>
                     <a className="button" onClick={this.props.thunkClearVoteResult}>Clear Vote Result</a>
                     <a className="button" onClick={this.props.thunkReset}>Reset</a>
+                    <a className="button" onClick={this.props.thunkReloadData}>Reload Data</a>
                 </div>
                 <div className="info">
                     <h3>Runtime Info</h3>
@@ -152,4 +154,4 @@ const mapStateToProps = (state: AppState) => ({
     operator: state.operator
 });
 
-export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, connectws })(Operator);
+export default connect(mapStateToProps, { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueCue, thunkDecueCue, thunkReset, thunkClearVoteResult, thunkReloadData, connectws })(Operator);

@@ -84,15 +84,15 @@ class Client extends React.Component<ClientProps & RouteProps> {
                     {this.props.client.activeVote
                         .map(av => av.vote)
                         .map(v =>
-                            options(v)
-                            .map(opt =>
-                            <VoteOption key={opt[1]}
-                                voteId={v.id}
-                                optionText={opt[0]}
-                                voteChoice={opt[1]}
-                                vote={this.state.cookie.map(c => _.partial(this.props.thunkVote, c))
-                                    .getOrElse(() => console.log("Couldn't vote no id"))}
-                                />))
+                            options(v).map(opt =>
+                                <VoteOption key={opt[1]}
+                                    voteId={v.id}
+                                    optionText={opt[0]}
+                                    voteChoice={opt[1]}
+                                    color={opt[2]}
+                                    vote={this.state.cookie.map(c => _.partial(this.props.thunkVote, c))
+                                        .getOrElse(() => console.log("Couldn't vote no id"))}
+                                    />))
                             .getOrElse([<div key="empty"></div>])}
                 </div>
             </div>

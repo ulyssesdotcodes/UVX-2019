@@ -87,7 +87,8 @@ var Operator = /** @class */ (function (_super) {
                     React.createElement("a", { className: "button", onClick: this.pause }, "Pause"),
                 React.createElement("a", { className: "button", onClick: this.props.thunkCueBatch }, "Cue Batch"),
                 React.createElement("a", { className: "button", onClick: this.props.thunkClearVoteResult }, "Clear Vote Result"),
-                React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset")),
+                React.createElement("a", { className: "button", onClick: this.props.thunkReset }, "Reset"),
+                React.createElement("a", { className: "button", onClick: this.props.thunkReloadData }, "Reload Data")),
             React.createElement("div", { className: "info" },
                 React.createElement("h3", null, "Runtime Info"),
                 this.props.operator.activeVote.map(function (av) { return (React.createElement("div", { className: "voteInfo", key: "activevote" },
@@ -128,5 +129,5 @@ var Operator = /** @class */ (function (_super) {
 var mapStateToProps = function (state) { return ({
     operator: state.operator
 }); };
-exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkDecueCue: thunks_1.thunkDecueCue, thunkReset: thunks_1.thunkReset, thunkClearVoteResult: thunks_1.thunkClearVoteResult, connectws: thunks_1.connectws })(Operator);
+exports.default = react_redux_1.connect(mapStateToProps, { thunkCueVote: thunks_1.thunkCueVote, thunkChangePaused: thunks_1.thunkChangePaused, thunkCueBatch: thunks_1.thunkCueBatch, thunkEndVote: thunks_1.thunkEndVote, thunkCueCue: thunks_1.thunkCueCue, thunkDecueCue: thunks_1.thunkDecueCue, thunkReset: thunks_1.thunkReset, thunkClearVoteResult: thunks_1.thunkClearVoteResult, thunkReloadData: thunks_1.thunkReloadData, connectws: thunks_1.connectws })(Operator);
 //# sourceMappingURL=Operator.js.map

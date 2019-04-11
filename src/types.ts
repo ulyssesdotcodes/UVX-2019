@@ -124,20 +124,28 @@ export const voteChoice: Optional<[IVote, VoteChoice], string> =
             optionC.getOption(s[0]),
         a => s => s);
 
-export function options(vote: IVote): [string, VoteChoice][] {
-    const optionA: Option<[string, VoteChoice]> =
+export function options(vote: IVote): [string, VoteChoice, string][] {
+    const optionA: Option<[string, VoteChoice, string]> =
         (<IVotedFilmVote | IShowVote>vote).optionA ?
-            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote | IShowVote>vote).optionA, "optionA"]) :
-            <Option<[string, VoteChoice]>>none;
-    const optionB: Option<[string, VoteChoice]> =
+            <Option<[string, VoteChoice, string]>>some([
+                (<IVotedFilmVote | IShowVote>vote).optionA,
+                "optionA",
+                isShowVote(vote) ? vote.optionAColor : "blue"
+            ]) :
+            <Option<[string, VoteChoice, string]>>none;
+    const optionB: Option<[string, VoteChoice, string]> =
         (<IVotedFilmVote | IShowVote>vote).optionB ?
-            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote | IShowVote>vote).optionB, "optionB"]) :
-            <Option<[string, VoteChoice]>>none;
-    const optionC: Option<[string, VoteChoice]> =
+            <Option<[string, VoteChoice, string]>>some([
+                (<IVotedFilmVote | IShowVote>vote).optionB,
+                "optionB",
+                isShowVote(vote) ? vote.optionBColor : "blue"
+            ]) :
+            <Option<[string, VoteChoice, string]>>none;
+    const optionC: Option<[string, VoteChoice, string]> =
         (<IVotedFilmVote>vote).optionC ?
-            <Option<[string, VoteChoice]>>some([(<IVotedFilmVote>vote).optionC, "optionC"]) :
-            <Option<[string, VoteChoice]>>none;
-    return [optionA, optionB, optionC].filter(v => v.isSome()).map(v => v.getOrElse(["", "optionA"]));
+            <Option<[string, VoteChoice, string]>>some([(<IVotedFilmVote>vote).optionC, "optionC", "blue"]) :
+            <Option<[string, VoteChoice, string]>>none;
+    return [optionA, optionB, optionC].filter(v => v.isSome()).map(v => v.getOrElse(["", "optionA", "blue"]));
 }
 
 export function voteMovie(vote: IVotedFilmVote, vc: VoteChoice): IMovie {

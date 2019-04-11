@@ -1,3 +1,8 @@
+@viewport {
+    width: device-width;
+    zoom: 1.0;
+}
+
 .button {
     text-transform: uppercase;
     text-align: center;
@@ -17,6 +22,20 @@
 .button:active {
     background-color: black;
     color: white;
+}
+
+.red {
+    color: rgb(219,51, 0);
+    border-color: rgb(219,51, 0);
+}
+
+.blue {
+    color: rgb(113, 211, 246);
+    border-color: rgb(113, 211, 246);
+}
+
+.vote-option {
+    margin-top: 32px;
 }
 
 .operator {

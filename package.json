@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run serve",
-    "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run copy-static-assets",
+    "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run build-static",
     "serve": "node dist/server.js",
     "watch-static": "onchange \"./src/public/\" -- npm run build-static",
     "watch-node": "nodemon dist/server.js",
