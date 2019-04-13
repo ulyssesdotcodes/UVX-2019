@@ -4,17 +4,9 @@ import * as fparr from "fp-ts/lib/Array";
 import * as fpm from "fp-ts/lib/StrMap";
 import * as fpfold from "fp-ts/lib/Foldable2v";
 import * as _ from "lodash";
-import { stateToTD } from "./td.ldjs";
-import { pause } from "./public/app/store/operator/actions";
 import { createActiveVote } from "./util";
-import { setoidString } from "fp-ts/lib/Setoid";
 import { compose, identity, Refinement, or } from "fp-ts/lib/function";
-import { find } from "fp-ts/lib/Foldable";
-import { create } from "domain";
-import { monoidAll, monoidString } from "fp-ts/lib/Monoid";
-import { sequence } from "fp-ts/lib/Traversable";
-import { getMonoid } from "fp-ts/lib/Applicative";
-import { string } from "prop-types";
+import { monoidString } from "fp-ts/lib/Monoid";
 
 export function startVote(voteId: string): (s: IShowState) => IShowState {
     const voteChoiceToNum = (vc: VoteChoice): string => {
@@ -58,17 +50,20 @@ export function startVote(voteId: string): (s: IShowState) => IShowState {
 }
 
 export function endVote(): (s: IShowState) => IShowState {
-    const findWinner = (v: IVote, vm: fpm.StrMap<VoteChoice>) =>
-            vm.reduceWithKey(new fpm.StrMap({}),
-                (k, counts, vc) =>
-                    fpm.insert(vc,
-                        fpm.lookup(vc, counts).getOrElse(1),
-                        counts))
-            .reduceWithKey(
-                [0, options(v)[Math.floor(Math.random() * options(v).length)][1]] as [number, VoteChoice],
-                (key, vv, count) =>
-                    vv[0] > count ?
-                    vv : [count, key] as [number, VoteChoice])[1];
+    const findWinner = (v: IVote, vm: fpm.StrMap<VoteChoice>): VoteChoice => {
+            const counts =
+                vm.reduceWithKey([new fpm.StrMap({}), 0] as [fpm.StrMap<number>, number],
+                    (k, [counts, max], vc) => {
+                        const count = fpm.lookup(vc, counts).getOrElse(0) + 1;
+                        return [fpm.insert(vc, count, counts), Math.max(count, max)] as [fpm.StrMap<number>, number];
+                    });
+
+            const reduced = counts[0].filter(v => v == counts[1]);
+            const keys = Object.keys(reduced.value);
+            return keys.length > 0 ?
+                keys[Math.floor(Math.random() * keys.length)] as VoteChoice :
+                options(v)[Math.floor(Math.random() * options(v).length)][1];
+        };
     return s =>
         activeVote.getOption(s)
             .map(av =>

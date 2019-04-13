@@ -1,65 +1,25 @@
 {
-    "assetPath": "C:\\assettest\\",
+    "assetPath": "./",
     "showVotes": [
         {
             "id": "show-1",
             "type": "show",
-            "text": "Show Vote 1",
-            "operatorName": "Show Vote 2",
-            "optionA": "See a pilot",
+            "text": "First vote!",
+            "operatorName": "Cue first vote hah",
+            "optionA": "Test A",
             "optionAColor": "blue",
-            "optionB": "Meet a pilot",
-            "optionBColor": "blue" 
+            "optionB": "Test B",
+            "optionBColor": "white" 
         },
         {
             "id": "show-2",
             "type": "show",
-            "text": "Show Vote 2",
-            "operatorName": "Show Vote 2",
-            "optionA": "What's in Ronnie's Go Bag?",
-            "optionAColor": "blue",
-            "optionB": "LUX Financial Report",
-            "optionBColor": "red"
-        },
-        {
-            "id": "show-3",
-            "type": "show",
-            "text": "Show Vote 3",
-            "operatorName": "Show Vote 3",
-            "optionA": "Learn Labriskian",
-            "optionAColor": "blue",
-            "optionB": "Learn Russian History",
-            "optionBColor": "red"
-        },
-        {
-            "id": "show-4",
-            "type": "show",
-            "text": "Show Vote 4",
-            "operatorName": "Show Vote 4",
-            "optionA": "Quiz Show",
-            "optionAColor": "blue",
-            "optionB": "Get some Answers",
-            "optionBColor": "red"
-        },
-        {
-            "id": "show-5",
-            "type": "show",
-            "text": "Show Vote 5",
-            "operatorName": "Show Vote 5",
-            "optionA": "What's Ronnie Driving",
-            "optionAColor": "blue",
-            "optionB": "What Drives Ronnie",
-            "optionBColor": "red"
-        },
-        {
-            "id": "show-6",
-            "type": "show",
-            "text": "Show Vote 6",
-            "operatorName": "Show Vote 6",
-            "optionA": "Make Ronnie's Dreams Come True",
-            "optionAColor": "blue",
-            "optionB": "Tell Ronnie the Truth",
-            "optionBColor": "red"
+            "text": "Second vote!",
+            "operatorName": "Cue second vote",
+            "optionA": "Test A2",
+            "optionAColor": "red",
+            "optionB": "Test B2",
+            "optionBColor": "blue"
         }
     ],
     "filmVotes": [
@@ -293,1433 +253,1903 @@
         }
     ],
     "cues": [
-  {
-    "id": "preshowvideo.mov",
-    "videoData": true,
-    "file": "preshowvideo.mov",
-    "duration": 900000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
+        {
+            "id": "text-cue-1",
+            "textData": true,
+            "videoData": true,
+            "file": "OPEN/A1 Q 1.1.mov",
+            "text": [
+                [
+                    "Cue text cue text cue text",
+                    10000
+                ],
+                [
+                    "cue text 2",
+                    4000
+                ],
+                [
+                    "cue text 3",
+                    3000
+                ]
+            ],
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-2",
+                    "optionB"
+                ]
+            ],
+            "duration": 10000
+        },
+        {
+            "id": "video-cue-1",
+            "videoData": true,
+            "file": "movies/video1.mov",
+            "showVoteIds": [
+                [
+                    "show-2",
+                    "optionB"
+                ]
+            ],
+            "duration": 3000
+        },
+        {
+            "id": "vote-start-cue",
+            "audioData": true,
+            "file": "audio/audio1.mp3",
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-1",
+                    "optionC"
+                ]
+            ],
+            "duration": 12000
+        },
+        {
+            "id": "vote-lock-cue",
+            "audioData": true,
+            "file": "audio/audio2.mp3",
+            "showVoteIds": [
+                [
+                    "show-1",
+                    "optionA"
+                ],
+                [
+                    "show-1",
+                    "optionC"
+                ]
+            ],
+            "duration": 1000
+        },
+    {
+                "id": "SQ1 - Voiceover test",
+                "audioData": true,
+                "file": "OPEN/SQ1 - Voiceover.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 13000
+            },
+    {
+                "id": "AVQ1 - You've got the LUX",
+                "audioData": true,
+                "file": "OPEN/AVQ1 - You've got the LUX.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 210000
+            },
+    {
+                "id": "AVQ2 - UVX intro/MDM Intro",
+                "audioData": true,
+                "file": "OPEN/AVQ2 - UVX intro/MDM Intro.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "AVQ3 - 1D Experience Video",
+                "videoData": true,
+                "file": "OPEN/AVQ3 - 1D Experience Video.mov",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionC"
+                    ]
+                ],
+                "duration": 41000
+            },
+    {
+                "id": "SQ2 - Fanfare",
+                "audioData": true,
+                "file": "OPEN/SQ2 - Fanfare.wav",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 1000
+            },
+    {
+                "id": "SQ3 - Still in Saigon",
+                "audioData": true,
+                "file": "OPEN/SQ3 - Still in Saigon.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 48000
+            },
+    {
+                "id": "A1 Q 1.1",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.1.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 10000
+            },
+    {
+                "id": "A1 Q 1.2",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.2.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 10000
+            },
+    {
+                "id": "A1 Q 1.3",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.3.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "A1 Q 1.4",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.4.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "AVQ4 - C.H.E.C.K.O.V. Specs",
+                "videoData": true,
+                "file": "OPEN/AVQ4 - C.H.E.C.K.O.V. Specs.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+    }, {
+                "id": "A1 Q 1.5",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.5.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "A1 Q 1.6",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.6.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "AVQ 5 - A1 Voting tutorial",
+                "videoData": true,
+                "file": "OPEN/AVQ 5 - A1 Voting tutorial.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "SQ4 - Voting Music",
+                "audioData": true,
+                "file": "OPEN/SQ4 - Voting Music.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionB"
+                    ],
+    								[
+                        "show-3",
+                        "optionA"
+                    ],
+    								[
+                        "show-3",
+                        "optionB"
+                    ],
+    								[
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ],
+    								[
+                        "show-5",
+                        "optionA"
+                    ],
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 249000
+            },
+    {
+                "id": "SQ5 - Confirmation Ding",
+                "audioData": true,
+                "file": "OPEN/SQ5 - Confirmation Ding.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionB"
+                    ],
+    								[
+                        "show-3",
+                        "optionA"
+                    ],
+    								[
+                        "show-3",
+                        "optionB"
+                    ],
+    								[
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ],
+    								[
+                        "show-5",
+                        "optionA"
+                    ],
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ 6 - Laser fire",
+                "audioData": true,
+                "file": "OPEN/AVQ 6 - Laser fire.mp3",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionB"
+                    ],
+    								[
+                        "show-3",
+                        "optionA"
+                    ],
+    								[
+                        "show-3",
+                        "optionB"
+                    ],
+    								[
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ],
+    								[
+                        "show-5",
+                        "optionA"
+                    ],
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 24000
+            },
+    {
+                "id": "A1 Q 1.7",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.7.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "A1 Q 1.8",
+                "videoData": true,
+                "file": "OPEN/A1 Q 1.8.mov",
+                "showVoteIds": [
+                    [
+                        "OPEN",
+                        "optionA"
+                    ]
+                ],
+                "duration": 0
+            },
+    {
+                "id": "AVQ 7 - Countdown",
+                "videoData": true,
+                "file": "OPEN/AVQ 7 - Countdown.mov",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionC"
+                    ]
+                ],
+                "duration": 90000
+            },
+{
+                "id": "CQ 1.1",
+                "audioData": true,
+                "file": "SV 1A/CQ 1.1.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 2000
+            },
+    {
+                "id": "CQ 1.2",
+                "audioData": true,
+                "file": "SV 1A/CQ 1.2.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 1000
+            },
+    {
+                "id": "CQ 1.3",
+                "audioData": true,
+                "file": "SV 1A/CQ 1.3.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 1.4",
+                "audioData": true,
+                "file": "SV 1A/CQ 1.4.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 5000
+            },
+    {
+                "id": "CQ 1.5",
+                "audioData": true,
+                "file": "SV 1A/CQ 1.5.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 2000
+            },
+    {
+                "id": "FILM KLAXON",
+                "audioData": true,
+                "file": "SV 1A/FILM KLAXON.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionA"
+                    ],
+                    [
+                        "show-1",
+                        "optionB"
+                    ],
+    								[
+                        "show-2",
+                        "optionA"
+                    ],
+    								[
+                        "show-2",
+                        "optionB"
+                    ],
+    								[
+                        "show-3",
+                        "optionA"
+                    ],
+    								[
+                        "show-3",
+                        "optionB"
+                    ],
+    								[
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ],
+    								[
+                        "show-5",
+                        "optionA"
+                    ],
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 16000
+            },
+    {
+                "id": "SQ 6 - Fanfare sound",
+                "audioData": true,
+                "file": "SV 1B/SQ 6 - Fanfare sound.mp3",
+                "showVoteIds": [
+                    [
+                        "show-1",
+                        "optionB"
+                    ]
+                ],
+                "duration": 0
+            },
+{
+                "id": "SQ 7 - Dashmap 1",
+                "audioData": true,
+                "file": "SV 2A/SQ 7 - Dashmap 1.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionA"
+                    ]
+                ],
+                "duration": 2000
+            },
+    {
+                "id": "SQ 8 - Dashmap 2",
+                "audioData": true,
+                "file": "SV 2A/SQ 8 - Dashmap 2.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionA"
+                    ]
+                ],
+                "duration": 2000
+            },
+    {
+                "id": "SQ 9 - Dashmap 3",
+                "audioData": true,
+                "file": "SV 2A/SQ 9 - Dashmap 3.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionA"
+                    ]
+                ],
+                "duration": 2000
+            },
+    {
+                "id": "SQ 7 - Hype Music",
+                "audioData": true,
+                "file": "SV 2B/SQ 7 - Hype Music.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 2.1",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.1.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 2.2",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.2.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 2.3",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.3.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "A1 Q 2.1",
+                "videoData": true,
+                "file": "SV 2B/A1 Q 2.1.mov",
+                "showVoteIds": [
+    								[
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 2.2",
+                "videoData": true,
+                "file": "SV 2B/A1 Q 2.2.mov",
+                "showVoteIds": [
+    								[
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 8 - Financial Report",
+                "videoData": true,
+                "file": "SV 2B/AVQ 8 - Financial Report.mov",
+                "showVoteIds": [
+    								[
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 2.3",
+                "videoData": true,
+                "file": "SV 2B/A1 Q 2.3.mov",
+                "showVoteIds": [
+    								[
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "CQ 2.4",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.4.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 2.5",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.5.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 8 - Buddy Alpha",
+                "audioData": true,
+                "file": "SV 2B/SQ 8 - Buddy Alpha.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 2.6",
+                "audioData": true,
+                "file": "SV 2B/CQ 2.6.mp3",
+                "showVoteIds": [
+                    [
+                        "show-2",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+{
+                "id": "SQ 9.1 Labriskian Intro",
+                "audioData": true,
+                "file": "SV 3A/SQ 9.1 Labriskian Intro.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ R1 - Dzote",
+                "audioData": true,
+                "file": "SV 3A/AVQ R1 - Dzote.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ R2 - zheleznoy alebee",
+                "audioData": true,
+                "file": "SV 3A/AVQ R2 - zheleznoy alebee.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ R3.1 - farrah fawcett",
+                "audioData": true,
+                "file": "SV 3A/AVQ R3.1 - farrah fawcett.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ R3.2 - false hack",
+                "audioData": true,
+                "file": "SV 3A/AVQ R3.2 - false hack.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 9.2 - Labriskian Bunker",
+                "audioData": true,
+                "file": "SV 3A/SQ 9.2 - Labriskian Bunker.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 9.3 - Labriskian Alibi",
+                "audioData": true,
+                "file": "SV 3A/SQ 9.3 - Labriskian Alibi.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 9.4 - Labriskian Hack",
+                "audioData": true,
+                "file": "SV 3A/SQ 9.4 - Labriskian Hack.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 9.5 - Labriskian End",
+                "audioData": true,
+                "file": "SV 3A/SQ 9.5 - Labriskian End.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "A1 Q 3.1",
+                "videoData": true,
+                "file": "SV 3B/A1 Q 3.1.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 3.2",
+                "videoData": true,
+                "file": "SV 3B/A1 Q 3.2.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 11 - Rainbow",
+                "videoData": true,
+                "file": "SV 3B/AVQ 11 - Rainbow.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "SQ 11 - Jungle Sounds",
+                "audioData": true,
+                "file": "SV 3B/SQ 11 - Jungle Sounds.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 12 - Dinosaur Sounds",
+                "audioData": true,
+                "file": "SV 3B/SQ 12 - Dinosaur Sounds.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 13 - Soviet Music",
+                "audioData": true,
+                "file": "SV 3B/SQ 13 - Soviet Music.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.2 - A1 Glitch",
+                "videoData": true,
+                "file": "SV 3B/CQ 3.2 - A1 Glitch.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "CQ 3.3",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.3.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.4",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.4.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.5",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.5.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.6",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.6.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.7",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.7.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.8",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.8.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "A1 Q 3.3",
+                "videoData": true,
+                "file": "SV 3B/A1 Q 3.3.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 12 - Pontifex Frame",
+                "videoData": true,
+                "file": "SV 3B/AVQ 12 - Pontifex Frame.mov",
+                "showVoteIds": [
+    								[
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "SQ 14 - Korobeiniki",
+                "audioData": true,
+                "file": "SV 3B/SQ 14 - Korobeiniki.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "CQ 3.9",
+                "audioData": true,
+                "file": "SV 3B/CQ 3.9.mp3",
+                "showVoteIds": [
+                    [
+                        "show-3",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+{
+                "id": "SQ 14.1 - Quiz music intro",
+                "audioData": true,
+                "file": "SV 4A/SQ 14.1 - Quiz music intro.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 14.2 - Quiz music Punchline",
+                "audioData": true,
+                "file": "SV 4A/SQ 14.2 - Quiz music Punchline.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "A1 Q 4.1",
+                "audioData": true,
+                "file": "SV 4A/A1 Q 4.1.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "A1 Q 4.2",
+                "audioData": true,
+                "file": "SV 4A/A1 Q 4.2.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 15 - Applause",
+                "audioData": true,
+                "file": "SV 4A/SQ 15 - Applause.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 16 - Buzzer",
+                "audioData": true,
+                "file": "SV 4A/SQ 16 - Buzzer.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 17 - Ding",
+                "audioData": true,
+                "file": "SV 4A/SQ 17 - Ding.mp3",
+                "showVoteIds": [
+                    [
+                        "show-4",
+                        "optionA"
+                    ],
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ 12 - Cipher Buzzer Hack",
+                "videoData": true,
+                "file": "SV 4B/AVQ 12 - Cipher Buzzer Hack.mov",
+                "showVoteIds": [
+    								[
+                        "show-4",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+{
+                "id": "AVQ 13 - Buick Videos",
+                "videoData": true,
+                "file": "SV 5A/AVQ 13 - Buick Videos.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionA"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 5.1",
+                "videoData": true,
+                "file": "SV 5A/A1 Q 5.1.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionA"
+                    ],
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 5.2",
+                "videoData": true,
+                "file": "SV 5A/A1 Q 5.2.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionA"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 5.3",
+                "videoData": true,
+                "file": "SV 5B/A1 Q 5.3.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 14 - Roadtrip Still",
+                "videoData": true,
+                "file": "SV 5B/AVQ 14 - Roadtrip Still.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 15 - Roadtrip Loop",
+                "videoData": true,
+                "file": "SV 5B/AVQ 15 - Roadtrip Loop.mov",
+                "showVoteIds": [
+    								[
+                        "show-5",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+{
+                "id": "Blackout Film - A1 Rainbow",
+                "videoData": true,
+                "file": "SV 6A/Blackout Film - A1 Rainbow.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "SQ 16 - Drumroll",
+                "audioData": true,
+                "file": "SV 6A/SQ 16 - Drumroll.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 17 - Hooray for Hollywood",
+                "audioData": true,
+                "file": "SV 6A/SQ 17 - Hooray for Hollywood.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 18 - Soviet National Anthem",
+                "audioData": true,
+                "file": "SV 6A/SQ 18 - Soviet National Anthem.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 19 - Stars and Stripes Forever",
+                "audioData": true,
+                "file": "SV 6A/SQ 19 - Stars and Stripes Forever.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 20 - Angels",
+                "audioData": true,
+                "file": "SV 6A/SQ 20 - Angels.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 21 - Farrah 1",
+                "audioData": true,
+                "file": "SV 6A/SQ 21 - Farrah 1.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 22 - Farrah 2",
+                "audioData": true,
+                "file": "SV 6A/SQ 22 - Farrah 2.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 23 - Farrah 3",
+                "audioData": true,
+                "file": "SV 6A/SQ 23 - Farrah 3.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 24 - Farrah 4",
+                "audioData": true,
+                "file": "SV 6A/SQ 24 - Farrah 4.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 25 - Farrah 5",
+                "audioData": true,
+                "file": "SV 6A/SQ 25 - Farrah 5.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "SQ 26 - Farrah 6",
+                "audioData": true,
+                "file": "SV 6A/SQ 26 - Farrah 6.mp3",
+                "showVoteIds": [
+                    [
+                        "show-6",
+                        "optionA"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ 16 - Film Meltdown I",
+                "videoData": true,
+                "file": "SV 6A/AVQ 16 - Film Meltdown I.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionA"
+                    ],
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 17 - Film Stabilize",
+                "videoData": true,
+                "file": "SV 6A/AVQ 17 - Film Stabilize.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionA"
+                    ],
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "Blackout Film",
+                "videoData": true,
+                "file": "SV 6B/Blackout Film.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 18 - Fun Meter",
+                "videoData": true,
+                "file": "SV 6B/AVQ 18 - Fun Meter.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 5.2",
+                "videoData": true,
+                "file": "SV 6B/A1 Q 5.2.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 19 - Vault 1",
+                "videoData": true,
+                "file": "SV 6B/AVQ 19 - Vault 1.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 20 - Vault 2",
+                "videoData": true,
+                "file": "SV 6B/AVQ 20 - Vault 2.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 21 - Vault 3",
+                "videoData": true,
+                "file": "SV 6B/AVQ 21 - Vault 3.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 22 - Vault 4",
+                "videoData": true,
+                "file": "SV 6B/AVQ 22 - Vault 4.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 23 - Vault 5",
+                "videoData": true,
+                "file": "SV 6B/AVQ 23 - Vault 5.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 24 - Vault 6",
+                "videoData": true,
+                "file": "SV 6B/AVQ 24 - Vault 6.mov",
+                "showVoteIds": [
+    								[
+                        "show-6",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+{
+                "id": "A1 Q 6.1",
+                "videoData": true,
+                "file": "SV 7A/A1 Q 6.1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionA"
+                    ],
+    								[
+                        "show-7",
+                        "optionB"
+                    ],
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "A1 Q 6.2",
+                "videoData": true,
+                "file": "SV 7A/A1 Q 6.2.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionA"
+                    ],
+    								[
+                        "show-7",
+                        "optionB"
+                    ],
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 19 - Laserblast",
+                "videoData": true,
+                "file": "SV 7A/AVQ 19 - Laserblast.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionA"
+                    ],
+    								[
+                        "show-7",
+                        "optionB"
+                    ],
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 20 - Cipher Vid 1",
+                "videoData": true,
+                "file": "SV 7A/AVQ 20 - Cipher Vid 1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionA"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 21 - Cipher Vid 2",
+                "videoData": true,
+                "file": "SV 7A/AVQ 21 - Cipher Vid 2.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionA"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 22 - Alpha Vid 1",
+                "videoData": true,
+                "file": "SV 7B/AVQ 22 - Alpha Vid 1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 23 - Alpha Vid 2",
+                "videoData": true,
+                "file": "SV 7B/AVQ 23 - Alpha Vid 2.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionB"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 24 - A1 Poof",
+                "videoData": true,
+                "file": "SV 7C/AVQ 24 - A1 Poof.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 25 - A1 Tinkering",
+                "videoData": true,
+                "file": "SV 7C/AVQ 25 - A1 Tinkering.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 25 - A1 Tinkering",
+                "videoData": true,
+                "file": "SV 7C/AVQ 25 - A1 Tinkering.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 26 - A1 Wink, Full of Stars",
+                "videoData": true,
+                "file": "SV 7C/AVQ 26 - A1 Wink, Full of Stars.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "SQ 27 - Horns of Oblivion",
+                "audioData": true,
+                "file": "SV 7C/SQ 27 - Horns of Oblivion.mp3",
+                "showVoteIds": [
+                    [
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ 27 - Giant A1",
+                "videoData": true,
+                "file": "SV 7C/AVQ 27 - Giant A1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 28 - A1 Monologue",
+                "videoData": true,
+                "file": "SV 7C/AVQ 28 - A1 Monologue.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "SQ 28 - Evil Laughter",
+                "audioData": true,
+                "file": "SV 7C/SQ 28 - Evil Laughter.mp3",
+                "showVoteIds": [
+                    [
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 4000
+            },
+    {
+                "id": "AVQ 29 - A1 More Monologue",
+                "videoData": true,
+                "file": "SV 7C/AVQ 29 - A1 More Monologue.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 30 - Data, Monologuing",
+                "videoData": true,
+                "file": "SV 7C/AVQ 30 - Data, Monologuing.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 31 - A1 Yelling",
+                "videoData": true,
+                "file": "SV 7C/AVQ 31 - A1 YellingAVQ 32 - A1 Fractals.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 32 - A1 Fractals",
+                "videoData": true,
+                "file": "SV 7C/AVQ 32 - A1 Fractals.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 33 - A1 Third Dimension",
+                "videoData": true,
+                "file": "SV 7C/AVQ 33 - A1 Third Dimension.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 34 - Force Lightning",
+                "videoData": true,
+                "file": "SV 7C/AVQ 34 - Force Lightning.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 35 - Evil A1",
+                "videoData": true,
+                "file": "SV 7C/AVQ 35 - Evil A1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 36 - A1 Hugo Weaving 1",
+                "videoData": true,
+                "file": "SV 7C/AVQ 36 - A1 Hugo Weaving 1.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 37 - A1 Hugo Weaving 2",
+                "videoData": true,
+                "file": "SV 7C/AVQ 37 - A1 Hugo Weaving 2.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 38 - Duel of the Fates",
+                "videoData": true,
+                "file": "SV 7C/AVQ 38 - Duel of the Fates.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 39 - A1 Explosion",
+                "videoData": true,
+                "file": "SV 7C/AVQ 39 - A1 Explosion.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 40 - A1 Ressurection",
+                "videoData": true,
+                "file": "SV 7C/AVQ 40 - A1 Ressurection.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 41 - A1 fires the laser",
+                "videoData": true,
+                "file": "SV 7C/AVQ 41 - A1 fires the laser.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            },
+    {
+                "id": "AVQ 42 - A1 Credits",
+                "videoData": true,
+                "file": "SV 7C/AVQ 42 - A1 Credits.mov",
+                "showVoteIds": [
+    								[
+                        "show-7",
+                        "optionC"
+                    ]
+                ],
+                "duration": 3
+            }
     ]
-  },
-  {
-    "id": "sq1voiceover.wav",
-    "audioData": true,
-    "file": "sq1voiceover.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "avq1ygtl.mov",
-    "videoData": true,
-    "file": "avq1ygtl.mov",
-    "duration": 210000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "showambient1.mov",
-    "videoData": true,
-    "file": "showambient1.mov",
-    "duration": 240000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "showambient2.mov",
-    "videoData": true,
-    "file": "showambient2.mov",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "mdmambient.mov",
-    "videoData": true,
-    "file": "mdmambient.mov",
-    "duration": 90000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "1dx.mov",
-    "videoData": true,
-    "file": "1dx.mov",
-    "duration": 180000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "fanfare.wav",
-    "audioData": true,
-    "file": "fanfare.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "stillinsaigon.wav",
-    "audioData": true,
-    "file": "stillinsaigon.wav",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q01.mov",
-    "videoData": true,
-    "file": "a1q01.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q02.mov",
-    "videoData": true,
-    "file": "a1q02.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q03.mov",
-    "videoData": true,
-    "file": "a1q03.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q04.mov",
-    "videoData": true,
-    "file": "a1q04.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "checkovambient.mov",
-    "videoData": true,
-    "file": "checkovambient.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q05.mov",
-    "videoData": true,
-    "file": "a1q05.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q06.mov",
-    "videoData": true,
-    "file": "a1q06.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "votingtutorial.mov",
-    "videoData": true,
-    "file": "votingtutorial.mov",
-    "duration": 105000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "votingmusic.wav",
-    "audioData": true,
-    "file": "votingmusic.wav",
-    "duration": 300000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "ovending.wav",
-    "audioData": true,
-    "file": "ovending.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "laserfire.mov",
-    "videoData": true,
-    "file": "laserfire.mov",
-    "duration": 8000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q07.mov",
-    "videoData": true,
-    "file": "a1q07.mov",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q08.mov",
-    "videoData": true,
-    "file": "a1q08.mov",
-    "duration": 4000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "countdown.mov",
-    "videoData": true,
-    "file": "countdown.mov",
-    "duration": 15000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "burstofstatic.mov",
-    "videoData": true,
-    "file": "burstofstatic.mov",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher11.mov",
-    "videoData": true,
-    "file": "cipher11.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher12.mov",
-    "videoData": true,
-    "file": "cipher12.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher13.mov",
-    "videoData": true,
-    "file": "cipher13.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher14.mov",
-    "videoData": true,
-    "file": "cipher14.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "filmklaxon.wav",
-    "audioData": true,
-    "file": "filmklaxon.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher15.mov",
-    "videoData": true,
-    "file": "cipher15.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "fanfare.wav",
-    "audioData": true,
-    "file": "fanfare.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "dashmap1.wav",
-    "audioData": true,
-    "file": "dashmap1.wav",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "dashmap2.wav",
-    "audioData": true,
-    "file": "dashmap2.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "dashmap3.wav",
-    "audioData": true,
-    "file": "dashmap3.wav",
-    "duration": 3000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "hypemusic.wav",
-    "audioData": true,
-    "file": "hypemusic.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher21.mov",
-    "videoData": true,
-    "file": "cipher21.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher22.mov",
-    "videoData": true,
-    "file": "cipher22.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher23.mov",
-    "videoData": true,
-    "file": "cipher23.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q21.mov",
-    "videoData": true,
-    "file": "a1q21.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q22.mov",
-    "videoData": true,
-    "file": "a1q22.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "financialreport1.mov",
-    "videoData": true,
-    "file": "financialreport1.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "financialreport2.mov",
-    "videoData": true,
-    "file": "financialreport2.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "financialreport2.mov",
-    "videoData": true,
-    "file": "financialreport2.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher24.mov",
-    "videoData": true,
-    "file": "cipher24.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher25.mov",
-    "videoData": true,
-    "file": "cipher25.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipher26.mov",
-    "videoData": true,
-    "file": "cipher26.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "labriskianintro.wav",
-    "audioData": true,
-    "file": "labriskianintro.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "dzote.mov",
-    "videoData": true,
-    "file": "dzote.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "sleepinginbunker.mov",
-    "videoData": true,
-    "file": "sleepinginbunker.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "labriskianbunker.wav",
-    "audioData": true,
-    "file": "labriskianbunker.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "alebee.mov",
-    "videoData": true,
-    "file": "alebee.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "ironcladalibi.mov",
-    "videoData": true,
-    "file": "ironcladalibi.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "labriskianalibi.wav",
-    "audioData": true,
-    "file": "labriskianalibi.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrahfawcett.mov",
-    "videoData": true,
-    "file": "farrahfawcett.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "hack1.mov",
-    "videoData": true,
-    "file": "hack1.mov",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "statementisfalce.mov",
-    "videoData": true,
-    "file": "statementisfalce.mov",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cipherlabriskian.mov",
-    "videoData": true,
-    "file": "cipherlabriskian.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "labriskianend.wav",
-    "audioData": true,
-    "file": "labriskianend.wav",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q31.mov",
-    "videoData": true,
-    "file": "a1q31.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q32.mov",
-    "videoData": true,
-    "file": "a1q32.mov",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "rainbow.mov",
-    "videoData": true,
-    "file": "rainbow.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "junglesounds.wav",
-    "audioData": true,
-    "file": "junglesounds.wav",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "sovietmusic.wav",
-    "audioData": true,
-    "file": "sovietmusic.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq32.wav",
-    "audioData": true,
-    "file": "cq32.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq33.wav",
-    "audioData": true,
-    "file": "cq33.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq34.wav",
-    "audioData": true,
-    "file": "cq34.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq35.wav",
-    "audioData": true,
-    "file": "cq35.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq36.wav",
-    "audioData": true,
-    "file": "cq36.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq37.wav",
-    "audioData": true,
-    "file": "cq37.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq38.wav",
-    "audioData": true,
-    "file": "cq38.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "pontifex.mov",
-    "videoData": true,
-    "file": "pontifex.mov",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "korobeiniki.wav",
-    "audioData": true,
-    "file": "korobeiniki.wav",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "cq39.wav",
-    "audioData": true,
-    "file": "cq39.wav",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "quizshowintro.wav",
-    "audioData": true,
-    "file": "quizshowintro.wav",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q41.mov",
-    "videoData": true,
-    "file": "a1q41.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q42.mov",
-    "videoData": true,
-    "file": "a1q42.mov",
-    "duration": 45000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "quizpunch.wav",
-    "audioData": true,
-    "file": "quizpunch.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "applause.wav",
-    "audioData": true,
-    "file": "applause.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "buzzer.wav",
-    "audioData": true,
-    "file": "buzzer.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "ding.wav",
-    "audioData": true,
-    "file": "ding.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "quizshowoutro.wav",
-    "audioData": true,
-    "file": "quizshowoutro.wav",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "buzzerhack.wav",
-    "audioData": true,
-    "file": "buzzerhack.wav",
-    "duration": 2000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "luxforkbomb.mov",
-    "videoData": true,
-    "file": "luxforkbomb.mov",
-    "duration": 180000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "redscorpion1.mov",
-    "videoData": true,
-    "file": "redscorpion1.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "redscorpion2.mov",
-    "videoData": true,
-    "file": "redscorpion2.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "buickloop.mov",
-    "videoData": true,
-    "file": "buickloop.mov",
-    "duration": 300000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "buickmusic.wav",
-    "audioData": true,
-    "file": "buickmusic.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q51.mov",
-    "videoData": true,
-    "file": "a1q51.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q52.mov",
-    "videoData": true,
-    "file": "a1q52.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q53.mov",
-    "videoData": true,
-    "file": "a1q53.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "roadtripstill.mov",
-    "videoData": true,
-    "file": "roadtripstill.mov",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "roadtripvid.mov",
-    "videoData": true,
-    "file": "roadtripvid.mov",
-    "duration": 300000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "hoorayforhollywood.wav",
-    "audioData": true,
-    "file": "hoorayforhollywood.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "sovietnationalanthem.wav",
-    "audioData": true,
-    "file": "sovietnationalanthem.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "starsandstripesforever.wav",
-    "audioData": true,
-    "file": "starsandstripesforever.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "angels.wav",
-    "audioData": true,
-    "file": "angels.wav",
-    "duration": 120000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah1.wav",
-    "audioData": true,
-    "file": "farrah1.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah2.wav",
-    "audioData": true,
-    "file": "farrah2.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah3.wav",
-    "audioData": true,
-    "file": "farrah3.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah4.wav",
-    "audioData": true,
-    "file": "farrah4.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah5.wav",
-    "audioData": true,
-    "file": "farrah5.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "farrah6.wav",
-    "audioData": true,
-    "file": "farrah6.wav",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "filmmeltdown.mov",
-    "videoData": true,
-    "file": "filmmeltdown.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "filmstabilize.mov",
-    "videoData": true,
-    "file": "filmstabilize.mov",
-    "duration": 12000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1q61.mov",
-    "videoData": true,
-    "file": "a1q61.mov",
-    "duration": 5000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1sad.mov",
-    "videoData": true,
-    "file": "a1sad.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "vault1.mov",
-    "videoData": true,
-    "file": "vault1.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "vault2.mov",
-    "videoData": true,
-    "file": "vault2.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "valut3.mov",
-    "videoData": true,
-    "file": "valut3.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "vault4.mov",
-    "videoData": true,
-    "file": "vault4.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "vault5.mov",
-    "videoData": true,
-    "file": "vault5.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "vault6.mov",
-    "videoData": true,
-    "file": "vault6.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "lasermeltdown.mov",
-    "videoData": true,
-    "file": "lasermeltdown.mov",
-    "duration": 180000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "a1ending.mov",
-    "videoData": true,
-    "file": "a1ending.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "laserpowerup.mov",
-    "audioData": true,
-    "file": "laserpowerup.mov",
-    "duration": 30000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "laserblast.mov",
-    "audioData": true,
-    "file": "laserblast.mov",
-    "duration": 10000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "baending1.mov",
-    "videoData": true,
-    "file": "baending1.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "crending1.mov",
-    "videoData": true,
-    "file": "crending1.mov",
-    "duration": 60000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  },
-  {
-    "id": "crending2.mov",
-    "videoData": true,
-    "file": "crending2.mov",
-    "duration": 600000,
-    "showVoteIds": [
-      [
-        "OPEN",
-        "optionA"
-      ]
-    ]
-  }
-]
 }

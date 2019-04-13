@@ -94,10 +94,10 @@ function textNode(assetPath, text, horizonalAlign, verticalAlign, width, height,
         resolutionw: width,
         outputresolution: c.mp(9),
         bgcolor: optionColorToRgbp(color.getOrElse("white")),
-        bgalpha: 1,
+        bgalpha: 0.4,
         linespacing: c.fp(0.2),
         linespacingunit: c.mp(1),
-        fontfile: c.sp(assetPath + "misc\\Commodore Rounded v1.2.ttf"),
+        fontfile: c.sp(assetPath + "misc/Commodore Rounded v1.2.ttf"),
         fontsizex: c.fp(22.5),
         fontcolor: c.rgbp(c.fp(0), c.fp(0), c.fp(0)),
     }).c(c.top("layout", {
@@ -117,25 +117,25 @@ function voteNode(state, wasPrev, vote) {
         play: c.tp(state.paused.isNone()),
         outtimercount: c.mp(3),
     }, wasPrev ? [] : timerStartActions, "voteTimer");
-    var timertextleft = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 0, 0, 256, 128, 0, 128);
-    var timertextright = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 2, 0, 256, 128, 0, 128);
+    var timertextleft = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 0, 0, 256, 108, 0, 108);
+    var timertextright = textNode(state.assetPath, c.casts(c.floorp(c.subp(c.fp(util_1.VOTE_DURATION), c.chan(c.sp("timer_seconds"), timer.runT())))), 2, 0, 256, 108, 0, 108);
     var activeVoteCountArr = types_1.activeVoteCount(vote.vote, vote.voteMap);
-    var voteName = textNode(state.assetPath, c.sp(vote.vote.text), 1, 0, 1408, 128, 0, 128);
+    var voteName = textNode(state.assetPath, c.sp(vote.vote.text), 1, 0, 1408, 108, 0, 108);
     var optionANode = types_1.isShowVote(vote.vote) ?
-        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionAColor)) :
-        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 128, 0, 0, Option_1.some("blue"));
+        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 108, 0, 0, Option_1.some(vote.vote.optionAColor)) :
+        textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 108, 0, 0, Option_1.some("blue"));
     var optionBNode = types_1.isShowVote(vote.vote) ?
-        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 128, 0, 0, Option_1.some(vote.vote.optionBColor)) :
-        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 128, 0, 0, Option_1.some("blue"));
+        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 108, 0, 0, Option_1.some(vote.vote.optionBColor)) :
+        textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 108, 0, 0, Option_1.some("blue"));
     var optionCNode = types_1.votedFilmVote.getOption(vote.vote).map(function (v) {
-        return textNode(state.assetPath, c.sp(v.optionC + "\\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 128, 0, 0, Option_1.some("blue"));
+        return textNode(state.assetPath, c.sp(v.optionC + "\\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 108, 0, 0, Option_1.some("blue"));
     });
     var optionlist = [optionANode, optionBNode].concat(Array_1.catOptions([optionCNode]));
     return c.top("composite", { operand: c.mp(0) })
         .run([timertextleft, timertextright, voteName].concat(optionlist));
 }
 function voteResult(assetPath, voteResultName) {
-    return c.top("composite", { operand: c.mp(0) }).run([textNode(assetPath, c.sp(voteResultName), 1, 0, 1920, 128, 0, 128).runT(), textNode(assetPath, c.sp("Loading..."), 1, 0, 1920, 128).runT()]);
+    return c.top("composite", { operand: c.mp(0) }).run([textNode(assetPath, c.sp(voteResultName), 1, 0, 1920, 108, 0, 108).runT(), textNode(assetPath, c.sp("Loading..."), 1, 0, 1920, 108).runT()]);
 }
 var mapCues = function (g, s, cues) {
     return Array_1.array.map(Array_1.zip(g(Array_1.unzip(cues)[0]), Array_1.unzip(cues)[1]), s);
@@ -162,7 +162,7 @@ var textCueNode = function (state, prevState, _a) {
     })
         .run(cue.text.map(function (_a) {
         var t = _a[0], d = _a[1];
-        return textNode(state.assetPath, c.sp(t), 1, 0, 1920, 128);
+        return textNode(state.assetPath, c.sp(t), 1, 0, 1920, 108);
     }));
 };
 var idToNodeName = function (id) {

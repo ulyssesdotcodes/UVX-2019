@@ -60,9 +60,9 @@ function movie(state: IShowState, wasPrev: boolean, movie: IMovie): [Node<"TOP">
     const loopNode = c.top("moviefilein", {
         resolutionh: 1080,
         resolutionw: 1920,
-        playmode: c.mp(1),
+        playmode: c.mp(2),
         file: c.sp(state.assetPath + movie.loopFile),
-        index: c.chan(c.sp("timer_frames"), timer.runT()),
+        play: c.tp(state.paused.isNone())
     });
 
     const movSwitch = c.top("switch", {
@@ -113,10 +113,10 @@ function textNode(
         resolutionw: width,
         outputresolution: c.mp(9),
         bgcolor: optionColorToRgbp(color.getOrElse("white")),
-        bgalpha: 1,
+        bgalpha: 0.4,
         linespacing: c.fp(0.2),
         linespacingunit: c.mp(1),
-        fontfile: c.sp(assetPath + "misc\\Commodore Rounded v1.2.ttf") ,
+        fontfile: c.sp(assetPath + "misc/Commodore Rounded v1.2.ttf") ,
         fontsizex: c.fp(22.5) ,
         fontcolor: c.rgbp(c.fp(0), c.fp(0), c.fp(0)),
     }).c(c.top("layout", {
@@ -146,7 +146,7 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
             c.subp(
                 c.fp(VOTE_DURATION),
                 c.chan(c.sp("timer_seconds"), timer.runT())) as IParam<"float">)),
-        0, 0, 256, 128, 0, 128);
+        0, 0, 256, 108, 0, 108);
 
     const timertextright = textNode(
         state.assetPath,
@@ -154,23 +154,23 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
             c.subp(
                 c.fp(VOTE_DURATION),
                 c.chan(c.sp("timer_seconds"), timer.runT())) as IParam<"float">)),
-        2, 0, 256, 128, 0, 128);
+        2, 0, 256, 108, 0, 108);
 
     const activeVoteCountArr = activeVoteCount(vote.vote, vote.voteMap);
-    const voteName = textNode(state.assetPath, c.sp(vote.vote.text), 1, 0, 1408, 128, 0, 128);
+    const voteName = textNode(state.assetPath, c.sp(vote.vote.text), 1, 0, 1408, 108, 0, 108);
     const optionANode =
         isShowVote(vote.vote) ?
-            textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 128, 0, 0, some(vote.vote.optionAColor)) :
-            textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 128, 0, 0, some("blue" as OptionColor));
+            textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 720, 108, 0, 0, some(vote.vote.optionAColor)) :
+            textNode(state.assetPath, c.sp(vote.vote.optionA + "\\n" + activeVoteCountArr["optionA"]), 0, 0, 640, 108, 0, 0, some("blue" as OptionColor));
 
     const optionBNode =
         isShowVote(vote.vote) ?
-            textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 128, 0, 0, some(vote.vote.optionBColor)) :
-            textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 128, 0, 0, some("blue" as OptionColor));
+            textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 2, 0, 720, 108, 0, 0, some(vote.vote.optionBColor)) :
+            textNode(state.assetPath, c.sp(vote.vote.optionB + "\\n" + activeVoteCountArr["optionB"]), 1, 0, 640, 108, 0, 0, some("blue" as OptionColor));
 
     const optionCNode =
         votedFilmVote.getOption(vote.vote).map(v =>
-            textNode(state.assetPath, c.sp(v.optionC + "\\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 128, 0, 0, some("blue" as OptionColor)));
+            textNode(state.assetPath, c.sp(v.optionC + "\\n" + activeVoteCountArr["optionC"]), 2, 0, 640, 108, 0, 0, some("blue" as OptionColor)));
 
     const optionlist = [optionANode, optionBNode].concat(catOptions([optionCNode]));
 
@@ -179,7 +179,7 @@ function voteNode(state: IShowState, wasPrev: boolean, vote: ActiveVote): Node<"
 }
 
 function voteResult(assetPath: string, voteResultName: string): Node<"TOP"> {
-    return c.top("composite", { operand: c.mp(0) }).run([textNode(assetPath, c.sp(voteResultName), 1, 0, 1920, 128, 0, 128).runT(), textNode(assetPath, c.sp("Loading..."), 1, 0, 1920, 128).runT()]);
+    return c.top("composite", { operand: c.mp(0) }).run([textNode(assetPath, c.sp(voteResultName), 1, 0, 1920, 108, 0, 108).runT(), textNode(assetPath, c.sp("Loading..."), 1, 0, 1920, 108).runT()]);
 }
 
 const mapCues = <CueType, NodeType extends OP>(g: (c: Cue[]) => CueType[], s: (c: [CueType, number]) => Node<NodeType>, cues: [Cue, number][]): Node<NodeType>[] =>
@@ -208,7 +208,7 @@ const textCueNode = (state: IShowState, prevState: IShowState, [cue, time]: [Tex
                     activeCues.get(prevState),
                     (cd => cd[0].id === cue.id)).isSome()))
     })
-        .run(cue.text.map(([t, d]) => textNode(state.assetPath, c.sp(t), 1, 0, 1920, 128)));
+        .run(cue.text.map(([t, d]) => textNode(state.assetPath, c.sp(t), 1, 0, 1920, 108)));
 
 const idToNodeName = (id: string) =>
     id.replace(/-/g, "_").replace(/\s/g, "_").replace(/\./g, "_");

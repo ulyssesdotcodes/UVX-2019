@@ -6,10 +6,12 @@ import { thunkCueVote, thunkChangePaused, thunkCueBatch, thunkEndVote, thunkCueC
 import CueVote from "./CueVote";
 import { RouteComponentProps, RouteProps, RouteChildrenProps } from "react-router";
 import ShowVoteOp from "./ShowVoteOp";
-import { VoteChoice, voteChoice, activeCueList, isVotedFilmVote, votedFilmVote } from "../../../types";
+import { VoteChoice, voteChoice, activeCueList, isVotedFilmVote, votedFilmVote, cueAudioFile, Cue } from "../../../types";
 import { option, fromNullable } from "fp-ts/lib/Option";
 import { lookup } from "fp-ts/lib/StrMap";
 import CueCue from "./CueCue";
+import { sortBy } from "fp-ts/lib/Array";
+import { contramap, ordString } from "fp-ts/lib/Ord";
 
 
 interface OperatorProps {
@@ -85,15 +87,16 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                     <div>
                         <div className="header">Cues</div>
                         <div className="cue-list">
-                        {activeCueList(this.props.operator.voteResults, this.props.operator.cues)
+                        {sortBy([contramap((c: Cue) => c.id, ordString)])
+                            .map(v => v(activeCueList(this.props.operator.voteResults, this.props.operator.cues))
                             .map(c =>
                                 <CueCue
-                                    key={c.id + new Date().getTime()}
+                                    key={c.id}
                                     cue={c}
                                     thunkCueCue={this.props.thunkCueCue}
                                     thunkDecueCue={this.props.thunkDecueCue}
                                     />
-                            )}
+                            )).getOrElse([<div></div>])}
                         </div>
                     </div>
                 </div>
@@ -134,8 +137,8 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                     </div>
 
                 </div>
-                <div className="cue-list">
-                    {this.props.operator.cues
+                <div className="cue-list-vert">
+                    {sortBy([contramap((c: Cue) => c.id, ordString)]).map(v => v(this.props.operator.cues)
                         .map(c =>
                             <CueCue
                                 key={c.id}
@@ -143,7 +146,7 @@ class Operator extends React.Component<OperatorProps, {activeVoteMap: {[key: str
                                 thunkCueCue={this.props.thunkCueCue}
                                 thunkDecueCue={this.props.thunkDecueCue}
                                 />
-                        )}
+                        )).getOrElse([<div></div>])}
                 </div>
             </div>
         );

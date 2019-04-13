@@ -30,6 +30,8 @@ var CueVote_1 = __importDefault(require("./CueVote"));
 var types_1 = require("../../../types");
 var StrMap_1 = require("fp-ts/lib/StrMap");
 var CueCue_1 = __importDefault(require("./CueCue"));
+var Array_1 = require("fp-ts/lib/Array");
+var Ord_1 = require("fp-ts/lib/Ord");
 var Operator = /** @class */ (function (_super) {
     __extends(Operator, _super);
     function Operator(props) {
@@ -76,10 +78,11 @@ var Operator = /** @class */ (function (_super) {
                     })),
                 React.createElement("div", null,
                     React.createElement("div", { className: "header" }, "Cues"),
-                    React.createElement("div", { className: "cue-list" }, types_1.activeCueList(this.props.operator.voteResults, this.props.operator.cues)
+                    React.createElement("div", { className: "cue-list" }, Array_1.sortBy([Ord_1.contramap(function (c) { return c.id; }, Ord_1.ordString)])
+                        .map(function (v) { return v(types_1.activeCueList(_this.props.operator.voteResults, _this.props.operator.cues))
                         .map(function (c) {
-                        return React.createElement(CueCue_1.default, { key: c.id + new Date().getTime(), cue: c, thunkCueCue: _this.props.thunkCueCue, thunkDecueCue: _this.props.thunkDecueCue });
-                    })))),
+                        return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue, thunkDecueCue: _this.props.thunkDecueCue });
+                    }); }).getOrElse([React.createElement("div", null)])))),
             React.createElement("div", { className: "controls" },
                 React.createElement("a", { className: "button", onClick: this.props.thunkEndVote }, "Early Vote Lock"),
                 this.props.operator.paused.isSome() ?
@@ -119,10 +122,10 @@ var Operator = /** @class */ (function (_super) {
                             ac[0].id + " - " + ac[1],
                             " "),
                         React.createElement("a", { onClick: function () { return _this.props.thunkDecueCue(ac[0].id, ac[1]); }, className: "decue" }, "x"))); }))),
-            React.createElement("div", { className: "cue-list" }, this.props.operator.cues
+            React.createElement("div", { className: "cue-list-vert" }, Array_1.sortBy([Ord_1.contramap(function (c) { return c.id; }, Ord_1.ordString)]).map(function (v) { return v(_this.props.operator.cues)
                 .map(function (c) {
                 return React.createElement(CueCue_1.default, { key: c.id, cue: c, thunkCueCue: _this.props.thunkCueCue, thunkDecueCue: _this.props.thunkDecueCue });
-            }))));
+            }); }).getOrElse([React.createElement("div", null)]))));
     };
     return Operator;
 }(React.Component));

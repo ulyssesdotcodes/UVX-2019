@@ -60,13 +60,16 @@ function startVote(voteId) {
 exports.startVote = startVote;
 function endVote() {
     var findWinner = function (v, vm) {
-        return vm.reduceWithKey(new fpm.StrMap({}), function (k, counts, vc) {
-            return fpm.insert(vc, fpm.lookup(vc, counts).getOrElse(1), counts);
-        })
-            .reduceWithKey([0, types_1.options(v)[Math.floor(Math.random() * types_1.options(v).length)][1]], function (key, vv, count) {
-            return vv[0] > count ?
-                vv : [count, key];
-        })[1];
+        var counts = vm.reduceWithKey([new fpm.StrMap({}), 0], function (k, _a, vc) {
+            var counts = _a[0], max = _a[1];
+            var count = fpm.lookup(vc, counts).getOrElse(0) + 1;
+            return [fpm.insert(vc, count, counts), Math.max(count, max)];
+        });
+        var reduced = counts[0].filter(function (v) { return v == counts[1]; });
+        var keys = Object.keys(reduced.value);
+        return keys.length > 0 ?
+            keys[Math.floor(Math.random() * keys.length)] :
+            types_1.options(v)[Math.floor(Math.random() * types_1.options(v).length)][1];
     };
     return function (s) {
         return types_1.activeVote.getOption(s)

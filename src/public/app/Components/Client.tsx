@@ -76,6 +76,9 @@ class Client extends React.Component<ClientProps & RouteProps> {
     render() {
         return (
             <div className="client">
+                <div>
+                    <h1>Welcome to the UVX</h1>
+                </div>
                 { findFirst(array)(reverse(this.state.textCue), ([_, n]) => n < this.state.updateTime)
                     .map(val => <div className="text-cue" key="textCue">{ val[0] }</div>)
                     .getOrElse(<div></div>)

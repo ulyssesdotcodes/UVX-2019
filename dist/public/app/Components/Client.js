@@ -87,6 +87,8 @@ var Client = /** @class */ (function (_super) {
     Client.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", { className: "client" },
+            React.createElement("div", null,
+                React.createElement("h1", null, "Welcome to the UVX")),
             Foldable2v_1.findFirst(Array_1.array)(Array_1.reverse(this.state.textCue), function (_a) {
                 var _ = _a[0], n = _a[1];
                 return n < _this.state.updateTime;
